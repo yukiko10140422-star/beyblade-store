@@ -201,27 +201,53 @@ export default function Product() {
             selectedVariant={selectedVariant}
           />
 
-          {/* Shipping estimate */}
-          <div className="flex items-center gap-3 py-4 border-t border-vault-700">
+          {/* Duties included notice */}
+          <div className="flex items-center gap-2 py-3 px-4 rounded-lg bg-gold-400/5 border border-gold-400/10">
             <svg
-              className="w-5 h-5 text-gold-400 flex-shrink-0"
+              className="w-4 h-4 text-gold-400 flex-shrink-0"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
               viewBox="0 0 24 24"
             >
-              <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+              <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <div>
-              <p className="text-chrome-200 text-sm">Ships from Tokyo, Japan</p>
-              <p className="text-chrome-500 text-xs">
-                Estimated 5-10 business days via EMS
-              </p>
+            <p className="text-chrome-300 text-xs">
+              <span className="text-gold-400 font-heading uppercase tracking-wider">
+                Duties included
+              </span>{' '}
+              — No surprise fees at delivery
+            </p>
+          </div>
+
+          {/* Shipping */}
+          <div className="py-4 border-t border-vault-700 space-y-3">
+            <div className="flex items-center gap-3">
+              <svg
+                className="w-5 h-5 text-gold-400 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+              >
+                <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+              </svg>
+              <div>
+                <p className="text-chrome-200 text-sm">
+                  Ships from Tokyo, Japan
+                </p>
+                <p className="text-chrome-500 text-xs">
+                  Standard: 7-14 days &middot; Express (FedEx/DHL): 3-7 days
+                </p>
+              </div>
             </div>
+            <p className="text-chrome-600 text-[10px] pl-8">
+              Free express shipping on orders over $150
+            </p>
           </div>
 
           {/* Trust badges */}
-          <div className="flex items-center gap-6 py-4 border-t border-vault-700">
+          <div className="flex flex-wrap items-center gap-4 py-4 border-t border-vault-700">
             <div className="flex items-center gap-2 text-chrome-500 text-xs">
               <svg
                 className="w-4 h-4 text-gold-400"
@@ -232,7 +258,7 @@ export default function Product() {
               >
                 <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              Authentic
+              100% Authentic
             </div>
             <div className="flex items-center gap-2 text-chrome-500 text-xs">
               <svg
@@ -244,7 +270,7 @@ export default function Product() {
               >
                 <path d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" />
               </svg>
-              Tracked
+              Fully Tracked
             </div>
             <div className="flex items-center gap-2 text-chrome-500 text-xs">
               <svg
@@ -256,9 +282,12 @@ export default function Product() {
               >
                 <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              Secure
+              Duties Included
             </div>
           </div>
+
+          {/* Beyblade Specs (metafields) */}
+          <BeybladeSpecs product={product} />
 
           {/* Description */}
           <div className="border-t border-vault-700 pt-6">
@@ -366,6 +395,15 @@ const PRODUCT_FRAGMENT = `#graphql
       description
       title
     }
+    beybladeType: metafield(namespace: "beyblade", key: "type") { value }
+    bladeName: metafield(namespace: "beyblade", key: "blade_name") { value }
+    ratchetSpec: metafield(namespace: "beyblade", key: "ratchet_spec") { value }
+    bitSpec: metafield(namespace: "beyblade", key: "bit_spec") { value }
+    series: metafield(namespace: "beyblade", key: "series") { value }
+    modelNumber: metafield(namespace: "beyblade", key: "model_number") { value }
+    condition: metafield(namespace: "beyblade", key: "condition") { value }
+    isLimitedEdition: metafield(namespace: "beyblade", key: "is_limited_edition") { value }
+    generation: metafield(namespace: "beyblade", key: "generation") { value }
   }
   ${PRODUCT_VARIANT_FRAGMENT}
 ` as const;
@@ -383,3 +421,47 @@ const PRODUCT_QUERY = `#graphql
   }
   ${PRODUCT_FRAGMENT}
 ` as const;
+
+function BeybladeSpecs({product}: {product: any}) {
+  const specs = [
+    {label: 'Type', value: product.beybladeType?.value},
+    {label: 'Blade', value: product.bladeName?.value},
+    {label: 'Ratchet', value: product.ratchetSpec?.value},
+    {label: 'Bit', value: product.bitSpec?.value},
+    {label: 'Series', value: product.series?.value},
+    {label: 'Model', value: product.modelNumber?.value},
+    {label: 'Condition', value: product.condition?.value},
+    {label: 'Generation', value: product.generation?.value},
+  ].filter((s) => s.value);
+
+  if (specs.length === 0) return null;
+
+  const isLimited = product.isLimitedEdition?.value === 'true';
+
+  return (
+    <div className="border-t border-vault-700 pt-6">
+      <div className="flex items-center gap-3 mb-4">
+        <h2 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400">
+          Specifications
+        </h2>
+        {isLimited && (
+          <span className="text-[9px] font-heading uppercase tracking-widest bg-danger-500/20 text-danger-500 border border-danger-500/30 px-2 py-0.5 rounded-full">
+            Limited Edition
+          </span>
+        )}
+      </div>
+      <dl className="grid grid-cols-2 gap-3">
+        {specs.map((spec) => (
+          <div key={spec.label}>
+            <dt className="text-chrome-600 text-[10px] uppercase tracking-wider">
+              {spec.label}
+            </dt>
+            <dd className="text-chrome-200 text-sm font-heading mt-0.5">
+              {spec.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
