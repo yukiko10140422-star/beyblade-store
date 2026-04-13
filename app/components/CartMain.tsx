@@ -59,8 +59,58 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
           })}
         </ul>
       </div>
-      {cartHasItems && <CartSummary cart={cart} layout={layout} />}
+      {cartHasItems && (
+        <>
+          <FreeShippingBar
+            subtotal={parseFloat(cart?.cost?.subtotalAmount?.amount ?? '0')}
+          />
+          <CartSummary cart={cart} layout={layout} />
+        </>
+      )}
     </section>
+  );
+}
+
+const FREE_SHIPPING_THRESHOLD = 150;
+
+function FreeShippingBar({subtotal}: {subtotal: number}) {
+  const remaining = FREE_SHIPPING_THRESHOLD - subtotal;
+  const progress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
+  const qualified = remaining <= 0;
+
+  return (
+    <div className="px-1 py-3 border-t border-vault-700">
+      {qualified ? (
+        <p className="text-gold-400 text-xs font-heading uppercase tracking-wider text-center flex items-center justify-center gap-2">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Free EMS shipping unlocked!
+        </p>
+      ) : (
+        <>
+          <p className="text-chrome-400 text-xs text-center mb-2">
+            Add{' '}
+            <span className="text-gold-400 font-heading">
+              ${remaining.toFixed(2)}
+            </span>{' '}
+            more for <span className="text-chrome-200">free EMS shipping</span>
+          </p>
+          <div className="w-full h-1.5 bg-vault-700 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gold-500 rounded-full transition-all duration-500"
+              style={{width: `${progress}%`}}
+            />
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 

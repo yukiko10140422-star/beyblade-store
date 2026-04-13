@@ -19,6 +19,14 @@ export default async function handleRequest(
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
+    styleSrc: ["'self'", 'https://fonts.googleapis.com'],
+    fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+    imgSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
+      'https://i.ebayimg.com',
+      'data:',
+    ],
   });
 
   const body = await renderToReadableStream(
@@ -45,6 +53,13 @@ export default async function handleRequest(
 
   responseHeaders.set('Content-Type', 'text/html');
   responseHeaders.set('Content-Security-Policy', header);
+  responseHeaders.set('X-Content-Type-Options', 'nosniff');
+  responseHeaders.set('X-Frame-Options', 'DENY');
+  responseHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  responseHeaders.set(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=()',
+  );
 
   return new Response(body, {
     headers: responseHeaders,

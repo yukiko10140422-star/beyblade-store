@@ -72,6 +72,17 @@ export default function Homepage() {
 function HeroSection() {
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden bg-vault-950">
+      {/* Tokyo night skyline background */}
+      <div className="absolute inset-0">
+        <img
+          src="/images/tokyo-night.jpg"
+          alt=""
+          className="w-full h-full object-cover object-center opacity-30"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-vault-950 via-vault-950/80 to-vault-950/60" />
+      </div>
+
       {/* Ambient glow orbs */}
       <GlowOrb className="w-96 h-96 bg-gold-400/10 top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2" />
       <GlowOrb className="w-64 h-64 bg-electric-500/5 bottom-1/4 right-1/4" />
@@ -80,7 +91,7 @@ function HeroSection() {
       <FloatingParticles />
 
       {/* Radial glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,215,0,0.08)_0%,_transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,215,0,0.06)_0%,_transparent_50%)]" />
 
       {/* Rotating rings */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
