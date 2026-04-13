@@ -1,0 +1,192 @@
+@import 'tailwindcss';
+
+/* ============================================
+   TOKYO SPIN VAULT — Design System
+   Gold x Black x Chrome x Electric Blue
+   ============================================ */
+
+@theme {
+  /* === GOLD PRIMARY (logo-derived) === */
+  --color-gold-50: #FFFDF0;
+  --color-gold-100: #FFF9D6;
+  --color-gold-200: #FFF0A3;
+  --color-gold-300: #FFE066;
+  --color-gold-400: #FFD700;
+  --color-gold-500: #DAA520;
+  --color-gold-600: #B8860B;
+  --color-gold-700: #8B6914;
+  --color-gold-800: #6B4F10;
+  --color-gold-900: #4A370B;
+  --color-gold-950: #2D2106;
+
+  /* === VAULT (dark backgrounds) === */
+  --color-vault-50: #F5F5F7;
+  --color-vault-100: #E0E0E5;
+  --color-vault-200: #B8B8C4;
+  --color-vault-300: #8A8A9E;
+  --color-vault-400: #5C5C75;
+  --color-vault-500: #3D3D54;
+  --color-vault-600: #2A2A3D;
+  --color-vault-700: #1E1E2F;
+  --color-vault-800: #141422;
+  --color-vault-900: #0C0C18;
+  --color-vault-950: #06060C;
+
+  /* === CHROME/STEEL === */
+  --color-chrome-50: #FAFAFA;
+  --color-chrome-100: #F0F0F2;
+  --color-chrome-200: #D9D9DF;
+  --color-chrome-300: #B8B8C2;
+  --color-chrome-400: #9898A6;
+  --color-chrome-500: #78788A;
+  --color-chrome-600: #5C5C6E;
+  --color-chrome-700: #444454;
+
+  /* === ELECTRIC BLUE (shield accent) === */
+  --color-electric-50: #EBF3FF;
+  --color-electric-100: #D1E4FF;
+  --color-electric-200: #A8CCFF;
+  --color-electric-300: #6EA8FF;
+  --color-electric-400: #3D85F0;
+  --color-electric-500: #1E6FD9;
+  --color-electric-600: #155ABB;
+  --color-electric-700: #0F4494;
+
+  /* === BEYBLADE TYPE COLORS === */
+  --color-bey-attack: #3B82F6;
+  --color-bey-defense: #22C55E;
+  --color-bey-stamina: #F97316;
+  --color-bey-balance: #EF4444;
+
+  /* === DANGER === */
+  --color-danger-500: #DC2626;
+  --color-danger-600: #B91C1C;
+
+  /* === FONT FAMILIES === */
+  --font-heading: 'Orbitron', system-ui, sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+
+  /* === ANIMATIONS === */
+  --animate-gold-glow: gold-glow 2s ease-in-out infinite;
+  --animate-vault-open: vault-open 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-spin-slow: spin 4s linear infinite;
+  --animate-shimmer: shimmer 3s linear infinite;
+  --animate-fade-up: fade-up 0.6s ease-out;
+  --animate-slide-in-right: slide-in-right 0.3s ease-out;
+  --animate-pulse-gold: pulse-gold 2s ease-in-out infinite;
+
+  @keyframes gold-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.3), 0 0 16px rgba(255, 215, 0, 0.1); }
+    50% { box-shadow: 0 0 16px rgba(255, 215, 0, 0.6), 0 0 32px rgba(255, 215, 0, 0.3), 0 0 48px rgba(255, 215, 0, 0.1); }
+  }
+
+  @keyframes vault-open {
+    0% { transform: scale(0.95) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes fade-up {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes slide-in-right {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes pulse-gold {
+    0%, 100% { text-shadow: 0 0 4px rgba(255, 215, 0, 0.4); }
+    50% { text-shadow: 0 0 12px rgba(255, 215, 0, 0.8), 0 0 24px rgba(255, 215, 0, 0.3); }
+  }
+}
+
+/* === CUSTOM UTILITY CLASSES === */
+
+@utility text-gold-metallic {
+  background: linear-gradient(180deg, #FFD700 0%, #DAA520 40%, #B8860B 70%, #8B6914 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@utility text-chrome-metallic {
+  background: linear-gradient(180deg, #E8E8E8 0%, #B8B8C2 30%, #9898A6 60%, #C8C8D0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@utility surface-vault {
+  background: linear-gradient(145deg, rgba(20, 20, 34, 0.9), rgba(12, 12, 24, 0.95));
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+@utility border-gold-glow {
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.1), inset 0 0 8px rgba(255, 215, 0, 0.05);
+}
+
+@utility glow-gold-sm {
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+}
+
+@utility glow-gold-md {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2), 0 0 40px rgba(255, 215, 0, 0.08);
+}
+
+@utility glow-gold-lg {
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.1);
+}
+
+/* === BASE STYLES === */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-vault-900);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-vault-600);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-vault-500);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-400);
+    outline-offset: 2px;
+  }
+}
+
+/* === LEGACY LAYOUT VARS (needed by existing skeleton components until fully migrated) === */
+
+:root {
+  --aside-width: 400px;
+  --cart-aside-summary-height-with-discount: 300px;
+  --cart-aside-summary-height: 250px;
+  --header-height: 72px;
+}

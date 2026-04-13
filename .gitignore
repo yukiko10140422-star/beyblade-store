@@ -1,10 +1,16 @@
-node_modules/
+node_modules
+/.DS_Store
+/.cache
+/build
+/dist
+/public/build
+/.mf
 .env
 .env.*
-!.env.example
-dist/
-build/
-.cache/
-.DS_Store
-Thumbs.db
-*.log
+.shopify
+.react-router
+
+# Research docs (tracked in Obsidian, not in git)
+COMPETITIVE-ANALYSIS.md
+PRICING-RESEARCH.md
+PROCUREMENT.md
