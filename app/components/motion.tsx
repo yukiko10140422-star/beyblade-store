@@ -1,5 +1,5 @@
 'use client';
-import {motion, useInView} from 'framer-motion';
+import {motion, useInView, useReducedMotion} from 'framer-motion';
 import {useRef, type ReactNode} from 'react';
 
 interface RevealProps {
@@ -17,6 +17,11 @@ export function Reveal({
 }: RevealProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, {once: true, margin: '-80px'});
+  const prefersReducedMotion = useReducedMotion();
+
+  if (prefersReducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
 
   const directionMap = {
     up: {y: 40, x: 0},
@@ -101,6 +106,9 @@ export function StaggerItem({
 }
 
 export function FloatingParticles() {
+  const prefersReducedMotion = useReducedMotion();
+  if (prefersReducedMotion) return null;
+
   const particles = Array.from({length: 20}, (_, i) => ({
     id: i,
     size: Math.random() * 3 + 1,
