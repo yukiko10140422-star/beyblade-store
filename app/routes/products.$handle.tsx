@@ -14,15 +14,64 @@ import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
+  const product = data?.product;
+  const title = `${product?.title ?? ''} | Tokyo Spin Vault`;
+  const description = product?.description?.substring(0, 160) ?? '';
+  const image =
+    product?.selectedOrFirstAvailableVariant?.image?.url ??
+    product?.featuredImage?.url ??
+    '';
+  const price = product?.selectedOrFirstAvailableVariant?.price?.amount ?? '0';
+  const currency =
+    product?.selectedOrFirstAvailableVariant?.price?.currencyCode ?? 'USD';
+  const available =
+    product?.selectedOrFirstAvailableVariant?.availableForSale ?? false;
+
   return [
-    {title: `${data?.product.title ?? ''} | Tokyo Spin Vault`},
+    {title},
+    {name: 'description', content: description},
+    {property: 'og:title', content: title},
+    {property: 'og:description', content: description},
+    {property: 'og:type', content: 'product'},
+    {property: 'og:image', content: image},
+    {property: 'og:site_name', content: 'Tokyo Spin Vault'},
+    {property: 'product:price:amount', content: price},
+    {property: 'product:price:currency', content: currency},
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:description', content: description},
+    {name: 'twitter:image', content: image},
     {
-      name: 'description',
-      content: data?.product.description?.substring(0, 160) ?? '',
-    },
-    {
-      rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
+      'script:ld+json': JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product?.title,
+        description: product?.description,
+        image: image,
+        brand: {
+          '@type': 'Brand',
+          name: product?.vendor || 'Takara Tomy',
+        },
+        offers: {
+          '@type': 'Offer',
+          price,
+          priceCurrency: currency,
+          availability: available
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock',
+          seller: {
+            '@type': 'Organization',
+            name: 'Tokyo Spin Vault',
+          },
+          shippingDetails: {
+            '@type': 'OfferShippingDetails',
+            shippingOrigin: {
+              '@type': 'DefinedRegion',
+              addressCountry: 'JP',
+            },
+          },
+        },
+      }),
     },
   ];
 };

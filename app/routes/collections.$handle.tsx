@@ -7,7 +7,18 @@ import {ProductCard} from '~/components/ProductCard';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `${data?.collection.title ?? ''} | Tokyo Spin Vault`}];
+  const title = `${data?.collection.title ?? ''} | Tokyo Spin Vault`;
+  const description =
+    data?.collection.description ||
+    `Browse ${data?.collection.title} at Tokyo Spin Vault. Authentic Beyblades from Japan.`;
+  return [
+    {title},
+    {name: 'description', content: description},
+    {property: 'og:title', content: title},
+    {property: 'og:description', content: description},
+    {property: 'og:type', content: 'website'},
+    {property: 'og:site_name', content: 'Tokyo Spin Vault'},
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
