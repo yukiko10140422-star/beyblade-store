@@ -24,7 +24,14 @@ export const meta: Route.MetaFunction = ({data}) => {
     {property: 'og:title', content: title},
     {property: 'og:description', content: description},
     {property: 'og:type', content: 'website'},
+    {
+      property: 'og:image',
+      content: 'https://tokyospinvault.com/images/logo.png',
+    },
     {property: 'og:site_name', content: 'Tokyo Spin Vault'},
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:description', content: description},
   ];
 };
 

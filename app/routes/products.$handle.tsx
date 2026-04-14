@@ -16,7 +16,11 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
   const product = data?.product;
-  const title = `${product?.title ?? ''} | Tokyo Spin Vault`;
+  const rawTitle = product?.title ?? '';
+  const title =
+    rawTitle.length > 50
+      ? `${rawTitle.substring(0, 50).trim()} | TSV`
+      : `${rawTitle} | Tokyo Spin Vault`;
   const description = product?.description?.substring(0, 160) ?? '';
   const image =
     product?.selectedOrFirstAvailableVariant?.image?.url ??
