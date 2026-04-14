@@ -71,15 +71,18 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   );
 }
 
-const FREE_SHIPPING_THRESHOLD = 150;
+const EXPRESS_UPGRADE_THRESHOLD = 300;
 
 function FreeShippingBar({subtotal}: {subtotal: number}) {
-  const remaining = FREE_SHIPPING_THRESHOLD - subtotal;
-  const progress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
+  const remaining = EXPRESS_UPGRADE_THRESHOLD - subtotal;
+  const progress = Math.min((subtotal / EXPRESS_UPGRADE_THRESHOLD) * 100, 100);
   const qualified = remaining <= 0;
 
   return (
     <div className="px-1 py-3 border-t border-vault-700">
+      <p className="text-chrome-500 text-[10px] text-center mb-2">
+        Free shipping & duties included on all orders
+      </p>
       {qualified ? (
         <p className="text-gold-400 text-xs font-heading uppercase tracking-wider text-center flex items-center justify-center gap-2">
           <svg
@@ -91,7 +94,7 @@ function FreeShippingBar({subtotal}: {subtotal: number}) {
           >
             <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          Free EMS shipping unlocked!
+          Free DHL/FedEx Express upgrade unlocked!
         </p>
       ) : (
         <>
@@ -100,7 +103,10 @@ function FreeShippingBar({subtotal}: {subtotal: number}) {
             <span className="text-gold-400 font-heading">
               ${remaining.toFixed(2)}
             </span>{' '}
-            more for <span className="text-chrome-200">free EMS shipping</span>
+            more for{' '}
+            <span className="text-chrome-200">
+              free DHL/FedEx Express upgrade
+            </span>
           </p>
           <div className="w-full h-1.5 bg-vault-700 rounded-full overflow-hidden">
             <div

@@ -286,11 +286,11 @@ function FeaturedHero() {
               {/* Price + CTA */}
               <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
                 <div>
-                  <span className="text-chrome-500 text-sm line-through mr-2">
-                    $189.99
-                  </span>
                   <span className="text-gold-400 font-heading text-3xl">
-                    $170.99
+                    $70.00
+                  </span>
+                  <span className="text-chrome-500 text-xs ml-2">
+                    Shipping & duties included
                   </span>
                 </div>
                 <Link
@@ -717,7 +717,7 @@ function ShippingBanner() {
           <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
         </svg>
       ),
-      text: 'Ships from Tokyo via ePacket Light',
+      text: 'Free Shipping from Tokyo (ePacket Light)',
     },
     {
       icon: (
@@ -745,7 +745,7 @@ function ShippingBanner() {
           <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
-      text: '7-14 Days — Free EMS over $150',
+      text: 'DHL/FedEx Free on $300+ or 3+ Items',
     },
   ];
 

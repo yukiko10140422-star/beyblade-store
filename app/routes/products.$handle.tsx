@@ -203,27 +203,33 @@ export default function Product() {
             selectedVariant={selectedVariant}
           />
 
-          {/* DDP Notice */}
-          <div className="flex items-center gap-2 py-3 px-4 rounded-lg bg-gold-400/5 border border-gold-400/10">
-            <svg
-              className="w-4 h-4 text-gold-400 flex-shrink-0"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-            >
-              <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p className="text-chrome-300 text-xs">
-              <span className="text-gold-400 font-heading uppercase tracking-wider">
-                DDP — Duties & taxes included
-              </span>{' '}
-              — No surprise fees at delivery
+          {/* Shipping & Duties Notice */}
+          <div className="py-3 px-4 rounded-lg bg-gold-400/5 border border-gold-400/10 space-y-2">
+            <div className="flex items-center gap-2">
+              <svg
+                className="w-4 h-4 text-gold-400 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+              >
+                <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-chrome-200 text-sm">
+                <span className="text-gold-400 font-heading uppercase tracking-wider">
+                  Free shipping & duties included
+                </span>
+              </p>
+            </div>
+            <p className="text-chrome-400 text-xs pl-6">
+              Ships from Tokyo via ePacket Light (7-14 days). All import taxes
+              and customs fees are included in the price &mdash; no extra
+              charges at delivery.
             </p>
           </div>
 
-          {/* Shipping */}
-          <div className="py-4 border-t border-vault-700 space-y-3">
+          {/* Express Upgrade */}
+          <div className="py-4 border-t border-vault-700 space-y-2">
             <div className="flex items-center gap-3">
               <svg
                 className="w-5 h-5 text-gold-400 flex-shrink-0"
@@ -236,17 +242,13 @@ export default function Product() {
               </svg>
               <div>
                 <p className="text-chrome-200 text-sm">
-                  Ships from Tokyo via ePacket Light
+                  DHL/FedEx Express Upgrade available
                 </p>
                 <p className="text-chrome-500 text-xs">
-                  Standard: ePacket Light 7-14 days &middot; Express: EMS 3-7
-                  days
+                  3-7 days &middot; Free upgrade on $300+ orders or 3+ items
                 </p>
               </div>
             </div>
-            <p className="text-chrome-600 text-[10px] pl-8">
-              Free EMS express shipping on orders over $150
-            </p>
           </div>
 
           {/* Trust badges */}
