@@ -157,7 +157,10 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="theme-color" content="#0C0C18" />
         {/* Search engine & social verification -- replace PLACEHOLDER with real values */}
-        <meta name="google-site-verification" content="PLACEHOLDER" />
+        <meta
+          name="google-site-verification"
+          content="dBEliAsnYr0LPP5coO3av3reeWXrzpmJ9AwvsMQZVyY"
+        />
         <meta name="p:domain_verify" content="PLACEHOLDER" />
         <meta name="msvalidate.01" content="PLACEHOLDER" />
         <link rel="canonical" href={canonicalUrl} />
