@@ -3,6 +3,7 @@ import type {Route} from './+types/_index';
 import {Suspense, useRef, useEffect} from 'react';
 import type {RecommendedProductsQuery} from 'storefrontapi.generated';
 import {ProductCard} from '~/components/ProductCard';
+import {SITE_URL} from '~/lib/constants';
 import {
   Reveal,
   StaggerContainer,
@@ -33,8 +34,8 @@ export const meta: Route.MetaFunction = () => {
         '@type': 'Organization',
         name: 'Tokyo Spin Vault',
         description,
-        url: 'https://tokyospinvault.com',
-        logo: 'https://tokyospinvault.com/images/logo.png',
+        url: SITE_URL,
+        logo: `${SITE_URL}/images/logo.png`,
         sameAs: [
           'https://www.instagram.com/tsv_2026',
           'https://www.tiktok.com/@tokyo.spin.vault',

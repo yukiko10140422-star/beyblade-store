@@ -6,7 +6,7 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
+  return [{title: `${data?.blog.title ?? ''} Blog | Tokyo Spin Vault`}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -153,7 +153,6 @@ const BLOGS_QUERY = `#graphql
         }
         pageInfo {
           hasPreviousPage
-          hasNextPage
           hasNextPage
           endCursor
           startCursor

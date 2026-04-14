@@ -14,6 +14,7 @@ import {
 import type {Route} from './+types/root';
 const favicon = '/favicon.png';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {SITE_URL} from '~/lib/constants';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
 
@@ -148,7 +149,7 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
   const location = useLocation();
-  const canonicalUrl = `https://tokyospinvault.com${location.pathname}`;
+  const canonicalUrl = `${SITE_URL}${location.pathname}`;
 
   return (
     <html lang="en" className="dark">

@@ -83,6 +83,7 @@ const COLLECTION_ITEM_FRAGMENT = `#graphql
         ...MoneyCollectionItem
       }
     }
+    beybladeType: metafield(namespace: "beyblade", key: "type") { value }
   }
 ` as const;
 

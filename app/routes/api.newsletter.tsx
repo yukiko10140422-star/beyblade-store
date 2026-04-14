@@ -25,9 +25,11 @@ export async function action({request, context}: Route.ActionArgs) {
     const errors = result?.customerCreate?.customerUserErrors;
 
     if (errors?.length) {
-      const alreadyExists = errors.some(
-        (e: any) => e.code === 'TAKEN' || e.message?.includes('taken'),
-      );
+      const alreadyExists = errors.some((e: unknown) => {
+        if (typeof e !== 'object' || e === null) return false;
+        const err = e as {code?: string; message?: string};
+        return err.code === 'TAKEN' || err.message?.includes('taken');
+      });
       if (alreadyExists) {
         return data({success: true, message: "You're already subscribed!"});
       }
