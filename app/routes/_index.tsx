@@ -33,8 +33,8 @@ export const meta: Route.MetaFunction = () => {
         '@type': 'Organization',
         name: 'Tokyo Spin Vault',
         description,
-        url: 'https://tokyo-spin-vault-d51baf2ecf0c279cb53d.o2.myshopify.dev',
-        logo: 'https://tokyo-spin-vault-d51baf2ecf0c279cb53d.o2.myshopify.dev/images/logo.png',
+        url: 'https://tokyospinvault.com',
+        logo: 'https://tokyospinvault.com/images/logo.png',
         sameAs: [
           'https://www.instagram.com/tsv_2026',
           'https://www.tiktok.com/@tokyo.spin.vault',

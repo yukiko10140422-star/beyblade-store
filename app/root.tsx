@@ -148,7 +148,7 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
   const location = useLocation();
-  const canonicalUrl = `https://tokyo-spin-vault-d51baf2ecf0c279cb53d.o2.myshopify.dev${location.pathname}`;
+  const canonicalUrl = `https://tokyospinvault.com${location.pathname}`;
 
   return (
     <html lang="en" className="dark">
