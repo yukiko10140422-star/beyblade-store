@@ -9,6 +9,7 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductCard} from '~/components/ProductCard';
+import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {BEY_TYPES, TYPE_CONFIG, isBeyType} from '~/lib/beyblade-types';
 import {SITE_URL} from '~/lib/constants';
 import type {ProductItemFragment} from 'storefrontapi.generated';
@@ -118,20 +119,14 @@ export default function Collection() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
       {/* Breadcrumbs */}
-      <nav className="mb-6 text-chrome-500 text-sm flex items-center gap-2">
-        <a href="/" className="hover:text-gold-400 transition-colors">
-          Home
-        </a>
-        <span className="text-vault-600">/</span>
-        <a
-          href="/collections"
-          className="hover:text-gold-400 transition-colors"
-        >
-          Collections
-        </a>
-        <span className="text-vault-600">/</span>
-        <span className="text-chrome-300">{collection.title}</span>
-      </nav>
+      <Breadcrumbs
+        className="mb-6"
+        items={[
+          {label: 'Home', href: '/'},
+          {label: 'Collections', href: '/collections'},
+          {label: collection.title},
+        ]}
+      />
 
       {/* Header */}
       <div className="mb-8">

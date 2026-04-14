@@ -12,6 +12,7 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {TypeBadge} from '~/components/TypeBadge';
+import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
@@ -143,21 +144,15 @@ export default function Product() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
-      {/* Breadcrumbs */}
-      <nav className="mb-8 text-chrome-500 text-sm flex items-center gap-2">
-        <a href="/" className="hover:text-gold-400 transition-colors">
-          Home
-        </a>
-        <span className="text-vault-600">/</span>
-        <a
-          href="/collections"
-          className="hover:text-gold-400 transition-colors"
-        >
-          Collections
-        </a>
-        <span className="text-vault-600">/</span>
-        <span className="text-chrome-300 truncate max-w-[200px]">{title}</span>
-      </nav>
+      <Breadcrumbs
+        className="mb-8"
+        truncateLast
+        items={[
+          {label: 'Home', href: '/'},
+          {label: 'Collections', href: '/collections'},
+          {label: title},
+        ]}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
         {/* Left: Image */}
