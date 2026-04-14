@@ -1,4 +1,5 @@
-import {redirect, useLoaderData} from 'react-router';
+import {Await, redirect, useLoaderData} from 'react-router';
+import {Suspense} from 'react';
 import type {Route} from './+types/products.$handle';
 import {
   getSelectedProductOptions,
@@ -8,12 +9,15 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
+import type {RelatedProductsQuery} from 'storefrontapi.generated';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {ProductCard} from '~/components/ProductCard';
 import {TypeBadge} from '~/components/TypeBadge';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 
 export const meta: Route.MetaFunction = ({data}) => {
   const product = data?.product;
@@ -87,7 +91,34 @@ export async function loader(args: Route.LoaderArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return criticalData;
+  // Start loading related products (deferred — does not block initial render)
+  const deferredData = loadDeferredData({
+    ...args,
+    productId: criticalData.product.id,
+  });
+
+  return {...criticalData, ...deferredData};
+}
+
+/**
+ * Load data that can be deferred (streams after initial render).
+ * Related products are non-critical — the PDP is usable without them.
+ */
+function loadDeferredData({
+  context,
+  productId,
+}: Route.LoaderArgs & {productId: string}) {
+  const relatedProducts = context.storefront
+    .query(RELATED_PRODUCTS_QUERY, {
+      variables: {productId},
+      cache: context.storefront.CacheShort(),
+    })
+    .catch((error: unknown) => {
+      console.error('Related products query failed:', error);
+      return null;
+    });
+
+  return {relatedProducts};
 }
 
 /**
@@ -123,7 +154,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
 }
 
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const {product, relatedProducts} = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -308,7 +339,49 @@ export default function Product() {
           ],
         }}
       />
+
+      <RelatedProducts products={relatedProducts} />
     </div>
+  );
+}
+
+function RelatedProducts({
+  products,
+}: {
+  products: Promise<RelatedProductsQuery | null>;
+}) {
+  return (
+    <section className="py-16 md:py-24 border-t border-vault-700 mt-16">
+      <h2 className="font-heading text-xl md:text-2xl text-gold-metallic uppercase tracking-wider mb-8">
+        You May Also Like
+      </h2>
+      <Suspense
+        fallback={
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {Array.from({length: 4}).map((_, i) => (
+              <div
+                key={i}
+                className="aspect-square surface-vault rounded-xl animate-pulse"
+              />
+            ))}
+          </div>
+        }
+      >
+        <Await resolve={products}>
+          {(response) => {
+            const items = response?.productRecommendations?.slice(0, 4) ?? [];
+            if (items.length === 0) return null;
+            return (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {items.map((p) => (
+                  <ProductCard key={p.id} product={p} loading="lazy" />
+                ))}
+              </div>
+            );
+          }}
+        </Await>
+      </Suspense>
+    </section>
   );
 }
 
@@ -411,6 +484,20 @@ const PRODUCT_QUERY = `#graphql
     }
   }
   ${PRODUCT_FRAGMENT}
+` as const;
+
+const RELATED_PRODUCTS_QUERY = `#graphql
+  ${MONEY_FRAGMENT}
+  ${PRODUCT_ITEM_FRAGMENT}
+  query RelatedProducts(
+    $productId: ID!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    productRecommendations(productId: $productId) {
+      ...ProductItem
+    }
+  }
 ` as const;
 
 interface BeybladeSpecsProduct {
