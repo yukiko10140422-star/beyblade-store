@@ -424,7 +424,19 @@ const PRODUCT_QUERY = `#graphql
   ${PRODUCT_FRAGMENT}
 ` as const;
 
-function BeybladeSpecs({product}: {product: any}) {
+interface BeybladeSpecsProduct {
+  beybladeType?: {value: string} | null;
+  bladeName?: {value: string} | null;
+  ratchetSpec?: {value: string} | null;
+  bitSpec?: {value: string} | null;
+  series?: {value: string} | null;
+  modelNumber?: {value: string} | null;
+  condition?: {value: string} | null;
+  isLimitedEdition?: {value: string} | null;
+  generation?: {value: string} | null;
+}
+
+function BeybladeSpecs({product}: {product: BeybladeSpecsProduct}) {
   const specs = [
     {label: 'Type', value: product.beybladeType?.value},
     {label: 'Blade', value: product.bladeName?.value},

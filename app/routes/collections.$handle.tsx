@@ -1,9 +1,15 @@
-import {redirect, useLoaderData, useSearchParams, useNavigate} from 'react-router';
+import {
+  redirect,
+  useLoaderData,
+  useSearchParams,
+  useNavigate,
+} from 'react-router';
 import type {Route} from './+types/collections.$handle';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductCard} from '~/components/ProductCard';
+import {BEY_TYPES, TYPE_CONFIG, isBeyType} from '~/lib/beyblade-types';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import clsx from 'clsx';
 
@@ -36,8 +42,7 @@ type SortOption = (typeof SORT_OPTIONS)[number];
 function parseSortParam(sort: string | null): SortOption {
   if (!sort) return SORT_OPTIONS[0];
   const found = SORT_OPTIONS.find(
-    (o) =>
-      `${o.key}-${o.reverse ? 'desc' : 'asc'}` === sort,
+    (o) => `${o.key}-${o.reverse ? 'desc' : 'asc'}` === sort,
   );
   return found ?? SORT_OPTIONS[0];
 }
@@ -45,8 +50,6 @@ function parseSortParam(sort: string | null): SortOption {
 function sortToParam(option: SortOption): string {
   return `${option.key}-${option.reverse ? 'desc' : 'asc'}`;
 }
-
-const BEY_TYPES = ['Attack', 'Defense', 'Stamina', 'Balance'] as const;
 
 export async function loader(args: Route.LoaderArgs) {
   const deferredData = loadDeferredData(args);
@@ -70,7 +73,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
   const sortOption = parseSortParam(sortParam);
 
   const filters: Array<Record<string, unknown>> = [];
-  if (typeParam && BEY_TYPES.includes(typeParam as any)) {
+  if (typeParam && isBeyType(typeParam)) {
     filters.push({
       productMetafield: {
         namespace: 'beyblade',
@@ -180,44 +183,24 @@ function FilterBar() {
     } else {
       params.delete(key);
     }
-    // Reset pagination when filters change
     params.delete('cursor');
     params.delete('direction');
     navigate(`?${params.toString()}`, {preventScrollReset: true});
   }
 
-  const typeConfig: Record<string, {text: string; bg: string; border: string}> =
-    {
-      Attack: {
-        text: 'text-bey-attack',
-        bg: 'bg-bey-attack/15',
-        border: 'border-bey-attack/40',
-      },
-      Defense: {
-        text: 'text-bey-defense',
-        bg: 'bg-bey-defense/15',
-        border: 'border-bey-defense/40',
-      },
-      Stamina: {
-        text: 'text-bey-stamina',
-        bg: 'bg-bey-stamina/15',
-        border: 'border-bey-stamina/40',
-      },
-      Balance: {
-        text: 'text-bey-balance',
-        bg: 'bg-bey-balance/15',
-        border: 'border-bey-balance/40',
-      },
-    };
-
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-vault-700">
       {/* Type Filter Chips */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div
+        className="flex flex-wrap items-center gap-2"
+        role="group"
+        aria-label="Filter by type"
+      >
         <span className="text-chrome-500 text-xs font-heading uppercase tracking-wider mr-1">
           Type
         </span>
         <button
+          aria-pressed={!activeType}
           onClick={() => setParam('type', null)}
           className={clsx(
             'text-[10px] font-heading uppercase tracking-wider px-3 py-1.5 rounded-full border transition-all',
@@ -230,10 +213,11 @@ function FilterBar() {
         </button>
         {BEY_TYPES.map((type) => {
           const isActive = activeType === type;
-          const cfg = typeConfig[type];
+          const cfg = TYPE_CONFIG[type];
           return (
             <button
               key={type}
+              aria-pressed={isActive}
               onClick={() => setParam('type', isActive ? null : type)}
               className={clsx(
                 'text-[10px] font-heading uppercase tracking-wider px-3 py-1.5 rounded-full border transition-all',
@@ -250,17 +234,18 @@ function FilterBar() {
 
       {/* Sort Dropdown */}
       <div className="flex items-center gap-2">
-        <span className="text-chrome-500 text-xs font-heading uppercase tracking-wider">
+        <label
+          htmlFor="collection-sort"
+          className="text-chrome-500 text-xs font-heading uppercase tracking-wider"
+        >
           Sort
-        </span>
+        </label>
         <select
+          id="collection-sort"
           value={activeSort || sortToParam(SORT_OPTIONS[0])}
           onChange={(e) => {
             const val = e.target.value;
-            setParam(
-              'sort',
-              val === sortToParam(SORT_OPTIONS[0]) ? null : val,
-            );
+            setParam('sort', val === sortToParam(SORT_OPTIONS[0]) ? null : val);
           }}
           className="bg-vault-800 border border-vault-600 rounded-lg px-3 py-1.5 text-xs text-chrome-300 font-heading uppercase tracking-wider focus:outline-none focus:border-gold-400/50 transition-colors cursor-pointer"
         >
