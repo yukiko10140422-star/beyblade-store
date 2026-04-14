@@ -12,6 +12,41 @@ export default {
     executionContext: ExecutionContext,
   ): Promise<Response> {
     try {
+      const url = new URL(request.url);
+
+      // Oxygen overrides robots.txt/sitemap.xml before they reach Hydrogen routes.
+      // Intercept here at the server level to ensure our custom responses are served.
+      if (url.pathname === '/robots.txt') {
+        const origin = url.origin;
+        const body = `User-agent: *
+Allow: /
+Disallow: /cart
+Disallow: /account
+Disallow: /search
+Disallow: /collections/*sort_by*
+Disallow: /collections/*filter*&*filter*
+
+User-agent: adsbot-google
+Disallow: /cart
+Disallow: /account
+Disallow: /search
+
+User-agent: Nutch
+Disallow: /
+
+Sitemap: ${origin}/sitemap.xml
+Sitemap: ${origin}/sitemap/products/1.xml
+Sitemap: ${origin}/sitemap/collections/1.xml
+Sitemap: ${origin}/sitemap/pages/1.xml`;
+        return new Response(body, {
+          status: 200,
+          headers: {
+            'Content-Type': 'text/plain',
+            'Cache-Control': 'max-age=86400',
+          },
+        });
+      }
+
       const hydrogenContext = await createHydrogenRouterContext(
         request,
         env,
