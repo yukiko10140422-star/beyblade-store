@@ -4,6 +4,15 @@ import {Suspense} from 'react';
 import type {RecommendedProductsQuery} from 'storefrontapi.generated';
 import {ProductCard} from '~/components/ProductCard';
 import {NewsletterForm} from '~/components/NewsletterForm';
+import {
+  ShieldCheckIcon,
+  CheckCircleIcon,
+  PaperAirplaneIcon,
+  LockIcon,
+  ClockIcon,
+  GlobeIcon,
+  ArrowRightIcon,
+} from '~/components/icons';
 import {SITE_URL} from '~/lib/constants';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import {
@@ -178,15 +187,7 @@ function HeroSection() {
             to="/collections/all"
             className="group inline-flex items-center gap-3 bg-gold-500 hover:bg-gold-400 text-vault-950 font-heading uppercase tracking-[0.2em] text-xs md:text-sm px-8 py-4 rounded-lg transition-all duration-300 hover:glow-gold-lg"
           >
-            <svg
-              className="w-5 h-5 transition-transform group-hover:scale-110"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
+            <LockIcon className="w-5 h-5 transition-transform group-hover:scale-110" />
             Enter the Vault
           </Link>
           <Link
@@ -322,54 +323,22 @@ function FeaturedHero() {
                   className="group inline-flex items-center gap-2 bg-bey-attack hover:bg-bey-attack/90 text-white font-heading uppercase tracking-[0.15em] text-sm px-8 py-4 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]"
                 >
                   View Details
-                  <svg
-                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
+                  <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
 
               {/* Trust line */}
               <div className="flex items-center gap-4 justify-center lg:justify-start text-chrome-500 text-xs">
                 <span className="flex items-center gap-1">
-                  <svg
-                    className="w-3.5 h-3.5 text-gold-400"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <CheckCircleIcon className="w-3.5 h-3.5 text-gold-400" />
                   DDP — Tax included
                 </span>
                 <span className="flex items-center gap-1">
-                  <svg
-                    className="w-3.5 h-3.5 text-gold-400"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                  </svg>
+                  <PaperAirplaneIcon className="w-3.5 h-3.5 text-gold-400" />
                   Ships from Tokyo
                 </span>
                 <span className="flex items-center gap-1">
-                  <svg
-                    className="w-3.5 h-3.5 text-gold-400"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
+                  <ShieldCheckIcon className="w-3.5 h-3.5 text-gold-400" />
                   100% Authentic
                 </span>
               </div>
@@ -461,17 +430,7 @@ function TypeCategories() {
       color: 'from-green-500/20',
       text: 'text-bey-defense',
       border: 'bg-bey-defense',
-      icon: (
-        <svg
-          className="w-12 h-12"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      ),
+      icon: <ShieldCheckIcon className="w-12 h-12" />,
     },
     {
       name: 'Stamina',
@@ -479,17 +438,7 @@ function TypeCategories() {
       color: 'from-orange-500/20',
       text: 'text-bey-stamina',
       border: 'bg-bey-stamina',
-      icon: (
-        <svg
-          className="w-12 h-12"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: <ClockIcon className="w-12 h-12" />,
     },
     {
       name: 'Balance',
@@ -561,32 +510,12 @@ function TrustSignals() {
     {
       title: 'Japan Direct',
       description: 'Sourced & shipped from Tokyo',
-      icon: (
-        <svg
-          className="w-7 h-7"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-        </svg>
-      ),
+      icon: <GlobeIcon className="w-7 h-7" />,
     },
     {
       title: '100% Authentic',
       description: 'Genuine Takara Tomy only',
-      icon: (
-        <svg
-          className="w-7 h-7"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      ),
+      icon: <ShieldCheckIcon className="w-7 h-7" />,
     },
     {
       title: 'Collector Grade',
@@ -606,17 +535,7 @@ function TrustSignals() {
     {
       title: 'Worldwide Shipping',
       description: 'Tracked EMS to 50+ countries',
-      icon: (
-        <svg
-          className="w-7 h-7"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-        </svg>
-      ),
+      icon: <PaperAirplaneIcon className="w-7 h-7" />,
     },
   ];
 
@@ -730,45 +649,15 @@ function VaultExclusives({
 function ShippingBanner() {
   const items = [
     {
-      icon: (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-        </svg>
-      ),
+      icon: <PaperAirplaneIcon className="w-5 h-5" />,
       text: 'Free Shipping from Tokyo (ePacket Light)',
     },
     {
-      icon: (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      ),
+      icon: <ShieldCheckIcon className="w-5 h-5" />,
       text: 'DDP — Duties & Taxes Included',
     },
     {
-      icon: (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: <ClockIcon className="w-5 h-5" />,
       text: 'DHL/FedEx Free on $300+ or 3+ Items',
     },
   ];
