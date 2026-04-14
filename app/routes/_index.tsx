@@ -28,9 +28,7 @@ export const meta: Route.MetaFunction = () => {
     {name: 'twitter:description', content: description},
     {name: 'twitter:image', content: `${SITE_URL}/images/logo.png`},
     {
-      tagName: 'script',
-      type: 'application/ld+json',
-      children: JSON.stringify({
+      'script:ld+json': {
         '@context': 'https://schema.org',
         '@type': 'Organization',
         name: 'Tokyo Spin Vault',
@@ -46,7 +44,7 @@ export const meta: Route.MetaFunction = () => {
           email: 'support@tokyospinvault.com',
           contactType: 'customer service',
         },
-      }),
+      },
     },
   ];
 };

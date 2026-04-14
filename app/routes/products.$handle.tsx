@@ -48,9 +48,7 @@ export const meta: Route.MetaFunction = ({data}) => {
     {name: 'twitter:description', content: description},
     {name: 'twitter:image', content: image},
     {
-      tagName: 'script',
-      type: 'application/ld+json',
-      children: JSON.stringify({
+      'script:ld+json': {
         '@context': 'https://schema.org',
         '@type': 'Product',
         name: product?.title,
@@ -80,7 +78,7 @@ export const meta: Route.MetaFunction = ({data}) => {
             },
           },
         },
-      }),
+      },
     },
   ];
 };
