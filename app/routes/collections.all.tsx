@@ -3,7 +3,8 @@ import {useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductCard} from '~/components/ProductCard';
-import type {CollectionItemFragment} from 'storefrontapi.generated';
+import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
+import type {ProductItemFragment} from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: 'All Products | Tokyo Spin Vault'}];
@@ -38,7 +39,7 @@ export default function Collection() {
       <p className="text-chrome-500 text-sm mb-12">
         The complete vault inventory
       </p>
-      <PaginatedResourceSection<CollectionItemFragment>
+      <PaginatedResourceSection<ProductItemFragment>
         connection={products}
         resourcesClassName="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
       >
@@ -54,36 +55,9 @@ export default function Collection() {
   );
 }
 
-const COLLECTION_ITEM_FRAGMENT = `#graphql
-  fragment MoneyCollectionItem on MoneyV2 {
-    amount
-    currencyCode
-  }
-  fragment CollectionItem on Product {
-    id
-    handle
-    title
-    vendor
-    featuredImage {
-      id
-      altText
-      url
-      width
-      height
-    }
-    priceRange {
-      minVariantPrice {
-        ...MoneyCollectionItem
-      }
-      maxVariantPrice {
-        ...MoneyCollectionItem
-      }
-    }
-    beybladeType: metafield(namespace: "beyblade", key: "type") { value }
-  }
-` as const;
-
 const CATALOG_QUERY = `#graphql
+  ${MONEY_FRAGMENT}
+  ${PRODUCT_ITEM_FRAGMENT}
   query Catalog(
     $country: CountryCode
     $language: LanguageCode
@@ -94,7 +68,7 @@ const CATALOG_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     products(first: $first, last: $last, before: $startCursor, after: $endCursor) {
       nodes {
-        ...CollectionItem
+        ...ProductItem
       }
       pageInfo {
         hasPreviousPage
@@ -104,5 +78,4 @@ const CATALOG_QUERY = `#graphql
       }
     }
   }
-  ${COLLECTION_ITEM_FRAGMENT}
 ` as const;

@@ -12,6 +12,7 @@ import {ProductCard} from '~/components/ProductCard';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {BEY_TYPES, TYPE_CONFIG, isBeyType} from '~/lib/beyblade-types';
 import {SITE_URL} from '~/lib/constants';
+import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import clsx from 'clsx';
 
@@ -259,36 +260,8 @@ function FilterBar() {
   );
 }
 
-const PRODUCT_ITEM_FRAGMENT = `#graphql
-  fragment MoneyProductItem on MoneyV2 {
-    amount
-    currencyCode
-  }
-  fragment ProductItem on Product {
-    id
-    handle
-    title
-    vendor
-    featuredImage {
-      id
-      altText
-      url
-      width
-      height
-    }
-    priceRange {
-      minVariantPrice {
-        ...MoneyProductItem
-      }
-      maxVariantPrice {
-        ...MoneyProductItem
-      }
-    }
-    beybladeType: metafield(namespace: "beyblade", key: "type") { value }
-  }
-` as const;
-
 const COLLECTION_QUERY = `#graphql
+  ${MONEY_FRAGMENT}
   ${PRODUCT_ITEM_FRAGMENT}
   query Collection(
     $handle: String!

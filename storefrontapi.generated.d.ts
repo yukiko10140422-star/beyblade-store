@@ -5,8 +5,22 @@ import type * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 
 export type MoneyFragment = Pick<
   StorefrontAPI.MoneyV2,
-  'currencyCode' | 'amount'
+  'amount' | 'currencyCode'
 >;
+
+export type ProductItemFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'handle' | 'title' | 'vendor'
+> & {
+  featuredImage?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+  >;
+  priceRange: {
+    minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    maxVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+  };
+  beybladeType?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+};
 
 export type CartLineFragment = Pick<
   StorefrontAPI.CartLine,
@@ -14,10 +28,10 @@ export type CartLineFragment = Pick<
 > & {
   attributes: Array<Pick<StorefrontAPI.Attribute, 'key' | 'value'>>;
   cost: {
-    totalAmount: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
-    amountPerQuantity: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+    totalAmount: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    amountPerQuantity: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
     compareAtAmountPerQuantity?: StorefrontAPI.Maybe<
-      Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+      Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
     >;
   };
   merchandise: Pick<
@@ -25,9 +39,9 @@ export type CartLineFragment = Pick<
     'id' | 'availableForSale' | 'requiresShipping' | 'title'
   > & {
     compareAtPrice?: StorefrontAPI.Maybe<
-      Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+      Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
     >;
-    price: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+    price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
     image?: StorefrontAPI.Maybe<
       Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
     >;
@@ -47,10 +61,10 @@ export type CartLineComponentFragment = Pick<
 > & {
   attributes: Array<Pick<StorefrontAPI.Attribute, 'key' | 'value'>>;
   cost: {
-    totalAmount: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
-    amountPerQuantity: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+    totalAmount: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    amountPerQuantity: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
     compareAtAmountPerQuantity?: StorefrontAPI.Maybe<
-      Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+      Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
     >;
   };
   merchandise: Pick<
@@ -58,9 +72,9 @@ export type CartLineComponentFragment = Pick<
     'id' | 'availableForSale' | 'requiresShipping' | 'title'
   > & {
     compareAtPrice?: StorefrontAPI.Maybe<
-      Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+      Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
     >;
-    price: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+    price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
     image?: StorefrontAPI.Maybe<
       Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
     >;
@@ -73,13 +87,13 @@ export type CartLineComponentFragment = Pick<
     Pick<StorefrontAPI.CartLine, 'id' | 'quantity'> & {
       attributes: Array<Pick<StorefrontAPI.Attribute, 'key' | 'value'>>;
       cost: {
-        totalAmount: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+        totalAmount: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
         amountPerQuantity: Pick<
           StorefrontAPI.MoneyV2,
-          'currencyCode' | 'amount'
+          'amount' | 'currencyCode'
         >;
         compareAtAmountPerQuantity?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
         >;
       };
       merchandise: Pick<
@@ -87,9 +101,9 @@ export type CartLineComponentFragment = Pick<
         'id' | 'availableForSale' | 'requiresShipping' | 'title'
       > & {
         compareAtPrice?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
         >;
-        price: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
         image?: StorefrontAPI.Maybe<
           Pick<
             StorefrontAPI.Image,
@@ -117,7 +131,7 @@ export type CartApiQueryFragment = Pick<
 > & {
   appliedGiftCards: Array<
     Pick<StorefrontAPI.AppliedGiftCard, 'id' | 'lastCharacters'> & {
-      amountUsed: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+      amountUsed: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
     }
   >;
   buyerIdentity: Pick<
@@ -136,13 +150,13 @@ export type CartApiQueryFragment = Pick<
       | (Pick<StorefrontAPI.CartLine, 'id' | 'quantity'> & {
           attributes: Array<Pick<StorefrontAPI.Attribute, 'key' | 'value'>>;
           cost: {
-            totalAmount: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+            totalAmount: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
             amountPerQuantity: Pick<
               StorefrontAPI.MoneyV2,
-              'currencyCode' | 'amount'
+              'amount' | 'currencyCode'
             >;
             compareAtAmountPerQuantity?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
             >;
           };
           merchandise: Pick<
@@ -150,9 +164,9 @@ export type CartApiQueryFragment = Pick<
             'id' | 'availableForSale' | 'requiresShipping' | 'title'
           > & {
             compareAtPrice?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
             >;
-            price: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+            price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
             image?: StorefrontAPI.Maybe<
               Pick<
                 StorefrontAPI.Image,
@@ -174,13 +188,13 @@ export type CartApiQueryFragment = Pick<
       | (Pick<StorefrontAPI.ComponentizableCartLine, 'id' | 'quantity'> & {
           attributes: Array<Pick<StorefrontAPI.Attribute, 'key' | 'value'>>;
           cost: {
-            totalAmount: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+            totalAmount: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
             amountPerQuantity: Pick<
               StorefrontAPI.MoneyV2,
-              'currencyCode' | 'amount'
+              'amount' | 'currencyCode'
             >;
             compareAtAmountPerQuantity?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
             >;
           };
           merchandise: Pick<
@@ -188,9 +202,9 @@ export type CartApiQueryFragment = Pick<
             'id' | 'availableForSale' | 'requiresShipping' | 'title'
           > & {
             compareAtPrice?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
             >;
-            price: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+            price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
             image?: StorefrontAPI.Maybe<
               Pick<
                 StorefrontAPI.Image,
@@ -211,14 +225,14 @@ export type CartApiQueryFragment = Pick<
               cost: {
                 totalAmount: Pick<
                   StorefrontAPI.MoneyV2,
-                  'currencyCode' | 'amount'
+                  'amount' | 'currencyCode'
                 >;
                 amountPerQuantity: Pick<
                   StorefrontAPI.MoneyV2,
-                  'currencyCode' | 'amount'
+                  'amount' | 'currencyCode'
                 >;
                 compareAtAmountPerQuantity?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+                  Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
                 >;
               };
               merchandise: Pick<
@@ -226,9 +240,9 @@ export type CartApiQueryFragment = Pick<
                 'id' | 'availableForSale' | 'requiresShipping' | 'title'
               > & {
                 compareAtPrice?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+                  Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
                 >;
-                price: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+                price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
                 image?: StorefrontAPI.Maybe<
                   Pick<
                     StorefrontAPI.Image,
@@ -252,13 +266,13 @@ export type CartApiQueryFragment = Pick<
     >;
   };
   cost: {
-    subtotalAmount: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
-    totalAmount: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
+    subtotalAmount: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    totalAmount: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
     totalDutyAmount?: StorefrontAPI.Maybe<
-      Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+      Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
     >;
     totalTaxAmount?: StorefrontAPI.Maybe<
-      Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>
+      Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
     >;
   };
   attributes: Array<Pick<StorefrontAPI.Attribute, 'key' | 'value'>>;
@@ -377,19 +391,6 @@ export type FooterQuery = {
   >;
 };
 
-export type RecommendedProductFragment = Pick<
-  StorefrontAPI.Product,
-  'id' | 'title' | 'handle' | 'vendor'
-> & {
-  priceRange: {
-    minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-  };
-  featuredImage?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
-  >;
-  beybladeType?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-};
-
 export type RecommendedProductsQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
@@ -398,19 +399,23 @@ export type RecommendedProductsQueryVariables = StorefrontAPI.Exact<{
 export type RecommendedProductsQuery = {
   products: {
     nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'vendor'> & {
+      Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title' | 'vendor'> & {
+        featuredImage?: StorefrontAPI.Maybe<
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'altText' | 'url' | 'width' | 'height'
+          >
+        >;
         priceRange: {
           minVariantPrice: Pick<
             StorefrontAPI.MoneyV2,
             'amount' | 'currencyCode'
           >;
+          maxVariantPrice: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
         };
-        featuredImage?: StorefrontAPI.Maybe<
-          Pick<
-            StorefrontAPI.Image,
-            'id' | 'url' | 'altText' | 'width' | 'height'
-          >
-        >;
         beybladeType?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Metafield, 'value'>
         >;
@@ -553,25 +558,6 @@ export type BlogsQuery = {
   };
 };
 
-export type MoneyProductItemFragment = Pick<
-  StorefrontAPI.MoneyV2,
-  'amount' | 'currencyCode'
->;
-
-export type ProductItemFragment = Pick<
-  StorefrontAPI.Product,
-  'id' | 'handle' | 'title' | 'vendor'
-> & {
-  featuredImage?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
-  >;
-  priceRange: {
-    minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-    maxVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-  };
-  beybladeType?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-};
-
 export type CollectionQueryVariables = StorefrontAPI.Exact<{
   handle: StorefrontAPI.Scalars['String']['input'];
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -669,25 +655,6 @@ export type StoreCollectionsQuery = {
       'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'
     >;
   };
-};
-
-export type MoneyCollectionItemFragment = Pick<
-  StorefrontAPI.MoneyV2,
-  'amount' | 'currencyCode'
->;
-
-export type CollectionItemFragment = Pick<
-  StorefrontAPI.Product,
-  'id' | 'handle' | 'title' | 'vendor'
-> & {
-  featuredImage?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
-  >;
-  priceRange: {
-    minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-    maxVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-  };
-  beybladeType?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
 };
 
 export type CatalogQueryVariables = StorefrontAPI.Exact<{
@@ -1303,7 +1270,7 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  fragment RecommendedProduct on Product {\n    id\n    title\n    handle\n    vendor\n    priceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    featuredImage {\n      id\n      url\n      altText\n      width\n      height\n    }\n    beybladeType: metafield(namespace: "beyblade", key: "type") { value }\n  }\n  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    products(first: 8, sortKey: UPDATED_AT, reverse: true) {\n      nodes {\n        ...RecommendedProduct\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment Money on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  #graphql\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    vendor\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...Money\n      }\n      maxVariantPrice {\n        ...Money\n      }\n    }\n    beybladeType: metafield(namespace: "beyblade", key: "type") { value }\n  }\n\n  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    products(first: 8, sortKey: UPDATED_AT, reverse: true) {\n      nodes {\n        ...ProductItem\n      }\n    }\n  }\n': {
     return: RecommendedProductsQuery;
     variables: RecommendedProductsQueryVariables;
   };
@@ -1319,7 +1286,7 @@ interface GeneratedQueryTypes {
     return: BlogsQuery;
     variables: BlogsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    vendor\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyProductItem\n      }\n      maxVariantPrice {\n        ...MoneyProductItem\n      }\n    }\n    beybladeType: metafield(namespace: "beyblade", key: "type") { value }\n  }\n\n  query Collection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $sortKey: ProductCollectionSortKeys\n    $reverse: Boolean\n    $filters: [ProductFilter!]\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        sortKey: $sortKey,\n        reverse: $reverse,\n        filters: $filters\n      ) {\n        nodes {\n          ...ProductItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment Money on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  #graphql\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    vendor\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...Money\n      }\n      maxVariantPrice {\n        ...Money\n      }\n    }\n    beybladeType: metafield(namespace: "beyblade", key: "type") { value }\n  }\n\n  query Collection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $sortKey: ProductCollectionSortKeys\n    $reverse: Boolean\n    $filters: [ProductFilter!]\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        sortKey: $sortKey,\n        reverse: $reverse,\n        filters: $filters\n      ) {\n        nodes {\n          ...ProductItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
     return: CollectionQuery;
     variables: CollectionQueryVariables;
   };
@@ -1327,7 +1294,7 @@ interface GeneratedQueryTypes {
     return: StoreCollectionsQuery;
     variables: StoreCollectionsQueryVariables;
   };
-  '#graphql\n  query Catalog(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {\n      nodes {\n        ...CollectionItem\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n  #graphql\n  fragment MoneyCollectionItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment CollectionItem on Product {\n    id\n    handle\n    title\n    vendor\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyCollectionItem\n      }\n      maxVariantPrice {\n        ...MoneyCollectionItem\n      }\n    }\n    beybladeType: metafield(namespace: "beyblade", key: "type") { value }\n  }\n\n': {
+  '#graphql\n  #graphql\n  fragment Money on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  #graphql\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    vendor\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...Money\n      }\n      maxVariantPrice {\n        ...Money\n      }\n    }\n    beybladeType: metafield(namespace: "beyblade", key: "type") { value }\n  }\n\n  query Catalog(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {\n      nodes {\n        ...ProductItem\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n': {
     return: CatalogQuery;
     variables: CatalogQueryVariables;
   };

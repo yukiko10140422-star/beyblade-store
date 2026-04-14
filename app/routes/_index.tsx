@@ -5,6 +5,7 @@ import type {RecommendedProductsQuery} from 'storefrontapi.generated';
 import {ProductCard} from '~/components/ProductCard';
 import {NewsletterForm} from '~/components/NewsletterForm';
 import {SITE_URL} from '~/lib/constants';
+import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import {
   Reveal,
   StaggerContainer,
@@ -830,31 +831,13 @@ function ProductCardSkeleton() {
 
 /* --- GraphQL --- */
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  fragment RecommendedProduct on Product {
-    id
-    title
-    handle
-    vendor
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    featuredImage {
-      id
-      url
-      altText
-      width
-      height
-    }
-    beybladeType: metafield(namespace: "beyblade", key: "type") { value }
-  }
+  ${MONEY_FRAGMENT}
+  ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
     products(first: 8, sortKey: UPDATED_AT, reverse: true) {
       nodes {
-        ...RecommendedProduct
+        ...ProductItem
       }
     }
   }

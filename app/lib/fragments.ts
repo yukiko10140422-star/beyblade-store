@@ -1,9 +1,47 @@
-// NOTE: https://shopify.dev/docs/api/storefront/latest/queries/cart
-export const CART_QUERY_FRAGMENT = `#graphql
+/**
+ * Shared Money fragment — use in any query that references MoneyV2.
+ * Interpolate via ${MONEY_FRAGMENT} in GraphQL template strings.
+ */
+export const MONEY_FRAGMENT = `#graphql
   fragment Money on MoneyV2 {
-    currencyCode
     amount
+    currencyCode
   }
+` as const;
+
+/**
+ * Shared ProductItem fragment — use for product cards / list views.
+ * Includes Beyblade type metafield for TypeBadge display.
+ * Requires MONEY_FRAGMENT to also be interpolated in the same query.
+ */
+export const PRODUCT_ITEM_FRAGMENT = `#graphql
+  fragment ProductItem on Product {
+    id
+    handle
+    title
+    vendor
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    priceRange {
+      minVariantPrice {
+        ...Money
+      }
+      maxVariantPrice {
+        ...Money
+      }
+    }
+    beybladeType: metafield(namespace: "beyblade", key: "type") { value }
+  }
+` as const;
+
+// NOTE: https://shopify.dev/docs/api/storefront/latest/queries/cart
+// Uses MONEY_FRAGMENT (defined above). Prepend ${MONEY_FRAGMENT} when composing the full query.
+export const CART_QUERY_FRAGMENT = `#graphql
   fragment CartLine on CartLine {
     id
     quantity
