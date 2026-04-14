@@ -27,6 +27,25 @@ export const meta: Route.MetaFunction = () => {
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},
     {name: 'twitter:description', content: description},
+    {
+      'script:ld+json': JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Tokyo Spin Vault',
+        description,
+        url: 'https://tokyo-spin-vault-d51baf2ecf0c279cb53d.o2.myshopify.dev',
+        logo: 'https://tokyo-spin-vault-d51baf2ecf0c279cb53d.o2.myshopify.dev/images/logo.png',
+        sameAs: [
+          'https://www.instagram.com/tsv_2026',
+          'https://www.tiktok.com/@tokyo.spin.vault',
+        ],
+        contactPoint: {
+          '@type': 'ContactPoint',
+          email: 'support@tokyospinvault.com',
+          contactType: 'customer service',
+        },
+      }),
+    },
   ];
 };
 

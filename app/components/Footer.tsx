@@ -72,8 +72,18 @@ export function Footer({
                     Shop
                   </h3>
                   <ul className="space-y-3">
-                    <FooterLink to="/collections">All Collections</FooterLink>
-                    <FooterLink to="/collections/all">All Products</FooterLink>
+                    <FooterLink to="/collections/all-beyblades">
+                      All Beyblades
+                    </FooterLink>
+                    <FooterLink to="/collections/limited-edition-rare">
+                      Limited & Rare
+                    </FooterLink>
+                    <FooterLink to="/collections/beyblade-sets-bundles">
+                      Sets & Bundles
+                    </FooterLink>
+                    <FooterLink to="/collections/launchers-accessories">
+                      Launchers
+                    </FooterLink>
                   </ul>
                 </div>
 
