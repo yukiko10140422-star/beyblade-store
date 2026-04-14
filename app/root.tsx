@@ -162,7 +162,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
           content="dBEliAsnYr0LPP5coO3av3reeWXrzpmJ9AwvsMQZVyY"
         />
         <meta name="p:domain_verify" content="PLACEHOLDER" />
-        <meta name="msvalidate.01" content="PLACEHOLDER" />
+        <meta name="msvalidate.01" content="E97753D3F97C661E3363E96380EEACDA" />
         <link rel="canonical" href={canonicalUrl} />
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
