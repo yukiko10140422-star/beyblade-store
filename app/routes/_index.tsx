@@ -58,6 +58,7 @@ export default function Homepage() {
   return (
     <div>
       <HeroSection />
+      <FeaturedHero />
       <NewArrivals products={data.recommendedProducts} />
       <TypeCategories />
       <TrustSignals />
@@ -193,6 +194,165 @@ function HeroSection() {
           />
         </svg>
       </motion.div>
+    </section>
+  );
+}
+
+/* --- Featured Hero: Aero Pegasus RED --- */
+function FeaturedHero() {
+  return (
+    <section className="relative py-16 md:py-24 overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-vault-950 via-bey-attack/5 to-vault-950" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-bey-attack/8 rounded-full blur-[120px]" />
+
+      <div className="relative max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          {/* Left: Product Image */}
+          <Reveal direction="left">
+            <Link
+              to="/products/beyblade-x-ux-00-aero-pegasus-3-70a-red-version-japan-exclusive"
+              className="group block relative"
+            >
+              <div className="relative aspect-square max-w-lg mx-auto">
+                {/* Glow ring behind product */}
+                <div className="absolute inset-8 rounded-full border border-bey-attack/20 animate-[pulse-gold_3s_ease-in-out_infinite]" />
+                <div className="absolute inset-16 rounded-full border border-bey-attack/10" />
+                <img
+                  src="https://cdn.shopify.com/s/files/1/0675/6945/1074/files/tsv-8215548133442-main.png"
+                  alt="Beyblade X UX-00 Aero Pegasus 3-70A RED Version"
+                  className="relative w-full h-full object-contain drop-shadow-[0_0_60px_rgba(59,130,246,0.3)] transition-transform duration-700 group-hover:scale-105"
+                  loading="eager"
+                />
+              </div>
+            </Link>
+          </Reveal>
+
+          {/* Right: Product Info */}
+          <Reveal direction="right">
+            <div className="space-y-6 text-center lg:text-left">
+              {/* Badge */}
+              <div className="flex items-center gap-3 justify-center lg:justify-start">
+                <span className="text-[10px] font-heading uppercase tracking-widest bg-bey-attack/15 text-bey-attack border border-bey-attack/30 px-3 py-1 rounded-full">
+                  Japan Exclusive
+                </span>
+                <span className="text-[10px] font-heading uppercase tracking-widest bg-danger-500/20 text-danger-500 border border-danger-500/30 px-3 py-1 rounded-full">
+                  Limited Stock
+                </span>
+              </div>
+
+              {/* Title */}
+              <h2 className="font-heading text-2xl md:text-4xl lg:text-5xl text-chrome-100 uppercase tracking-wide leading-tight">
+                Aero Pegasus
+                <br />
+                <span className="text-bey-attack">3-70A RED</span>
+              </h2>
+
+              {/* Subtitle */}
+              <p className="text-chrome-400 text-sm md:text-base max-w-lg mx-auto lg:mx-0">
+                The UX-00 Japan-exclusive RED version. An ultra-rare colorway
+                not available outside Japan — sourced directly from Tokyo for
+                serious collectors.
+              </p>
+
+              {/* Specs grid */}
+              <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto lg:mx-0">
+                <div className="surface-vault rounded-lg p-3 text-center">
+                  <p className="text-bey-attack font-heading text-xs uppercase tracking-wider">
+                    Series
+                  </p>
+                  <p className="text-chrome-200 font-heading text-sm mt-1">
+                    UX-00
+                  </p>
+                </div>
+                <div className="surface-vault rounded-lg p-3 text-center">
+                  <p className="text-bey-attack font-heading text-xs uppercase tracking-wider">
+                    Ratchet
+                  </p>
+                  <p className="text-chrome-200 font-heading text-sm mt-1">
+                    3-70
+                  </p>
+                </div>
+                <div className="surface-vault rounded-lg p-3 text-center">
+                  <p className="text-bey-attack font-heading text-xs uppercase tracking-wider">
+                    Bit
+                  </p>
+                  <p className="text-chrome-200 font-heading text-sm mt-1">
+                    A (Accel)
+                  </p>
+                </div>
+              </div>
+
+              {/* Price + CTA */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                <div>
+                  <span className="text-chrome-500 text-sm line-through mr-2">
+                    $189.99
+                  </span>
+                  <span className="text-gold-400 font-heading text-3xl">
+                    $170.99
+                  </span>
+                </div>
+                <Link
+                  to="/products/beyblade-x-ux-00-aero-pegasus-3-70a-red-version-japan-exclusive"
+                  className="group inline-flex items-center gap-2 bg-bey-attack hover:bg-bey-attack/90 text-white font-heading uppercase tracking-[0.15em] text-sm px-8 py-4 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]"
+                >
+                  View Details
+                  <svg
+                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+              </div>
+
+              {/* Trust line */}
+              <div className="flex items-center gap-4 justify-center lg:justify-start text-chrome-500 text-xs">
+                <span className="flex items-center gap-1">
+                  <svg
+                    className="w-3.5 h-3.5 text-gold-400"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  DDP — Tax included
+                </span>
+                <span className="flex items-center gap-1">
+                  <svg
+                    className="w-3.5 h-3.5 text-gold-400"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                  </svg>
+                  Ships from Tokyo
+                </span>
+                <span className="flex items-center gap-1">
+                  <svg
+                    className="w-3.5 h-3.5 text-gold-400"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  100% Authentic
+                </span>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
     </section>
   );
 }
