@@ -82,13 +82,10 @@ export const meta: Route.MetaFunction = ({data}) => {
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  return criticalData;
 }
 
 /**
@@ -106,6 +103,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
   const [{product}] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
+      cache: storefront.CacheShort(),
     }),
     // Add other queries here, so that they are loaded in parallel
   ]);
@@ -120,18 +118,6 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
   return {
     product,
   };
-}
-
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context, params}: Route.LoaderArgs) {
-  // Put any API calls that is not critical to be available on first page render
-  // For example: product reviews, product recommendations, social feeds.
-
-  return {};
 }
 
 export default function Product() {

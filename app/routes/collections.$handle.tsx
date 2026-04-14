@@ -10,6 +10,7 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductCard} from '~/components/ProductCard';
 import {BEY_TYPES, TYPE_CONFIG, isBeyType} from '~/lib/beyblade-types';
+import {SITE_URL} from '~/lib/constants';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import clsx from 'clsx';
 
@@ -26,7 +27,7 @@ export const meta: Route.MetaFunction = ({data}) => {
     {property: 'og:type', content: 'website'},
     {
       property: 'og:image',
-      content: 'https://tokyospinvault.com/images/logo.png',
+      content: `${SITE_URL}/images/logo.png`,
     },
     {property: 'og:site_name', content: 'Tokyo Spin Vault'},
     {name: 'twitter:card', content: 'summary_large_image'},
@@ -59,9 +60,8 @@ function sortToParam(option: SortOption): string {
 }
 
 export async function loader(args: Route.LoaderArgs) {
-  const deferredData = loadDeferredData(args);
   const criticalData = await loadCriticalData(args);
-  return {...deferredData, ...criticalData};
+  return criticalData;
 }
 
 async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
@@ -99,6 +99,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
         filters: filters.length > 0 ? filters : undefined,
         ...paginationVariables,
       },
+      cache: storefront.CacheShort(),
     }),
   ]);
 
@@ -109,10 +110,6 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
   redirectIfHandleIsLocalized(request, {handle, data: collection});
 
   return {collection};
-}
-
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
 }
 
 export default function Collection() {

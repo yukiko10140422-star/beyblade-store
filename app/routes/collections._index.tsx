@@ -9,9 +9,8 @@ export const meta: Route.MetaFunction = () => {
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  const deferredData = loadDeferredData(args);
   const criticalData = await loadCriticalData(args);
-  return {...deferredData, ...criticalData};
+  return criticalData;
 }
 
 async function loadCriticalData({context, request}: Route.LoaderArgs) {
@@ -19,13 +18,10 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
   const [{collections}] = await Promise.all([
     context.storefront.query(COLLECTIONS_QUERY, {
       variables: paginationVariables,
+      cache: context.storefront.CacheShort(),
     }),
   ]);
   return {collections};
-}
-
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
 }
 
 export default function Collections() {

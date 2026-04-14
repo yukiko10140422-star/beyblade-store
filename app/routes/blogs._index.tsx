@@ -11,13 +11,10 @@ export const meta: Route.MetaFunction = () => {
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  return criticalData;
 }
 
 /**
@@ -34,20 +31,12 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
       variables: {
         ...paginationVariables,
       },
+      cache: context.storefront.CacheShort(),
     }),
     // Add other queries here, so that they are loaded in parallel
   ]);
 
   return {blogs};
-}
-
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
 }
 
 export default function Blogs() {

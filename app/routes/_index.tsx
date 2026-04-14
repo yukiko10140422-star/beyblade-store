@@ -64,7 +64,9 @@ async function loadCriticalData({context}: Route.LoaderArgs) {
 
 function loadDeferredData({context}: Route.LoaderArgs) {
   const recommendedProducts = context.storefront
-    .query(RECOMMENDED_PRODUCTS_QUERY)
+    .query(RECOMMENDED_PRODUCTS_QUERY, {
+      cache: context.storefront.CacheShort(),
+    })
     .catch((error: Error) => {
       console.error(error);
       return null;
