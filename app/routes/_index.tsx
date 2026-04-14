@@ -721,6 +721,7 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
       width
       height
     }
+    beybladeType: metafield(namespace: "beyblade", key: "type") { value }
   }
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {

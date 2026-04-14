@@ -11,6 +11,7 @@ import {
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {TypeBadge} from '~/components/TypeBadge';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
@@ -181,7 +182,8 @@ export default function Product() {
             </p>
           )}
 
-          {/* Title */}
+          {/* Type + Title */}
+          <TypeBadge type={product.beybladeType?.value} size="md" />
           <h1 className="font-heading text-2xl md:text-3xl text-chrome-100 uppercase tracking-wide">
             {title}
           </h1>

@@ -4,6 +4,7 @@ import type {
   MoneyV2,
   Image as ImageType,
 } from '@shopify/hydrogen/storefront-api-types';
+import {TypeBadge} from './TypeBadge';
 
 interface ProductCardProps {
   product: {
@@ -15,6 +16,7 @@ interface ProductCardProps {
     };
     featuredImage?: ImageType | null;
     vendor?: string;
+    beybladeType?: {value: string} | null;
   };
   loading?: 'eager' | 'lazy';
 }
@@ -54,6 +56,13 @@ export function ProductCard({product, loading}: ProductCardProps) {
           </div>
         )}
       </div>
+
+      {/* Type Badge */}
+      {product.beybladeType?.value && (
+        <div className="absolute top-2 left-2 z-10">
+          <TypeBadge type={product.beybladeType.value} />
+        </div>
+      )}
 
       {/* Info */}
       <div className="p-4">
