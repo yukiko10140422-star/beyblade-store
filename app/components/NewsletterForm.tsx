@@ -38,9 +38,7 @@ export function NewsletterForm({
       <div
         className={clsx(
           'flex items-center gap-2 rounded-lg bg-gold-400/10 border border-gold-400/20',
-          isLarge
-            ? 'justify-center py-4 px-6 max-w-md mx-auto'
-            : 'py-2 px-3',
+          isLarge ? 'justify-center py-4 px-6 max-w-md mx-auto' : 'py-2 px-3',
         )}
         role="status"
       >
@@ -100,15 +98,18 @@ export function NewsletterForm({
               : 'tracking-wider text-xs px-4 py-2',
           )}
         >
-          {isSubmitting ? (isLarge ? 'Joining...' : '...') : isLarge ? 'Subscribe' : 'Join'}
+          {isSubmitting
+            ? isLarge
+              ? 'Joining...'
+              : '...'
+            : isLarge
+              ? 'Subscribe'
+              : 'Join'}
         </button>
       </fetcher.Form>
       {fetcher.data?.error && (
         <p
-          className={clsx(
-            'text-danger-500 text-xs',
-            isLarge ? 'mt-3' : 'mt-2',
-          )}
+          className={clsx('text-danger-500 text-xs', isLarge ? 'mt-3' : 'mt-2')}
           role="alert"
         >
           {fetcher.data.error}

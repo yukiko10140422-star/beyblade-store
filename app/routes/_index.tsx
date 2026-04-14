@@ -21,13 +21,16 @@ export const meta: Route.MetaFunction = () => {
     {property: 'og:title', content: title},
     {property: 'og:description', content: description},
     {property: 'og:type', content: 'website'},
-    {property: 'og:image', content: '/images/logo.png'},
+    {property: 'og:image', content: `${SITE_URL}/images/logo.png`},
     {property: 'og:site_name', content: 'Tokyo Spin Vault'},
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},
     {name: 'twitter:description', content: description},
+    {name: 'twitter:image', content: `${SITE_URL}/images/logo.png`},
     {
-      'script:ld+json': JSON.stringify({
+      tagName: 'script',
+      type: 'application/ld+json',
+      children: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Organization',
         name: 'Tokyo Spin Vault',

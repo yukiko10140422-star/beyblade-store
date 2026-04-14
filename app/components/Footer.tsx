@@ -161,6 +161,7 @@ function FooterMenu({
         if (!item.url) return null;
         const url =
           item.url.includes('myshopify.com') ||
+          item.url.includes('myshopify.dev') ||
           item.url.includes(publicStoreDomain) ||
           item.url.includes(primaryDomainUrl)
             ? new URL(item.url).pathname

@@ -48,12 +48,15 @@ export const meta: Route.MetaFunction = ({data}) => {
     {name: 'twitter:description', content: description},
     {name: 'twitter:image', content: image},
     {
-      'script:ld+json': JSON.stringify({
+      tagName: 'script',
+      type: 'application/ld+json',
+      children: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Product',
         name: product?.title,
         description: product?.description,
         image: image,
+        sku: product?.selectedOrFirstAvailableVariant?.sku || undefined,
         brand: {
           '@type': 'Brand',
           name: product?.vendor || 'Takara Tomy',
