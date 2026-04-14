@@ -161,7 +161,10 @@ export function Layout({children}: {children?: React.ReactNode}) {
           name="google-site-verification"
           content="dBEliAsnYr0LPP5coO3av3reeWXrzpmJ9AwvsMQZVyY"
         />
-        <meta name="p:domain_verify" content="PLACEHOLDER" />
+        <meta
+          name="p:domain_verify"
+          content="2d861d68f97ec2ce9b173da9cdcf50b6"
+        />
         <meta name="msvalidate.01" content="E97753D3F97C661E3363E96380EEACDA" />
         <link rel="canonical" href={canonicalUrl} />
         <link rel="stylesheet" href={appStyles}></link>
