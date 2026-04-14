@@ -96,7 +96,7 @@ function HeroSection() {
       <div className="absolute inset-0">
         <img
           src="/images/tokyo-night.jpg"
-          alt=""
+          alt="Tokyo night skyline — home of Tokyo Spin Vault"
           className="w-full h-full object-cover object-center opacity-30"
           loading="eager"
         />
@@ -841,6 +841,7 @@ function Newsletter() {
                 type="email"
                 required
                 placeholder="your@email.com"
+                aria-label="Email address for newsletter"
                 className="flex-1 bg-vault-800 border border-vault-700 rounded-lg px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/20 transition-all"
               />
               <button

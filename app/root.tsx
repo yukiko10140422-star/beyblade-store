@@ -172,6 +172,12 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Links />
       </head>
       <body className="bg-vault-900 text-chrome-300 font-body antialiased min-h-screen flex flex-col">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:bg-gold-500 focus:text-vault-950 focus:px-4 focus:py-2 focus:rounded-lg focus:font-heading focus:text-sm focus:uppercase focus:tracking-wider"
+        >
+          Skip to content
+        </a>
         {children}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
