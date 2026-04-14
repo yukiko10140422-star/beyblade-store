@@ -203,7 +203,7 @@ export default function Product() {
             selectedVariant={selectedVariant}
           />
 
-          {/* Duties included notice */}
+          {/* DDP Notice */}
           <div className="flex items-center gap-2 py-3 px-4 rounded-lg bg-gold-400/5 border border-gold-400/10">
             <svg
               className="w-4 h-4 text-gold-400 flex-shrink-0"
@@ -216,7 +216,7 @@ export default function Product() {
             </svg>
             <p className="text-chrome-300 text-xs">
               <span className="text-gold-400 font-heading uppercase tracking-wider">
-                Duties included
+                DDP — Duties & taxes included
               </span>{' '}
               — No surprise fees at delivery
             </p>
@@ -236,15 +236,16 @@ export default function Product() {
               </svg>
               <div>
                 <p className="text-chrome-200 text-sm">
-                  Ships from Tokyo, Japan
+                  Ships from Tokyo via ePacket Light
                 </p>
                 <p className="text-chrome-500 text-xs">
-                  Standard: 7-14 days &middot; Express (FedEx/DHL): 3-7 days
+                  Standard: ePacket Light 7-14 days &middot; Express: EMS 3-7
+                  days
                 </p>
               </div>
             </div>
             <p className="text-chrome-600 text-[10px] pl-8">
-              Free express shipping on orders over $150
+              Free EMS express shipping on orders over $150
             </p>
           </div>
 
@@ -284,7 +285,7 @@ export default function Product() {
               >
                 <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              Duties Included
+              DDP — Tax Included
             </div>
           </div>
 
