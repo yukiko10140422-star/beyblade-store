@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /cart
+Disallow: /account
+Disallow: /search
+Disallow: /collections/*sort_by*
+Disallow: /collections/*filter*&*filter*
+
+User-agent: adsbot-google
+Disallow: /cart
+Disallow: /account
+Disallow: /search
+
+User-agent: Nutch
+Disallow: /
+
+Sitemap: https://tokyo-spin-vault-d51baf2ecf0c279cb53d.o2.myshopify.dev/sitemap/products/1.xml
+Sitemap: https://tokyo-spin-vault-d51baf2ecf0c279cb53d.o2.myshopify.dev/sitemap/collections/1.xml
+Sitemap: https://tokyo-spin-vault-d51baf2ecf0c279cb53d.o2.myshopify.dev/sitemap/pages/1.xml
