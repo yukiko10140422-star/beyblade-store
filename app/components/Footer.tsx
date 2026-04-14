@@ -1,6 +1,7 @@
-import {Suspense, useRef, useEffect} from 'react';
-import {Await, NavLink, useFetcher} from 'react-router';
+import {Suspense} from 'react';
+import {Await, NavLink} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import {NewsletterForm} from './NewsletterForm';
 import clsx from 'clsx';
 
 interface FooterProps {
@@ -243,21 +244,6 @@ const FALLBACK_FOOTER_MENU = {
 };
 
 function FooterNewsletter() {
-  const fetcher = useFetcher<{
-    success?: boolean;
-    message?: string;
-    error?: string;
-  }>();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const isSubmitting = fetcher.state !== 'idle';
-  const isSuccess = fetcher.data?.success;
-
-  useEffect(() => {
-    if (isSuccess && inputRef.current) {
-      inputRef.current.value = '';
-    }
-  }, [isSuccess]);
-
   return (
     <div>
       <h3 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400 mb-4">
@@ -266,45 +252,7 @@ function FooterNewsletter() {
       <p className="text-chrome-500 text-sm mb-4">
         Get notified about new drops and exclusive releases.
       </p>
-      {isSuccess ? (
-        <div className="flex items-center gap-2 py-2 px-3 rounded-lg bg-gold-400/10 border border-gold-400/20">
-          <svg
-            className="w-4 h-4 text-gold-400"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            viewBox="0 0 24 24"
-          >
-            <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p className="text-gold-400 text-xs">{fetcher.data?.message}</p>
-        </div>
-      ) : (
-        <fetcher.Form
-          method="post"
-          action="/api/newsletter"
-          className="flex gap-2"
-        >
-          <input
-            ref={inputRef}
-            name="email"
-            type="email"
-            required
-            placeholder="your@email.com"
-            className="flex-1 bg-vault-800 border border-vault-700 rounded-lg px-3 py-2 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/20 transition-all"
-          />
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-gold-500 hover:bg-gold-400 text-vault-950 font-heading text-xs uppercase tracking-wider px-4 py-2 rounded-lg transition-all disabled:opacity-50"
-          >
-            {isSubmitting ? '...' : 'Join'}
-          </button>
-        </fetcher.Form>
-      )}
-      {fetcher.data?.error && (
-        <p className="text-danger-500 text-xs mt-2">{fetcher.data.error}</p>
-      )}
+      <NewsletterForm variant="compact" />
     </div>
   );
 }

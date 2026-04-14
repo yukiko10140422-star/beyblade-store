@@ -1,8 +1,9 @@
-import {Await, useLoaderData, Link, useFetcher} from 'react-router';
+import {Await, useLoaderData, Link} from 'react-router';
 import type {Route} from './+types/_index';
-import {Suspense, useRef, useEffect} from 'react';
+import {Suspense} from 'react';
 import type {RecommendedProductsQuery} from 'storefrontapi.generated';
 import {ProductCard} from '~/components/ProductCard';
+import {NewsletterForm} from '~/components/NewsletterForm';
 import {SITE_URL} from '~/lib/constants';
 import {
   Reveal,
@@ -790,21 +791,6 @@ function ShippingBanner() {
 
 /* --- Section 7: Newsletter --- */
 function Newsletter() {
-  const fetcher = useFetcher<{
-    success?: boolean;
-    message?: string;
-    error?: string;
-  }>();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const isSubmitting = fetcher.state !== 'idle';
-  const isSuccess = fetcher.data?.success;
-
-  useEffect(() => {
-    if (isSuccess && inputRef.current) {
-      inputRef.current.value = '';
-    }
-  }, [isSuccess]);
-
   return (
     <section className="py-16 md:py-24 px-4">
       <Reveal>
@@ -817,49 +803,7 @@ function Newsletter() {
             insights. Direct from Tokyo.
           </p>
 
-          {isSuccess ? (
-            <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-lg bg-gold-400/10 border border-gold-400/20 max-w-md mx-auto">
-              <svg
-                className="w-5 h-5 text-gold-400"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-              >
-                <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p className="text-gold-400 text-sm font-heading uppercase tracking-wider">
-                {fetcher.data?.message || 'Welcome to the Vault!'}
-              </p>
-            </div>
-          ) : (
-            <fetcher.Form
-              method="post"
-              action="/api/newsletter"
-              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-            >
-              <input
-                ref={inputRef}
-                name="email"
-                type="email"
-                required
-                placeholder="your@email.com"
-                aria-label="Email address for newsletter"
-                className="flex-1 bg-vault-800 border border-vault-700 rounded-lg px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/20 transition-all"
-              />
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-gold-500 hover:bg-gold-400 text-vault-950 font-heading uppercase tracking-[0.2em] text-xs px-6 py-3 rounded-lg transition-all duration-200 hover:glow-gold-sm disabled:opacity-50"
-              >
-                {isSubmitting ? 'Joining...' : 'Subscribe'}
-              </button>
-            </fetcher.Form>
-          )}
-
-          {fetcher.data?.error && (
-            <p className="text-danger-500 text-xs mt-3">{fetcher.data.error}</p>
-          )}
+          <NewsletterForm variant="large" />
 
           <p className="text-chrome-600 text-xs mt-4">
             No spam. Unsubscribe anytime.
