@@ -9,6 +9,7 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteLoaderData,
+  useLocation,
 } from 'react-router';
 import type {Route} from './+types/root';
 const favicon = '/favicon.png';
@@ -146,6 +147,8 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
 export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
+  const location = useLocation();
+  const canonicalUrl = `https://tokyo-spin-vault-d51baf2ecf0c279cb53d.o2.myshopify.dev${location.pathname}`;
 
   return (
     <html lang="en" className="dark">
@@ -153,6 +156,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="theme-color" content="#0C0C18" />
+        <link rel="canonical" href={canonicalUrl} />
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
         <Links />
