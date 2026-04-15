@@ -14,6 +14,7 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductCard} from '~/components/ProductCard';
+import {ProductCardSkeleton} from '~/components/home/ProductCardSkeleton';
 import {TypeBadge} from '~/components/TypeBadge';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -351,37 +352,43 @@ function RelatedProducts({
   products: Promise<RelatedProductsQuery | null>;
 }) {
   return (
-    <section className="py-16 md:py-24 border-t border-vault-700 mt-16">
-      <h2 className="font-heading text-xl md:text-2xl text-gold-metallic uppercase tracking-wider mb-8">
-        You May Also Like
-      </h2>
-      <Suspense
-        fallback={
+    <Suspense
+      fallback={
+        <section
+          aria-busy="true"
+          aria-label="Loading related products"
+          className="py-16 md:py-24 border-t border-vault-700 mt-16"
+        >
+          <h2 className="font-heading text-xl md:text-2xl text-gold-metallic uppercase tracking-wider mb-8">
+            You May Also Like
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {Array.from({length: 4}).map((_, i) => (
-              <div
-                key={i}
-                className="aspect-square surface-vault rounded-xl animate-pulse"
-              />
+              <ProductCardSkeleton key={i} />
             ))}
           </div>
-        }
-      >
-        <Await resolve={products}>
-          {(response) => {
-            const items = response?.productRecommendations?.slice(0, 4) ?? [];
-            if (items.length === 0) return null;
-            return (
+        </section>
+      }
+    >
+      <Await resolve={products}>
+        {(response) => {
+          const items = response?.productRecommendations?.slice(0, 4) ?? [];
+          if (items.length === 0) return null;
+          return (
+            <section className="py-16 md:py-24 border-t border-vault-700 mt-16">
+              <h2 className="font-heading text-xl md:text-2xl text-gold-metallic uppercase tracking-wider mb-8">
+                You May Also Like
+              </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 {items.map((p) => (
                   <ProductCard key={p.id} product={p} loading="lazy" />
                 ))}
               </div>
-            );
-          }}
-        </Await>
-      </Suspense>
-    </section>
+            </section>
+          );
+        }}
+      </Await>
+    </Suspense>
   );
 }
 
