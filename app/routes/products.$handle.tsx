@@ -35,8 +35,7 @@ export const meta: Route.MetaFunction = ({data}) => {
     beybladeType: product?.beybladeType?.value,
   });
   const variantImage = product?.selectedOrFirstAvailableVariant?.image;
-  const featuredImage = product?.featuredImage;
-  const rawImage = variantImage?.url ?? featuredImage?.url ?? '';
+  const rawImage = variantImage?.url ?? '';
   // Request a 1200x630 crop from Shopify CDN for OG / Twitter summary_large_image.
   const image = rawImage
     ? rawImage.includes('?')

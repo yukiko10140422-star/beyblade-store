@@ -1,9 +1,6 @@
 import {Link} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
-import type {
-  MoneyV2,
-  Image as ImageType,
-} from '@shopify/hydrogen/storefront-api-types';
+import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import {TypeBadge} from './TypeBadge';
 
 interface ProductCardProps {
@@ -14,8 +11,15 @@ interface ProductCardProps {
     priceRange: {
       minVariantPrice: MoneyV2;
     };
-    featuredImage?: ImageType | null;
-    vendor?: string;
+    // Match the subset returned by PRODUCT_ITEM_FRAGMENT
+    featuredImage?: {
+      id?: string | null;
+      altText?: string | null;
+      url: string;
+      width?: number | null;
+      height?: number | null;
+    } | null;
+    vendor?: string | null;
     beybladeType?: {value: string} | null;
   };
   loading?: 'eager' | 'lazy';
