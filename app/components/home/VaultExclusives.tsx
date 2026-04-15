@@ -1,5 +1,6 @@
 import {Await, Link} from 'react-router';
 import {Suspense} from 'react';
+import {Image} from '@shopify/hydrogen';
 import type {RecommendedProductsQuery} from 'storefrontapi.generated';
 import {Reveal} from '~/components/motion';
 import {ProductCardSkeleton} from './ProductCardSkeleton';
@@ -55,11 +56,11 @@ export function VaultExclusives({products}: VaultExclusivesProps) {
                   >
                     <div className="w-1/3 md:w-full aspect-square md:aspect-video overflow-hidden bg-vault-800 flex-shrink-0">
                       {product.featuredImage && (
-                        <img
-                          src={product.featuredImage.url}
-                          alt={product.featuredImage.altText || product.title}
-                          width={product.featuredImage.width ?? 800}
-                          height={product.featuredImage.height ?? 800}
+                        <Image
+                          data={product.featuredImage}
+                          aspectRatio="16/9"
+                          sizes="(min-width: 768px) 33vw, 100vw"
+                          loading="lazy"
                           className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                         />
                       )}

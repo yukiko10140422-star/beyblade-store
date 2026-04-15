@@ -1,4 +1,5 @@
 import {Link} from 'react-router';
+import {Image} from '@shopify/hydrogen';
 import {
   ShieldCheckIcon,
   CheckCircleIcon,
@@ -26,13 +27,17 @@ export function FeaturedHero() {
                 {/* Glow ring behind product */}
                 <div className="absolute inset-8 rounded-full border border-bey-attack/20 animate-[pulse-gold_3s_ease-in-out_infinite]" />
                 <div className="absolute inset-16 rounded-full border border-bey-attack/10" />
-                <img
-                  src="https://cdn.shopify.com/s/files/1/0675/6945/1074/files/tsv-8215548133442-main.png"
-                  alt="Beyblade X UX-00 Aero Pegasus 3-70A RED Version"
-                  width={800}
-                  height={800}
-                  className="relative w-full h-full object-contain drop-shadow-[0_0_60px_rgba(59,130,246,0.3)] transition-transform duration-700 group-hover:scale-105"
+                <Image
+                  data={{
+                    url: 'https://cdn.shopify.com/s/files/1/0675/6945/1074/files/tsv-8215548133442-main.png',
+                    altText: 'Beyblade X UX-00 Aero Pegasus 3-70A RED Version',
+                    width: 800,
+                    height: 800,
+                  }}
+                  aspectRatio="1/1"
+                  sizes="(min-width: 1024px) 50vw, 100vw"
                   loading="eager"
+                  className="relative w-full h-full object-contain drop-shadow-[0_0_60px_rgba(59,130,246,0.3)] transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
             </Link>

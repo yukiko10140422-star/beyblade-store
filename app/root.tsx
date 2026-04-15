@@ -53,6 +53,11 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
  * https://github.com/remix-run/remix/issues/9242
  */
 export function links() {
+  // Subset weights: Orbitron 500/700/900, Inter 400/500/700, Noto Sans JP 400/700
+  // (only weights actually used in the project — saves ~30-50% of font bytes)
+  const fontsHref =
+    'https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;700&family=Noto+Sans+JP:wght@400;700&display=swap';
+
   return [
     {rel: 'preconnect', href: 'https://cdn.shopify.com'},
     {rel: 'preconnect', href: 'https://shop.app'},
@@ -62,9 +67,19 @@ export function links() {
       href: 'https://fonts.gstatic.com',
       crossOrigin: 'anonymous' as const,
     },
+    // Non-blocking font load: preload as style + apply via media swap trick.
+    // Fetched early at high priority, but does not block render.
+    {
+      rel: 'preload',
+      as: 'style',
+      href: fontsHref,
+    },
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap',
+      href: fontsHref,
+      media: 'print',
+      onLoad:
+        "this.media='all'" as unknown as React.ReactEventHandler<HTMLLinkElement>,
     },
     {rel: 'icon', type: 'image/png', href: favicon},
     {rel: 'apple-touch-icon', href: '/images/logo.png'},
