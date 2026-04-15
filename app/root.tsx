@@ -52,12 +52,12 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
  * It's a temporary fix until the issue is resolved.
  * https://github.com/remix-run/remix/issues/9242
  */
-export function links() {
-  // Subset weights: Orbitron 500/700/900, Inter 400/500/700, Noto Sans JP 400/700
-  // (only weights actually used in the project — saves ~30-50% of font bytes)
-  const fontsHref =
-    'https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;700&family=Noto+Sans+JP:wght@400;700&display=swap';
+// Subset weights: Orbitron 500/700/900, Inter 400/500/700, Noto Sans JP 400/700
+// (only weights actually used in the project — saves ~30-50% of font bytes)
+export const FONTS_HREF =
+  'https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;700&family=Noto+Sans+JP:wght@400;700&display=swap';
 
+export function links() {
   return [
     {rel: 'preconnect', href: 'https://cdn.shopify.com'},
     {rel: 'preconnect', href: 'https://shop.app'},
@@ -67,19 +67,25 @@ export function links() {
       href: 'https://fonts.gstatic.com',
       crossOrigin: 'anonymous' as const,
     },
-    // Non-blocking font load: preload as style + apply via media swap trick.
-    // Fetched early at high priority, but does not block render.
+    // Non-blocking font load (Filament-Group "preload + media swap" pattern):
+    //   1. <link rel="preload" as="style"> — fetch CSS early at high priority
+    //      without blocking render.
+    //   2. <link rel="stylesheet" media="print"> — browser fetches but does
+    //      not apply to screen, so it does NOT block first paint.
+    //   3. Inline script in Layout swaps media="print" -> "all" once loaded,
+    //      applying the fonts. font-display: swap in the URL ensures system
+    //      fonts show immediately as a fallback.
     {
       rel: 'preload',
       as: 'style',
-      href: fontsHref,
+      href: FONTS_HREF,
     },
     {
       rel: 'stylesheet',
-      href: fontsHref,
+      href: FONTS_HREF,
       media: 'print',
-      onLoad:
-        "this.media='all'" as unknown as React.ReactEventHandler<HTMLLinkElement>,
+      // data-font-swap is the marker the inline script in <Layout> picks up.
+      'data-font-swap': 'pending',
     },
     {rel: 'icon', type: 'image/png', href: favicon},
     {rel: 'apple-touch-icon', href: '/images/logo.png'},
@@ -188,6 +194,16 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
         <Links />
+        {/* Swap fonts stylesheet from media="print" -> "all" once loaded.
+            Pairs with the preload + print-media link emitted by links().
+            Runs synchronously at parse time so the swap fires before fonts
+            finish downloading; falls back to system fonts via font-display:swap. */}
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var l=document.querySelector('link[data-font-swap="pending"]');if(!l)return;function s(){l.media='all';l.removeAttribute('data-font-swap');}if(l.sheet){s();}else{l.addEventListener('load',s,{once:true});}})();`,
+          }}
+        />
       </head>
       <body className="bg-vault-900 text-chrome-300 font-body antialiased min-h-screen flex flex-col">
         <a
