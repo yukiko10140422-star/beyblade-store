@@ -3,6 +3,7 @@ import {
   type ReactNode,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import {useId} from 'react';
@@ -27,21 +28,58 @@ export function Aside({
   const {type: activeType, close} = useAside();
   const expanded = type === activeType;
   const id = useId();
+  const panelRef = useRef<HTMLElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
+  // ESC to close + focus management (trap focus + restore on close)
   useEffect(() => {
+    if (!expanded) return;
+
+    // Save previously focused element to restore on close
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+
+    // Move focus into the panel
+    const panel = panelRef.current;
+    const focusables = panel?.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+    focusables?.[0]?.focus();
+
     const abortController = new AbortController();
-    if (expanded) {
-      document.addEventListener(
-        'keydown',
-        function handler(event: KeyboardEvent) {
-          if (event.key === 'Escape') {
-            close();
-          }
-        },
-        {signal: abortController.signal},
-      );
-    }
-    return () => abortController.abort();
+    document.addEventListener(
+      'keydown',
+      function handler(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+          close();
+          return;
+        }
+        if (event.key !== 'Tab') return;
+
+        // Focus trap inside the panel
+        const items = panel?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+        if (!items || items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        const active = document.activeElement;
+
+        if (event.shiftKey && active === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && active === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      },
+      {signal: abortController.signal},
+    );
+
+    return () => {
+      abortController.abort();
+      // Restore focus on close
+      previouslyFocusedRef.current?.focus();
+    };
   }, [close, expanded]);
 
   return (
@@ -65,6 +103,7 @@ export function Aside({
 
       {/* Panel */}
       <aside
+        ref={panelRef}
         className={clsx(
           'absolute right-0 top-0 h-full w-full max-w-[420px] flex flex-col',
           'bg-gradient-to-b from-vault-800 to-vault-900',

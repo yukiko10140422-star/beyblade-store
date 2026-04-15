@@ -50,12 +50,21 @@ export function SearchFormPredictive({
     aside.close();
   }
 
-  /** Fetch search results based on the input value */
+  /**
+   * Fetch search results based on the input value.
+   * Debounced 250ms to avoid hammering the Storefront API on every keystroke
+   * (rate limit ~60 req/min would 429 at typical typing speeds).
+   */
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   function fetchResults(event: React.ChangeEvent<HTMLInputElement>) {
-    void fetcher.submit(
-      {q: event.target.value || '', limit: 5, predictive: true},
-      {method: 'GET', action: SEARCH_ENDPOINT},
-    );
+    const value = event.target.value || '';
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      void fetcher.submit(
+        {q: value, limit: 5, predictive: true},
+        {method: 'GET', action: SEARCH_ENDPOINT},
+      );
+    }, 250);
   }
 
   // ensure the passed input has a type of search, because SearchResults

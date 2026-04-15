@@ -1,3 +1,4 @@
+import {Link} from 'react-router';
 import clsx from 'clsx';
 
 export interface BreadcrumbItem {
@@ -29,12 +30,13 @@ export function Breadcrumbs({
         return (
           <span key={i} className="flex items-center gap-2">
             {item.href && !isLast ? (
-              <a
-                href={item.href}
+              <Link
+                to={item.href}
+                prefetch="intent"
                 className="hover:text-gold-400 transition-colors"
               >
                 {item.label}
-              </a>
+              </Link>
             ) : (
               <span
                 className={clsx(
