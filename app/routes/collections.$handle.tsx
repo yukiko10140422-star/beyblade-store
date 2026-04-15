@@ -35,6 +35,31 @@ export const meta: Route.MetaFunction = ({data}) => {
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},
     {name: 'twitter:description', content: description},
+    {
+      'script:ld+json': {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: SITE_URL,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Collections',
+            item: `${SITE_URL}/collections`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: data?.collection.title ?? 'Collection',
+          },
+        ],
+      },
+    },
   ];
 };
 
