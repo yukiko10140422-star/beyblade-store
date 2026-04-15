@@ -25,11 +25,13 @@ export function Footer({
                 {/* Brand Column */}
                 <div className="md:col-span-1">
                   <img
-                    src="/images/logo.png"
+                    src="/images/logo.webp"
+                    srcSet="/images/logo.webp 1x, /images/logo@2x.webp 2x"
                     alt="Tokyo Spin Vault"
-                    width={400}
-                    height={400}
+                    width={96}
+                    height={96}
                     className="h-16 w-auto mb-4"
+                    loading="lazy"
                   />
                   <p className="text-chrome-500 text-sm leading-relaxed">
                     Premium authentic Beyblades sourced direct from Japan.

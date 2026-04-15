@@ -36,10 +36,11 @@ export function Header({
           className="flex-shrink-0 flex items-center gap-3"
         >
           <img
-            src="/images/logo.png"
+            src="/images/logo.webp"
+            srcSet="/images/logo.webp 1x, /images/logo@2x.webp 2x"
             alt={shop.name}
-            width={400}
-            height={400}
+            width={96}
+            height={96}
             className="h-12 w-auto"
           />
         </NavLink>

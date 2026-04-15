@@ -8,12 +8,15 @@ export function HeroSection() {
       {/* Tokyo night skyline background */}
       <div className="absolute inset-0">
         <img
-          src="/images/tokyo-night.jpg"
+          src="/images/tokyo-night-1600.webp"
+          srcSet="/images/tokyo-night-800.webp 800w, /images/tokyo-night-1600.webp 1600w"
+          sizes="100vw"
           alt="Tokyo night skyline — home of Tokyo Spin Vault"
-          width={1920}
-          height={1278}
+          width={1600}
+          height={1065}
           className="w-full h-full object-cover object-center opacity-30"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-vault-950 via-vault-950/80 to-vault-950/60" />
       </div>
@@ -50,10 +53,11 @@ export function HeroSection() {
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
         <motion.img
-          src="/images/logo-transparent.png"
+          src="/images/logo-transparent.webp"
+          srcSet="/images/logo-transparent.webp 1x, /images/logo-transparent@2x.webp 2x"
           alt="Tokyo Spin Vault"
-          width={400}
-          height={400}
+          width={416}
+          height={416}
           className="mx-auto h-32 md:h-52 w-auto mb-6 drop-shadow-[0_0_40px_rgba(255,215,0,0.4)] mix-blend-screen"
           initial={{opacity: 0, scale: 0.8, y: 20}}
           animate={{opacity: 1, scale: 1, y: 0}}
