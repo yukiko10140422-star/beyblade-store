@@ -155,7 +155,11 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
   const location = useLocation();
-  const canonicalUrl = `${SITE_URL}${location.pathname}`;
+  // Strip trailing slash for consistency with og:url (except for root "/").
+  // Root becomes SITE_URL with no slash, matching og:url exactly.
+  const pathname =
+    location.pathname === '/' ? '' : location.pathname.replace(/\/$/, '');
+  const canonicalUrl = `${SITE_URL}${pathname}`;
 
   return (
     <html lang="en" className="dark">

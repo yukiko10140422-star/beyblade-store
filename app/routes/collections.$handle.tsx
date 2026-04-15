@@ -31,10 +31,10 @@ export const meta: Route.MetaFunction = ({data}) => {
     {property: 'og:url', content: collectionUrl},
     {
       property: 'og:image',
-      content: `${SITE_URL}/images/logo.png`,
+      content: `${SITE_URL}/images/og-home.png`,
     },
-    {property: 'og:image:width', content: '400'},
-    {property: 'og:image:height', content: '400'},
+    {property: 'og:image:width', content: '1200'},
+    {property: 'og:image:height', content: '630'},
     {property: 'og:site_name', content: 'Tokyo Spin Vault'},
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},

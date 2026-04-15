@@ -24,10 +24,7 @@ import {SITE_URL} from '~/lib/constants';
 export const meta: Route.MetaFunction = ({data}) => {
   const product = data?.product;
   const rawTitle = product?.title ?? '';
-  const title =
-    rawTitle.length > 50
-      ? `${rawTitle.substring(0, 50).trim()} | TSV`
-      : `${rawTitle} | Tokyo Spin Vault`;
+  const title = buildMetaTitle(rawTitle);
   // Build a clean meta description: title + price + key selling points.
   // Keep under 160 chars for optimal Google display.
   const description = buildProductMetaDescription({
@@ -39,10 +36,15 @@ export const meta: Route.MetaFunction = ({data}) => {
   });
   const variantImage = product?.selectedOrFirstAvailableVariant?.image;
   const featuredImage = product?.featuredImage;
-  const image = variantImage?.url ?? featuredImage?.url ?? '';
-  const imageWidth = variantImage?.width ?? featuredImage?.width;
-  const imageHeight = variantImage?.height ?? featuredImage?.height;
+  const rawImage = variantImage?.url ?? featuredImage?.url ?? '';
+  // Request a 1200x630 crop from Shopify CDN for OG / Twitter summary_large_image.
+  const image = rawImage
+    ? rawImage.includes('?')
+      ? `${rawImage}&width=1200&height=630&crop=center`
+      : `${rawImage}?width=1200&height=630&crop=center`
+    : '';
   const productUrl = `${SITE_URL}/products/${product?.handle ?? ''}`;
+  const sku = sanitizeSku(product?.selectedOrFirstAvailableVariant?.sku);
   const price = product?.selectedOrFirstAvailableVariant?.price?.amount ?? '0';
   const currency =
     product?.selectedOrFirstAvailableVariant?.price?.currencyCode ?? 'USD';
@@ -57,15 +59,21 @@ export const meta: Route.MetaFunction = ({data}) => {
     {property: 'og:type', content: 'product'},
     {property: 'og:url', content: productUrl},
     {property: 'og:image', content: image},
-    ...(imageWidth
-      ? [{property: 'og:image:width', content: String(imageWidth)}]
-      : []),
-    ...(imageHeight
-      ? [{property: 'og:image:height', content: String(imageHeight)}]
-      : []),
+    {property: 'og:image:width', content: '1200'},
+    {property: 'og:image:height', content: '630'},
     {property: 'og:site_name', content: 'Tokyo Spin Vault'},
     {property: 'product:price:amount', content: price},
     {property: 'product:price:currency', content: currency},
+    {
+      property: 'product:availability',
+      content: available ? 'instock' : 'oos',
+    },
+    {property: 'product:condition', content: 'new'},
+    {
+      property: 'product:brand',
+      content: product?.vendor || 'Takara Tomy',
+    },
+    ...(sku ? [{property: 'product:retailer_item_id', content: sku}] : []),
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},
     {name: 'twitter:description', content: description},
@@ -77,7 +85,7 @@ export const meta: Route.MetaFunction = ({data}) => {
         name: product?.title,
         description: product?.description,
         image: image,
-        sku: product?.selectedOrFirstAvailableVariant?.sku || undefined,
+        sku,
         brand: {
           '@type': 'Brand',
           name: product?.vendor || 'Takara Tomy',
@@ -549,6 +557,54 @@ const RELATED_PRODUCTS_QUERY = `#graphql
     }
   }
 ` as const;
+
+/**
+ * Returns the SKU only if it looks valid.
+ * Rejects: empty, too short, ends with hyphen (= truncated by Shopify 40-char limit),
+ * placeholder patterns like "SKU" or "TSV-".
+ */
+function sanitizeSku(sku: string | null | undefined): string | undefined {
+  if (!sku) return undefined;
+  const trimmed = sku.trim();
+  if (trimmed.length < 4) return undefined;
+  if (trimmed.endsWith('-')) return undefined;
+  if (/^(sku|na|tbd|placeholder)$/i.test(trimmed)) return undefined;
+  return trimmed;
+}
+
+/**
+ * Builds a SEO-friendly meta title that fits Google SERP limits (~60 chars).
+ * Truncates at word / punctuation boundaries — never cuts mid-word.
+ * Falls back to full title + brand when short.
+ */
+function buildMetaTitle(rawTitle: string): string {
+  const SUFFIX_FULL = ' | Tokyo Spin Vault';
+  const SUFFIX_SHORT = ' | TSV';
+  const MAX_TITLE_LEN = 60;
+
+  if (!rawTitle) return 'Tokyo Spin Vault';
+
+  const withFullSuffix = rawTitle + SUFFIX_FULL;
+  if (withFullSuffix.length <= MAX_TITLE_LEN) return withFullSuffix;
+
+  const budget = MAX_TITLE_LEN - SUFFIX_SHORT.length - 1; // -1 for the ellipsis
+
+  // Try natural boundary first: em dash, hyphen with spaces, parentheses
+  const boundaryRegex = / — | - | \(|【/;
+  const boundaryMatch = rawTitle.slice(0, budget).match(boundaryRegex);
+  if (boundaryMatch && boundaryMatch.index && boundaryMatch.index > 15) {
+    return rawTitle.slice(0, boundaryMatch.index).trim() + SUFFIX_SHORT;
+  }
+
+  // Otherwise cut at the last space within budget
+  const lastSpace = rawTitle.slice(0, budget).lastIndexOf(' ');
+  if (lastSpace > 15) {
+    return rawTitle.slice(0, lastSpace).trim() + '…' + SUFFIX_SHORT;
+  }
+
+  // Last resort: hard cut + ellipsis
+  return rawTitle.slice(0, budget).trim() + '…' + SUFFIX_SHORT;
+}
 
 /**
  * Builds a clean, readable meta description for a product.

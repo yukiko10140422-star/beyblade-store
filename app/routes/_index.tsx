@@ -22,14 +22,14 @@ export const meta: Route.MetaFunction = () => {
     {property: 'og:description', content: description},
     {property: 'og:type', content: 'website'},
     {property: 'og:url', content: SITE_URL},
-    {property: 'og:image', content: `${SITE_URL}/images/logo.png`},
-    {property: 'og:image:width', content: '400'},
-    {property: 'og:image:height', content: '400'},
+    {property: 'og:image', content: `${SITE_URL}/images/og-home.png`},
+    {property: 'og:image:width', content: '1200'},
+    {property: 'og:image:height', content: '630'},
     {property: 'og:site_name', content: 'Tokyo Spin Vault'},
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},
     {name: 'twitter:description', content: description},
-    {name: 'twitter:image', content: `${SITE_URL}/images/logo.png`},
+    {name: 'twitter:image', content: `${SITE_URL}/images/og-home.png`},
     {
       'script:ld+json': {
         '@context': 'https://schema.org',
