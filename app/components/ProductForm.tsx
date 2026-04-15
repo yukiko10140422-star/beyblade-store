@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {Link, useNavigate} from 'react-router';
 import {type MappedProductOptions} from '@shopify/hydrogen';
 import type {
@@ -18,6 +19,7 @@ export function ProductForm({
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
+  const [quantity, setQuantity] = useState(1);
   return (
     <div className="space-y-6">
       {productOptions.map((option) => {
@@ -88,6 +90,48 @@ export function ProductForm({
           </div>
         );
       })}
+      {/* Quantity selector */}
+      <div>
+        <label
+          htmlFor="product-quantity"
+          className="block font-heading text-xs uppercase tracking-[0.15em] text-chrome-200 mb-3"
+        >
+          Quantity
+        </label>
+        <div className="inline-flex items-center bg-vault-800 border border-vault-600 rounded-lg overflow-hidden">
+          <button
+            type="button"
+            aria-label="Decrease quantity"
+            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+            disabled={quantity <= 1}
+            className="px-3 py-2 text-chrome-300 hover:text-gold-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            −
+          </button>
+          <input
+            id="product-quantity"
+            type="number"
+            min="1"
+            max="99"
+            value={quantity}
+            onChange={(e) => {
+              const n = parseInt(e.target.value, 10);
+              if (!isNaN(n) && n >= 1 && n <= 99) setQuantity(n);
+            }}
+            className="w-12 py-2 text-center bg-transparent border-x border-vault-600 text-chrome-100 font-heading text-sm focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          />
+          <button
+            type="button"
+            aria-label="Increase quantity"
+            onClick={() => setQuantity((q) => Math.min(99, q + 1))}
+            disabled={quantity >= 99}
+            className="px-3 py-2 text-chrome-300 hover:text-gold-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            +
+          </button>
+        </div>
+      </div>
+
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
@@ -98,7 +142,7 @@ export function ProductForm({
             ? [
                 {
                   merchandiseId: selectedVariant.id,
-                  quantity: 1,
+                  quantity,
                   selectedVariant,
                 },
               ]
