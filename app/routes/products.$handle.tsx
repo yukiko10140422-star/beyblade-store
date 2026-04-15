@@ -27,7 +27,15 @@ export const meta: Route.MetaFunction = ({data}) => {
     rawTitle.length > 50
       ? `${rawTitle.substring(0, 50).trim()} | TSV`
       : `${rawTitle} | Tokyo Spin Vault`;
-  const description = product?.description?.substring(0, 160) ?? '';
+  // Build a clean meta description: title + price + key selling points.
+  // Keep under 160 chars for optimal Google display.
+  const description = buildProductMetaDescription({
+    title: rawTitle,
+    price: product?.selectedOrFirstAvailableVariant?.price?.amount,
+    currency: product?.selectedOrFirstAvailableVariant?.price?.currencyCode,
+    available: product?.selectedOrFirstAvailableVariant?.availableForSale,
+    beybladeType: product?.beybladeType?.value,
+  });
   const image =
     product?.selectedOrFirstAvailableVariant?.image?.url ??
     product?.featuredImage?.url ??
@@ -506,6 +514,53 @@ const RELATED_PRODUCTS_QUERY = `#graphql
     }
   }
 ` as const;
+
+/**
+ * Builds a clean, readable meta description for a product.
+ * Prioritizes conversion-relevant info: title, price, authenticity, shipping.
+ * Keeps output under 160 chars for optimal Google SERP display.
+ */
+function buildProductMetaDescription({
+  title,
+  price,
+  currency,
+  available,
+  beybladeType,
+}: {
+  title: string;
+  price?: string | null;
+  currency?: string | null;
+  available?: boolean;
+  beybladeType?: string | null;
+}): string {
+  const parts: string[] = [];
+
+  // Core product + price
+  const trimmedTitle = title.replace(/\s*—.*$/, '').trim();
+  if (price && currency === 'USD') {
+    parts.push(`${trimmedTitle} — $${Number(price).toFixed(0)}`);
+  } else {
+    parts.push(trimmedTitle);
+  }
+
+  // Type (Attack/Defense/Stamina/Balance)
+  if (beybladeType) {
+    parts.push(`${beybladeType} type`);
+  }
+
+  // Availability + origin
+  if (available === false) {
+    parts.push('Currently sold out');
+  } else {
+    parts.push('Authentic Takara Tomy, direct from Tokyo');
+  }
+
+  // Value proposition
+  parts.push('Free worldwide shipping, duties included');
+
+  const full = parts.join('. ') + '.';
+  return full.length > 160 ? full.substring(0, 157) + '...' : full;
+}
 
 interface BeybladeSpecsProduct {
   beybladeType?: {value: string} | null;
