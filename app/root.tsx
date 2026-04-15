@@ -67,26 +67,9 @@ export function links() {
       href: 'https://fonts.gstatic.com',
       crossOrigin: 'anonymous' as const,
     },
-    // Non-blocking font load (Filament-Group "preload + media swap" pattern):
-    //   1. <link rel="preload" as="style"> — fetch CSS early at high priority
-    //      without blocking render.
-    //   2. <link rel="stylesheet" media="print"> — browser fetches but does
-    //      not apply to screen, so it does NOT block first paint.
-    //   3. Inline script in Layout swaps media="print" -> "all" once loaded,
-    //      applying the fonts. font-display: swap in the URL ensures system
-    //      fonts show immediately as a fallback.
-    {
-      rel: 'preload',
-      as: 'style',
-      href: FONTS_HREF,
-    },
-    {
-      rel: 'stylesheet',
-      href: FONTS_HREF,
-      media: 'print',
-      // data-font-swap is the marker the inline script in <Layout> picks up.
-      'data-font-swap': 'pending',
-    },
+    // NOTE: Font <link> tags (preload + print-media stylesheet) are emitted
+    // directly in <Layout> because React Router's Links component drops
+    // data-* attributes, which the non-blocking font swap script depends on.
     {rel: 'icon', type: 'image/png', href: favicon},
     {rel: 'apple-touch-icon', href: '/images/logo.png'},
     {rel: 'manifest', href: '/site.webmanifest'},
@@ -192,6 +175,24 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <meta name="msvalidate.01" content="E97753D3F97C661E3363E96380EEACDA" />
         <link rel="canonical" href={canonicalUrl} />
         <link rel="stylesheet" href={appStyles}></link>
+        {/* Non-blocking font load (Filament-Group "preload + media swap" pattern).
+            Written directly in JSX rather than via links() because React Router's
+            <Links> strips data-* attributes, which the swap script below depends on.
+              1. preload — fetch CSS early at high priority, no render block.
+              2. stylesheet media="print" — browser fetches but does not apply to
+                 screen, so it does NOT block first paint.
+              3. Inline script below flips media="print" -> "all" once loaded.
+              4. <noscript> fallback applies the stylesheet when JS is disabled. */}
+        <link rel="preload" as="style" href={FONTS_HREF} />
+        <link
+          rel="stylesheet"
+          href={FONTS_HREF}
+          media="print"
+          data-font-swap="pending"
+        />
+        <noscript>
+          <link rel="stylesheet" href={FONTS_HREF} />
+        </noscript>
         <Meta />
         <Links />
         {/* Swap fonts stylesheet from media="print" -> "all" once loaded.

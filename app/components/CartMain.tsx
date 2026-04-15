@@ -13,22 +13,22 @@ export type CartMainProps = {
 export type LineItemChildrenMap = {[parentId: string]: CartLine[]};
 
 function getLineItemChildrenMap(lines: CartLine[]): LineItemChildrenMap {
-  const children: LineItemChildrenMap = {};
+  const map: LineItemChildrenMap = {};
   for (const line of lines) {
     if ('parentRelationship' in line && line.parentRelationship?.parent) {
       const parentId = line.parentRelationship.parent.id;
-      if (!children[parentId]) children[parentId] = [];
-      children[parentId].push(line);
+      if (!map[parentId]) map[parentId] = [];
+      map[parentId].push(line);
     }
     if ('lineComponents' in line) {
-      const children = getLineItemChildrenMap(line.lineComponents);
-      for (const [parentId, childIds] of Object.entries(children)) {
-        if (!children[parentId]) children[parentId] = [];
-        children[parentId].push(...childIds);
+      const nested = getLineItemChildrenMap(line.lineComponents);
+      for (const [parentId, childIds] of Object.entries(nested)) {
+        if (!map[parentId]) map[parentId] = [];
+        map[parentId].push(...childIds);
       }
     }
   }
-  return children;
+  return map;
 }
 
 export function CartMain({layout, cart: originalCart}: CartMainProps) {
@@ -63,6 +63,7 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
         <>
           <FreeShippingBar
             subtotal={parseFloat(cart?.cost?.subtotalAmount?.amount ?? '0')}
+            quantity={cart?.totalQuantity ?? 0}
           />
           <CartSummary cart={cart} layout={layout} />
         </>
@@ -71,12 +72,27 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   );
 }
 
-const EXPRESS_UPGRADE_THRESHOLD = 300;
+const EXPRESS_SUBTOTAL_THRESHOLD = 300;
+const EXPRESS_QTY_THRESHOLD = 3;
 
-function FreeShippingBar({subtotal}: {subtotal: number}) {
-  const remaining = EXPRESS_UPGRADE_THRESHOLD - subtotal;
-  const progress = Math.min((subtotal / EXPRESS_UPGRADE_THRESHOLD) * 100, 100);
-  const qualified = remaining <= 0;
+function FreeShippingBar({
+  subtotal,
+  quantity,
+}: {
+  subtotal: number;
+  quantity: number;
+}) {
+  const subtotalRemaining = EXPRESS_SUBTOTAL_THRESHOLD - subtotal;
+  const qtyRemaining = EXPRESS_QTY_THRESHOLD - quantity;
+  const qualified = subtotalRemaining <= 0 || qtyRemaining <= 0;
+
+  // Pick whichever threshold is closer for the progress bar.
+  const subtotalProgress = Math.min(
+    (subtotal / EXPRESS_SUBTOTAL_THRESHOLD) * 100,
+    100,
+  );
+  const qtyProgress = Math.min((quantity / EXPRESS_QTY_THRESHOLD) * 100, 100);
+  const progress = Math.max(subtotalProgress, qtyProgress);
 
   return (
     <div className="px-1 py-3 border-t border-vault-700">
@@ -101,9 +117,13 @@ function FreeShippingBar({subtotal}: {subtotal: number}) {
           <p className="text-chrome-400 text-xs text-center mb-2">
             Add{' '}
             <span className="text-gold-400 font-heading">
-              ${remaining.toFixed(2)}
+              ${subtotalRemaining.toFixed(2)}
             </span>{' '}
-            more for{' '}
+            more <span className="text-chrome-500">or</span>{' '}
+            <span className="text-gold-400 font-heading">
+              {qtyRemaining} item{qtyRemaining === 1 ? '' : 's'}
+            </span>{' '}
+            for{' '}
             <span className="text-chrome-200">
               free DHL/FedEx Express upgrade
             </span>

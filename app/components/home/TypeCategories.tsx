@@ -73,7 +73,7 @@ export function TypeCategories() {
           {types.map((type) => (
             <StaggerItem key={type.name}>
               <Link
-                to={`/collections/${type.name.toLowerCase()}`}
+                to={`/collections/all-beyblades?type=${type.name}`}
                 className="group relative aspect-[3/4] rounded-xl overflow-hidden surface-vault transition-all duration-300 hover:glow-gold-sm block"
               >
                 <div
