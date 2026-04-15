@@ -10,6 +10,8 @@ export function HeroSection() {
         <img
           src="/images/tokyo-night.jpg"
           alt="Tokyo night skyline — home of Tokyo Spin Vault"
+          width={1920}
+          height={1278}
           className="w-full h-full object-cover object-center opacity-30"
           loading="eager"
         />
@@ -50,6 +52,8 @@ export function HeroSection() {
         <motion.img
           src="/images/logo-transparent.png"
           alt="Tokyo Spin Vault"
+          width={400}
+          height={400}
           className="mx-auto h-32 md:h-52 w-auto mb-6 drop-shadow-[0_0_40px_rgba(255,215,0,0.4)] mix-blend-screen"
           initial={{opacity: 0, scale: 0.8, y: 20}}
           animate={{opacity: 1, scale: 1, y: 0}}

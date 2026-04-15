@@ -27,6 +27,8 @@ export function Footer({
                   <img
                     src="/images/logo.png"
                     alt="Tokyo Spin Vault"
+                    width={400}
+                    height={400}
                     className="h-16 w-auto mb-4"
                   />
                   <p className="text-chrome-500 text-sm leading-relaxed">

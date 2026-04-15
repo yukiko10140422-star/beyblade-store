@@ -58,6 +58,8 @@ export function VaultExclusives({products}: VaultExclusivesProps) {
                         <img
                           src={product.featuredImage.url}
                           alt={product.featuredImage.altText || product.title}
+                          width={product.featuredImage.width ?? 800}
+                          height={product.featuredImage.height ?? 800}
                           className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                         />
                       )}

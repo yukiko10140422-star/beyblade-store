@@ -35,7 +35,13 @@ export function Header({
           end
           className="flex-shrink-0 flex items-center gap-3"
         >
-          <img src="/images/logo.png" alt={shop.name} className="h-12 w-auto" />
+          <img
+            src="/images/logo.png"
+            alt={shop.name}
+            width={400}
+            height={400}
+            className="h-12 w-auto"
+          />
         </NavLink>
 
         {/* Desktop Navigation */}

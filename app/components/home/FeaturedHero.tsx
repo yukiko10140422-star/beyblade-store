@@ -29,6 +29,8 @@ export function FeaturedHero() {
                 <img
                   src="https://cdn.shopify.com/s/files/1/0675/6945/1074/files/tsv-8215548133442-main.png"
                   alt="Beyblade X UX-00 Aero Pegasus 3-70A RED Version"
+                  width={800}
+                  height={800}
                   className="relative w-full h-full object-contain drop-shadow-[0_0_60px_rgba(59,130,246,0.3)] transition-transform duration-700 group-hover:scale-105"
                   loading="eager"
                 />
