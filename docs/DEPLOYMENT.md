@@ -46,7 +46,7 @@ Oxygen はデプロイ履歴を保持している。問題発生時は:
 | トップ表示 | https://tokyospinvault.com にアクセス |
 | PDP | 任意商品で画像・メタフィールド・価格が正しい |
 | og:image | `view-source` で og:image が `tokyospinvault.com` ドメイン |
-| JSON-LD | view-source で `application/ld+json` が 1 商品につき 1 件 |
+| JSON-LD | view-source で `application/ld+json` が PDP で 2件（Product + BreadcrumbList）、ホームで 2件（WebSite + Organization） |
 | robots.txt | `https://tokyospinvault.com/robots.txt` が 200 |
 | sitemap | `https://tokyospinvault.com/sitemap.xml` が 200 |
 | Cart | 適当な商品を追加して Checkout 遷移が壊れていない |
