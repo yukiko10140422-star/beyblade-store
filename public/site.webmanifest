@@ -1,0 +1,17 @@
+{
+  "name": "Tokyo Spin Vault",
+  "short_name": "TSV",
+  "description": "Premium authentic Beyblades sourced direct from Japan. Free worldwide shipping, duties included.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0C0C18",
+  "theme_color": "#0C0C18",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
