@@ -21,16 +21,20 @@ export const meta: Route.MetaFunction = ({data}) => {
   const description =
     data?.collection.description ||
     `Browse ${data?.collection.title} at Tokyo Spin Vault. Authentic Beyblades from Japan.`;
+  const collectionUrl = `${SITE_URL}/collections/${data?.collection.handle ?? ''}`;
   return [
     {title},
     {name: 'description', content: description},
     {property: 'og:title', content: title},
     {property: 'og:description', content: description},
     {property: 'og:type', content: 'website'},
+    {property: 'og:url', content: collectionUrl},
     {
       property: 'og:image',
       content: `${SITE_URL}/images/logo.png`,
     },
+    {property: 'og:image:width', content: '400'},
+    {property: 'og:image:height', content: '400'},
     {property: 'og:site_name', content: 'Tokyo Spin Vault'},
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},

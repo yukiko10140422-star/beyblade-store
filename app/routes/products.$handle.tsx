@@ -37,10 +37,12 @@ export const meta: Route.MetaFunction = ({data}) => {
     available: product?.selectedOrFirstAvailableVariant?.availableForSale,
     beybladeType: product?.beybladeType?.value,
   });
-  const image =
-    product?.selectedOrFirstAvailableVariant?.image?.url ??
-    product?.featuredImage?.url ??
-    '';
+  const variantImage = product?.selectedOrFirstAvailableVariant?.image;
+  const featuredImage = product?.featuredImage;
+  const image = variantImage?.url ?? featuredImage?.url ?? '';
+  const imageWidth = variantImage?.width ?? featuredImage?.width;
+  const imageHeight = variantImage?.height ?? featuredImage?.height;
+  const productUrl = `${SITE_URL}/products/${product?.handle ?? ''}`;
   const price = product?.selectedOrFirstAvailableVariant?.price?.amount ?? '0';
   const currency =
     product?.selectedOrFirstAvailableVariant?.price?.currencyCode ?? 'USD';
@@ -53,7 +55,14 @@ export const meta: Route.MetaFunction = ({data}) => {
     {property: 'og:title', content: title},
     {property: 'og:description', content: description},
     {property: 'og:type', content: 'product'},
+    {property: 'og:url', content: productUrl},
     {property: 'og:image', content: image},
+    ...(imageWidth
+      ? [{property: 'og:image:width', content: String(imageWidth)}]
+      : []),
+    ...(imageHeight
+      ? [{property: 'og:image:height', content: String(imageHeight)}]
+      : []),
     {property: 'og:site_name', content: 'Tokyo Spin Vault'},
     {property: 'product:price:amount', content: price},
     {property: 'product:price:currency', content: currency},
