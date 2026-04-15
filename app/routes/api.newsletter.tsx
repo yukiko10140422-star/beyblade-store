@@ -12,11 +12,18 @@ export async function action({request, context}: Route.ActionArgs) {
   try {
     const {storefront} = context;
 
-    // Use Shopify Storefront API to create a customer with marketing consent
+    // Storefront customerCreate requires a password. We generate a random one
+    // the subscriber will never use — they're opted in for marketing only.
+    // If they later want account access they can use "Forgot password".
+    const randomPassword =
+      crypto.randomUUID().replace(/-/g, '') +
+      Math.random().toString(36).slice(2);
+
     const result = await storefront.mutate(CUSTOMER_CREATE_MUTATION, {
       variables: {
         input: {
           email,
+          password: randomPassword,
           acceptsMarketing: true,
         },
       },

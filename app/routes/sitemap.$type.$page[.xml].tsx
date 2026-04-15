@@ -10,21 +10,10 @@ export async function loader({
     storefront,
     request,
     params,
-    locales: [
-      'EN-US',
-      'EN-CA',
-      'EN-GB',
-      'EN-AU',
-      'FR-FR',
-      'KO-KR',
-      'PT-BR',
-      'MS-MY',
-      'JA-JP',
-    ],
-    getLink: ({type, baseUrl, handle, locale}) => {
-      if (!locale) return `${baseUrl}/${type}/${handle}`;
-      return `${baseUrl}/${locale}/${type}/${handle}`;
-    },
+    // Single locale only — locale-prefixed routes are not implemented.
+    // Adding more locales here creates 404 URLs that Google will flag.
+    locales: ['EN-US'],
+    getLink: ({type, baseUrl, handle}) => `${baseUrl}/${type}/${handle}`,
   });
 
   response.headers.set('Cache-Control', `max-age=${60 * 60 * 24}`);
