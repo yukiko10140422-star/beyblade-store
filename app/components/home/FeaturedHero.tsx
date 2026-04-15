@@ -37,6 +37,7 @@ export function FeaturedHero() {
                   aspectRatio="1/1"
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   loading="eager"
+                  fetchPriority="high"
                   className="relative w-full h-full object-contain drop-shadow-[0_0_60px_rgba(59,130,246,0.3)] transition-transform duration-700 group-hover:scale-105"
                 />
               </div>

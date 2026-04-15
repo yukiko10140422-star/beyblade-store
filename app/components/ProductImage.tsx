@@ -33,6 +33,8 @@ export function ProductImage({
         data={image}
         key={image.id}
         sizes="(min-width: 1024px) 50vw, 100vw"
+        loading="eager"
+        fetchPriority="high"
         className="object-cover w-full h-full"
       />
     </div>
