@@ -73,7 +73,7 @@ function SearchAside() {
   const queriesDatalistId = useId();
   return (
     <Aside type="search" heading="SEARCH">
-      <div>
+      <div role="search" aria-label="Site search">
         <SearchFormPredictive>
           {({fetchResults, goToSearch, inputRef}) => (
             <div className="flex gap-2 mb-6">
@@ -82,13 +82,16 @@ function SearchAside() {
                 onChange={fetchResults}
                 onFocus={fetchResults}
                 placeholder="Search blades, parts, series..."
+                aria-label="Search products"
                 ref={inputRef}
                 type="search"
                 list={queriesDatalistId}
                 className="flex-1 bg-vault-900 border border-vault-600 rounded-lg px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/20 transition-all"
               />
               <button
+                type="button"
                 onClick={goToSearch}
+                aria-label="Submit search"
                 className="bg-gold-500 hover:bg-gold-400 text-vault-950 font-heading text-xs uppercase tracking-wider px-4 py-3 rounded-lg transition-all"
               >
                 Search
