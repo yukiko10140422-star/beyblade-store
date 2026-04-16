@@ -4,6 +4,7 @@ import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {CartLineItem, type CartLine} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
+import {CheckCircleIcon, LockIcon} from '~/components/icons';
 
 export type CartLayout = 'page' | 'aside';
 export type CartMainProps = {
@@ -101,15 +102,7 @@ function FreeShippingBar({
       </p>
       {qualified ? (
         <p className="text-gold-400 text-xs font-heading uppercase tracking-wider text-center flex items-center justify-center gap-2">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            viewBox="0 0 24 24"
-          >
-            <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <CheckCircleIcon className="w-4 h-4" />
           Free DHL/FedEx Express upgrade unlocked!
         </p>
       ) : (
@@ -152,15 +145,7 @@ function CartEmpty({
       hidden={hidden}
       className="flex flex-col items-center justify-center py-12 text-center"
     >
-      <svg
-        className="w-16 h-16 text-vault-600 mb-6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        viewBox="0 0 24 24"
-      >
-        <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-      </svg>
+      <LockIcon className="w-16 h-16 text-vault-600 mb-6" strokeWidth={1} />
       <p className="text-chrome-400 text-sm mb-6">Your vault is empty</p>
       <Link
         to="/collections"

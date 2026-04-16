@@ -7,6 +7,7 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import {MenuIcon, SearchIcon, UserIcon, CartIcon} from '~/components/icons';
 import clsx from 'clsx';
 
 interface HeaderProps {
@@ -177,16 +178,7 @@ function HeaderMenuMobileToggle() {
       onClick={() => open('mobile')}
       aria-label="Open menu"
     >
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      >
-        <path d="M3 5h14M3 10h14M3 15h14" />
-      </svg>
+      <MenuIcon />
     </button>
   );
 }
@@ -199,34 +191,8 @@ function SearchToggle() {
       onClick={() => open('search')}
       aria-label="Search"
     >
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      >
-        <circle cx="9" cy="9" r="6" />
-        <path d="M13.5 13.5L17 17" />
-      </svg>
+      <SearchIcon />
     </button>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-    >
-      <circle cx="10" cy="7" r="3" />
-      <path d="M4 18c0-3.3 2.7-6 6-6s6 2.7 6 6" />
-    </svg>
   );
 }
 
@@ -248,19 +214,7 @@ function CartBadge({count}: {count: number}) {
       }}
       aria-label={`Cart (${count} items)`}
     >
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      >
-        <path d="M6 6h12l-1.5 7H7.5L6 6z" />
-        <path d="M6 6L5 2H2" />
-        <circle cx="8" cy="17" r="1.5" fill="currentColor" />
-        <circle cx="15" cy="17" r="1.5" fill="currentColor" />
-      </svg>
+      <CartIcon />
       {count > 0 && (
         <span className="absolute -top-0.5 -right-0.5 bg-gold-500 text-vault-950 text-[10px] font-heading font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
           {count}

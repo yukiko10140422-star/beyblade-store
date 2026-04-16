@@ -8,6 +8,7 @@ import {
 } from 'react';
 import {useId} from 'react';
 import clsx from 'clsx';
+import {XMarkIcon} from '~/components/icons';
 
 type AsideType = 'search' | 'cart' | 'mobile' | 'closed';
 type AsideContextValue = {
@@ -126,16 +127,7 @@ export function Aside({
             onClick={close}
             aria-label="Close"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <path d="M4 4l8 8M12 4l-8 8" />
-            </svg>
+            <XMarkIcon />
           </button>
         </header>
 

@@ -4,6 +4,7 @@ import {Image} from '@shopify/hydrogen';
 import type {RecommendedProductsQuery} from 'storefrontapi.generated';
 import {Reveal} from '~/components/motion';
 import {ProductCardSkeleton} from './ProductCardSkeleton';
+import {LockOpenIcon} from '~/components/icons';
 
 interface VaultExclusivesProps {
   products: Promise<RecommendedProductsQuery | null>;

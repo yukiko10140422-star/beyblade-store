@@ -7,6 +7,7 @@ import {
   type PredictiveSearchReturn,
 } from '~/lib/search';
 import {useAside} from './Aside';
+import {SearchIcon24} from '~/components/icons';
 
 type PredictiveSearchItems = PredictiveSearchReturn['result']['items'];
 
@@ -306,19 +307,7 @@ function SearchResultsPredictiveEmpty({
 
   return (
     <div className="flex flex-col items-center justify-center py-8 text-center">
-      <svg
-        className="w-10 h-10 text-vault-600 mb-3"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={1.5}
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
-      </svg>
+      <SearchIcon24 className="w-10 h-10 text-vault-600 mb-3" />
       <p className="text-chrome-400 text-sm">
         No results found for{' '}
         <span className="text-chrome-200 font-medium">

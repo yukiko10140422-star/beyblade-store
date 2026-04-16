@@ -20,6 +20,13 @@ import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import {SITE_URL} from '~/lib/constants';
+import {
+  CheckCircleIcon,
+  PaperAirplaneIcon,
+  ShieldCheckIcon,
+  GlobeIcon,
+  LockIcon,
+} from '~/components/icons';
 
 export const meta: Route.MetaFunction = ({data}) => {
   const product = data?.product;
