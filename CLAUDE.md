@@ -34,12 +34,25 @@
 
 ## 現在の状態
 
-- **ステージ**: 本番稼働中
+- **ステージ**: 本番稼働中（初期フェーズ、監査指摘対応中）
 - **ドメイン**: tokyospinvault.com（Oxygen プライマリー）
-- **商品数**: 130 件（18 件 ACTIVE、112 件 DRAFT）
-- **コレクション**: 9 スマートコレクション（タイプ別/シリーズ別/カテゴリ別）
+- **商品数**: 130 件（18 件 ACTIVE、112 件 DRAFT — Draft は $99.99 プレースホルダ価格あり）
+- **コレクション**: 9 スマートコレクション（タグ分類が一部不正確 — balance-type に全商品集中）
 - **配送モデル**: ePacket Light 送料無料（価格込み）+ DDP 関税込み
-- **Express アップグレード**: DHL/FedEx — $300+ or 3個+ で無料
+- **Express アップグレード**: DHL/FedEx — $300+ or 3個+ で無料（Shopify 自動割引 2件）
+- **i18n**: EN-US 単一ロケールのみ実装（i18next 未インストール、9ロケール計画は未着手）
+- **TypeScript**: `npm run typecheck` 0 errors（Wave 2 で 12→0 に解消済み）
+
+### 既知の制限・未対応
+
+- Shopify primaryDomain が `tokyo-spin-vault.myshopify.com` のまま（Admin UI で要変更）
+- 旧 Rise テーマが `tokyo-spin-vault.myshopify.com` で並列稼働中（重複コンテンツリスク）
+- Primary Market が JP（US に変更必要）
+- Burst / Metal Fight コレクションが main nav に配置されているが商品 0 件
+- FAQ/About ページの配送情報が PDP/Shipping Policy と矛盾（旧情報のまま）
+- About ページで em dash が「?」に文字化け
+- 商品サブ画像が 225x225 の eBay サムネイル流用（低解像度）
+- メタフィールドの Storefront API 可視性を PUBLIC_READ に変更済み（反映待ち）
 
 ## デザインシステム
 
@@ -62,26 +75,41 @@
 ```
 app/
   components/
-    TypeBadge.tsx        # ベイブレードタイプバッジ
-    ProductCard.tsx       # 商品カード（TypeBadge付き）
-    Header.tsx           # ヘッダー + ナビゲーション
-    Footer.tsx           # フッター（SNS, ポリシーリンク）
-    Aside.tsx            # カートドロワー/検索/モバイルメニュー
-    CartMain.tsx         # カート本体（Express アップグレードバー）
-    motion.tsx           # Framer Motion ラッパー
+    home/                  # ホームページセクション（8分割済み）
+      HeroSection.tsx      # Enter the Vault ヒーロー
+      FeaturedHero.tsx     # Aero Pegasus RED バナー
+      NewArrivals.tsx      # 新着商品グリッド
+      TypeCategories.tsx   # Attack/Defense/Stamina/Balance
+      TrustSignals.tsx     # 信頼バッジ（3,800+ Reviews 含む）
+      VaultExclusives.tsx  # 限定商品
+      ShippingBanner.tsx   # 送料・DDP バナー
+      Newsletter.tsx       # メルマガ登録
+      ProductCardSkeleton.tsx
+    icons/index.tsx        # 共有 SVG アイコン（8種）
+    TypeBadge.tsx          # ベイブレードタイプバッジ
+    ProductCard.tsx        # 商品カード（TypeBadge付き）
+    Breadcrumbs.tsx        # パンくず（react-router Link）
+    NewsletterForm.tsx     # メルマガフォーム（variant: large/compact）
+    Header.tsx             # ヘッダー + ナビゲーション
+    Footer.tsx             # フッター（SNS, ポリシーリンク）
+    Aside.tsx              # カート/検索/モバイルメニュードロワー（フォーカストラップ付き）
+    CartMain.tsx           # カート本体（$300/3個 Express バー）
+    motion.tsx             # Framer Motion ラッパー
   lib/
-    beyblade-types.ts    # BEY_TYPES, TYPE_CONFIG, isBeyType()
+    beyblade-types.ts      # BEY_TYPES, TYPE_CONFIG, isBeyType()
+    constants.ts           # SITE_URL
+    fragments.ts           # 共有 GraphQL フラグメント（Money, ProductItem, Cart, Menu）
   routes/
-    _index.tsx           # ホーム（Hero + Featured Aero Pegasus + Arrivals + Types）
-    products.$handle.tsx # PDP（メタフィールド表示, DDP 配送情報）
-    collections.$handle.tsx # コレクション（フィルタ + ソート）
-  styles/
-    app.css              # Tailwind @theme トークン + カスタムユーティリティ
-server.ts                # Oxygen fetch ハンドラ（robots.txt インターセプト）
+    _index.tsx             # ホーム（104行、セクションは home/ にインポート）
+    products.$handle.tsx   # PDP（メタフィールド, 関連商品, BeybladeSpecs）
+    collections.$handle.tsx # コレクション（フィルタ + ソート + BreadcrumbList）
+server.ts                  # Oxygen fetch ハンドラ（robots.txt インターセプト）
 public/
-  robots.txt             # SEO クロール許可 + Sitemap 参照
-  feeds/products.xml     # Google Merchant Center 商品フィード
-  google06d92a1753220616.html  # Search Console HTML 検証
+  images/                  # WebP 最適化済み画像（logo, tokyo-night, og-home）
+  robots.txt               # SEO クロール許可 + Sitemap 参照
+  feeds/products.xml       # Google Merchant Center 商品フィード
+  site.webmanifest         # PWA マニフェスト
+docs/                      # 運用・開発ドキュメント（8ファイル）
 ```
 
 ## 外部サービス連携
