@@ -1,4 +1,27 @@
 /**
+ * ─── Fragment Architecture ───────────────────────────────────────────
+ *
+ * SHARED (this file):
+ *   Money          — MoneyV2 fields (amount + currencyCode)
+ *   ProductItem    — Product cards / list views (includes beyblade type metafield)
+ *   Cart*          — CartLine, CartLineComponent, CartApiQuery
+ *   Menu / Header / Footer — Navigation menus + shop info
+ *
+ * ROUTE-SPECIFIC (intentionally kept in their routes):
+ *   products.$handle.tsx  — Product + ProductVariant (PDP-rich: variants, all metafields, seo)
+ *   search.tsx            — Search* + Predictive* (search-specific fields + tracking)
+ *   collections._index.tsx — Collection (collection list page)
+ *   blogs.$blogHandle._index.tsx — ArticleItem (blog list page)
+ *   policies._index.tsx   — PolicyItem
+ *   policies.$handle.tsx  — Policy
+ *
+ * CUSTOMER ACCOUNT API (separate GraphQL endpoint, cannot share):
+ *   graphql/customer-account/ — OrderMoney, Order*, Customer*, Address
+ *
+ * ─────────────────────────────────────────────────────────────────────
+ */
+
+/**
  * Shared Money fragment — use in any query that references MoneyV2.
  * Interpolate via ${MONEY_FRAGMENT} in GraphQL template strings.
  */
