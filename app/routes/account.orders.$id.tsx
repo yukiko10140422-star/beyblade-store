@@ -255,7 +255,18 @@ function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
           {lineItem.quantity}
         </span>
         <span className="sm:w-24 sm:text-right text-gold-400 font-heading">
-          <Money data={lineItem.totalDiscount!} />
+          {lineItem.price ? (
+            <Money
+              data={{
+                amount: String(
+                  parseFloat(lineItem.price.amount) * lineItem.quantity,
+                ),
+                currencyCode: lineItem.price.currencyCode,
+              }}
+            />
+          ) : (
+            '—'
+          )}
         </span>
       </div>
     </div>

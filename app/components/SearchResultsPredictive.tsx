@@ -105,7 +105,7 @@ function SearchResultsPredictiveArticles({
               <Link
                 onClick={closeSearch}
                 to={articleUrl}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-vault-800"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50"
               >
                 {article.image?.url && (
                   <div className="w-10 h-10 flex-shrink-0 rounded-md overflow-hidden bg-vault-900">
@@ -155,7 +155,7 @@ function SearchResultsPredictiveCollections({
               <Link
                 onClick={closeSearch}
                 to={collectionUrl}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-vault-800"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50"
               >
                 {collection.image?.url && (
                   <div className="w-10 h-10 flex-shrink-0 rounded-md overflow-hidden bg-vault-900">
@@ -205,7 +205,7 @@ function SearchResultsPredictivePages({
               <Link
                 onClick={closeSearch}
                 to={pageUrl}
-                className="flex items-center rounded-lg px-3 py-2 transition-colors hover:bg-vault-800"
+                className="flex items-center rounded-lg px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50"
               >
                 <span className="text-chrome-200 text-sm truncate hover:text-gold-400 transition-colors">
                   {page.title}
@@ -246,7 +246,7 @@ function SearchResultsPredictiveProducts({
               <Link
                 to={productUrl}
                 onClick={closeSearch}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-vault-800"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50"
               >
                 {image && (
                   <div className="w-10 h-10 flex-shrink-0 rounded-md overflow-hidden bg-vault-900">

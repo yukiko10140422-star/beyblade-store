@@ -59,7 +59,7 @@ function SearchResultsArticles({
               <Link
                 prefetch="intent"
                 to={articleUrl}
-                className="text-gold-500 hover:text-gold-400 transition-colors font-medium"
+                className="text-gold-500 hover:text-gold-400 transition-colors font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50 rounded"
               >
                 {article.title}
               </Link>
@@ -97,7 +97,7 @@ function SearchResultsPages({term, pages}: PartialSearchResult<'pages'>) {
               <Link
                 prefetch="intent"
                 to={pageUrl}
-                className="text-gold-500 hover:text-gold-400 transition-colors font-medium"
+                className="text-gold-500 hover:text-gold-400 transition-colors font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50 rounded"
               >
                 {page.title}
               </Link>
@@ -136,13 +136,13 @@ function SearchResultsProducts({
 
             return (
               <div
-                className="bg-vault-800 border border-vault-700 rounded-lg overflow-hidden transition-all duration-200 hover:border-gold-400/30"
+                className="group bg-vault-800 border border-vault-700 rounded-lg overflow-hidden transition-all duration-200 hover:border-gold-400/30"
                 key={product.id}
               >
                 <Link
                   prefetch="intent"
                   to={productUrl}
-                  className="flex items-center gap-4 p-3"
+                  className="flex items-center gap-4 p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50 rounded-lg"
                 >
                   {image && (
                     <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-vault-900">
