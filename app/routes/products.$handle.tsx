@@ -281,15 +281,7 @@ export default function Product() {
           {/* Shipping & Duties Notice */}
           <div className="py-3 px-4 rounded-lg bg-gold-400/5 border border-gold-400/10 space-y-2">
             <div className="flex items-center gap-2">
-              <svg
-                className="w-4 h-4 text-gold-400 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-              >
-                <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <CheckCircleIcon className="w-4 h-4 text-gold-400 flex-shrink-0" />
               <p className="text-chrome-200 text-sm">
                 <span className="text-gold-400 font-heading uppercase tracking-wider">
                   Free shipping & duties included
@@ -306,15 +298,7 @@ export default function Product() {
           {/* Express Upgrade */}
           <div className="py-4 border-t border-vault-700 space-y-2">
             <div className="flex items-center gap-3">
-              <svg
-                className="w-5 h-5 text-gold-400 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-              >
-                <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-              </svg>
+              <PaperAirplaneIcon className="w-5 h-5 text-gold-400 flex-shrink-0" />
               <div>
                 <p className="text-chrome-200 text-sm">
                   DHL/FedEx Express Upgrade available
@@ -329,39 +313,15 @@ export default function Product() {
           {/* Trust badges */}
           <div className="flex flex-wrap items-center gap-4 py-4 border-t border-vault-700">
             <div className="flex items-center gap-2 text-chrome-500 text-xs">
-              <svg
-                className="w-4 h-4 text-gold-400"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-              >
-                <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
+              <ShieldCheckIcon className="w-4 h-4 text-gold-400" />
               100% Authentic
             </div>
             <div className="flex items-center gap-2 text-chrome-500 text-xs">
-              <svg
-                className="w-4 h-4 text-gold-400"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" />
-              </svg>
+              <GlobeIcon className="w-4 h-4 text-gold-400" />
               Fully Tracked
             </div>
             <div className="flex items-center gap-2 text-chrome-500 text-xs">
-              <svg
-                className="w-4 h-4 text-gold-400"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+              <LockIcon className="w-4 h-4 text-gold-400" />
               DDP — Tax Included
             </div>
           </div>

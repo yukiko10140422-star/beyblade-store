@@ -25,12 +25,21 @@ export async function loader({request, context}: Route.LoaderArgs) {
       ? predictiveSearch({request, context})
       : regularSearch({request, context});
 
-  searchPromise.catch((error: Error) => {
-    console.error(error);
-    return {term: '', result: null, error: error.message};
-  });
+  // IMPORTANT: .catch() returns a NEW promise. We must use the caught version,
+  // otherwise the original rejected promise is awaited and throws.
+  const searchResult = await searchPromise.catch(
+    (error: Error): RegularSearchReturn => {
+      console.error(error);
+      return {
+        type: 'regular' as const,
+        term: '',
+        result: {total: 0, items: {} as RegularSearchReturn['result']['items']},
+        error: error.message,
+      };
+    },
+  );
 
-  return await searchPromise;
+  return searchResult;
 }
 
 /**

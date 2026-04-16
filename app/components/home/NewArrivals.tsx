@@ -39,17 +39,28 @@ export function NewArrivals({products}: NewArrivalsProps) {
           }
         >
           <Await resolve={products}>
-            {(response) => (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                {response?.products.nodes.map((product, i) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    loading={i < 4 ? 'eager' : 'lazy'}
-                  />
-                ))}
-              </div>
-            )}
+            {(response) => {
+              const nodes = response?.products?.nodes;
+              if (!nodes || nodes.length === 0) {
+                return (
+                  <p className="text-chrome-500 text-sm text-center py-8">
+                    Products are temporarily unavailable. Please check back
+                    soon.
+                  </p>
+                );
+              }
+              return (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                  {nodes.map((product, i) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      loading={i < 4 ? 'eager' : 'lazy'}
+                    />
+                  ))}
+                </div>
+              );
+            }}
           </Await>
         </Suspense>
       </div>

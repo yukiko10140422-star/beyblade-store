@@ -89,7 +89,9 @@ export default function OrderRoute() {
           Order {order.name}
         </h2>
         <p className="text-chrome-500 text-sm">
-          Placed on {new Date(order.processedAt!).toDateString()}
+          {order.processedAt
+            ? `Placed on ${new Date(order.processedAt).toDateString()}`
+            : 'Processing'}
         </p>
         {order.confirmationNumber && (
           <p className="text-chrome-600 text-xs">
@@ -133,29 +135,37 @@ export default function OrderRoute() {
                 {discountPercentage ? (
                   <span>-{discountPercentage}% OFF</span>
                 ) : (
-                  discountValue && <Money data={discountValue!} />
+                  discountValue && <Money data={discountValue} />
                 )}
               </span>
             </div>
           )}
-          <div className="flex justify-between items-center">
-            <span className="text-chrome-400 text-sm">Subtotal</span>
-            <span className="text-chrome-200 text-sm">
-              <Money data={order.subtotal!} />
-            </span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-chrome-400 text-sm">Tax</span>
-            <span className="text-chrome-200 text-sm">
-              <Money data={order.totalTax!} />
-            </span>
-          </div>
+          {order.subtotal && (
+            <div className="flex justify-between items-center">
+              <span className="text-chrome-400 text-sm">Subtotal</span>
+              <span className="text-chrome-200 text-sm">
+                <Money data={order.subtotal} />
+              </span>
+            </div>
+          )}
+          {order.totalTax && (
+            <div className="flex justify-between items-center">
+              <span className="text-chrome-400 text-sm">Tax</span>
+              <span className="text-chrome-200 text-sm">
+                <Money data={order.totalTax} />
+              </span>
+            </div>
+          )}
           <div className="flex justify-between items-center pt-2 border-t border-vault-700">
             <span className="text-chrome-200 font-heading uppercase tracking-wider text-sm">
               Total
             </span>
             <span className="text-gold-400 font-heading text-lg">
-              <Money data={order.totalPrice!} />
+              {order.totalPrice ? (
+                <Money data={order.totalPrice} />
+              ) : (
+                <span className="text-chrome-500">—</span>
+              )}
             </span>
           </div>
         </div>
@@ -248,7 +258,11 @@ function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
       {/* Price / Qty / Total - inline on mobile, grid cells on sm+ */}
       <div className="flex sm:contents gap-4 pl-[76px] sm:pl-0 text-sm">
         <span className="sm:w-24 sm:text-right text-chrome-300">
-          <Money data={lineItem.price!} />
+          {lineItem.price ? (
+            <Money data={lineItem.price} />
+          ) : (
+            <span className="text-chrome-500">—</span>
+          )}
         </span>
         <span className="sm:w-16 sm:text-center text-chrome-400">
           <span className="sm:hidden text-chrome-600 mr-1">&times;</span>
