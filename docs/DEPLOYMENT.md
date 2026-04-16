@@ -49,7 +49,9 @@ Oxygen はデプロイ履歴を保持している。問題発生時は:
 | JSON-LD | view-source で `application/ld+json` が PDP で 2件（Product + BreadcrumbList）、ホームで 2件（WebSite + Organization） |
 | robots.txt | `https://tokyospinvault.com/robots.txt` が 200 |
 | sitemap | `https://tokyospinvault.com/sitemap.xml` が 200 |
-| Cart | 適当な商品を追加して Checkout 遷移が壊れていない |
+| Cart → Checkout | 商品追加 → Checkout → `tokyo-spin-vault.myshopify.com` にリダイレクト |
+| BeybladeSpecs | PDP に Specifications セクション（Type/Blade/Ratchet/Bit 等）表示 |
+| Google Fonts | Orbitron が見出しに適用（system-ui fallback でないこと） |
 | Mobile | iPhone 実機または devtools で確認 |
 
 ## Merchant Center / Search Console

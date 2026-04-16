@@ -17,29 +17,49 @@
 ```
 app/
 ├── components/
-│   ├── TypeBadge.tsx         # Attack/Defense/Stamina/Balance バッジ
-│   ├── ProductCard.tsx       # 商品カード（TypeBadge 付き）
-│   ├── Header.tsx            # グローバルナビ
-│   ├── Footer.tsx            # SNS / ポリシーリンク
-│   ├── Aside.tsx             # カートドロワー / 検索 / モバイルメニュー
-│   ├── CartMain.tsx          # カート本体（Express アップグレード導線）
-│   ├── Breadcrumbs.tsx       # パンくず + BreadcrumbList JSON-LD
-│   ├── NewsletterForm.tsx    # メルマガ登録
-│   └── motion.tsx            # Framer Motion ラッパー
+│   ├── home/                    # ホームページセクション（8分割済み）
+│   │   ├── HeroSection.tsx      # Enter the Vault ヒーロー
+│   │   ├── FeaturedHero.tsx     # Aero Pegasus RED バナー
+│   │   ├── NewArrivals.tsx      # 新着商品グリッド
+│   │   ├── TypeCategories.tsx   # Choose Your Type（4タイプ）
+│   │   ├── TrustSignals.tsx     # 信頼バッジ（3,800+ eBay Reviews 含む）
+│   │   ├── VaultExclusives.tsx  # 限定商品
+│   │   ├── ShippingBanner.tsx   # 送料・DDP バナー
+│   │   ├── Newsletter.tsx       # メルマガ登録
+│   │   └── ProductCardSkeleton.tsx
+│   ├── icons/index.tsx          # 共有 SVG アイコン（19種）
+│   ├── TypeBadge.tsx            # Attack/Defense/Stamina/Balance バッジ
+│   ├── ProductCard.tsx          # 商品カード（TypeBadge 付き）
+│   ├── Breadcrumbs.tsx          # パンくず（react-router Link）
+│   ├── NewsletterForm.tsx       # メルマガ登録（variant: large/compact）
+│   ├── Header.tsx               # グローバルナビ（icons import）
+│   ├── Footer.tsx               # SNS / ポリシーリンク（icons import）
+│   ├── Aside.tsx                # カート/検索/モバイルメニュー（フォーカストラップ付き）
+│   ├── CartMain.tsx             # カート本体（$300/3個 Express バー）
+│   ├── SearchResults.tsx        # 検索結果（ダークテーマ）
+│   ├── SearchResultsPredictive.tsx # 予測検索（ダークテーマ）
+│   ├── SearchFormPredictive.tsx # 予測検索フォーム（250ms debounce）
+│   └── motion.tsx               # Framer Motion ラッパー
 ├── lib/
-│   └── beyblade-types.ts     # BEY_TYPES / TYPE_CONFIG / isBeyType()
+│   ├── beyblade-types.ts        # BEY_TYPES / TYPE_CONFIG / isBeyType()
+│   ├── constants.ts             # SITE_URL
+│   └── fragments.ts            # 共有 GraphQL フラグメント（アーキテクチャ doc 付き）
 ├── routes/
-│   ├── _index.tsx            # ホーム（Hero / Arrivals / Types）
-│   ├── products.$handle.tsx  # PDP（メタフィールド・JSON-LD・DDP 配送情報）
-│   └── collections.$handle.tsx # コレクション（フィルタ / ソート）
+│   ├── _index.tsx               # ホーム（104行、セクションは home/ にインポート）
+│   ├── products.$handle.tsx     # PDP（メタフィールド・関連商品・BeybladeSpecs・JSON-LD）
+│   ├── collections.$handle.tsx  # コレクション（フィルタ + ソート + BreadcrumbList）
+│   └── account.orders.*.tsx     # 注文履歴（ダークテーマ適用済み）
 └── styles/
-    └── app.css               # Tailwind @theme トークン
-server.ts                     # Oxygen fetch ハンドラ（robots.txt インターセプト含む）
+    └── app.css                  # Tailwind @theme トークン + カスタムユーティリティ
+server.ts                        # Oxygen fetch ハンドラ（robots.txt + /cart/c/ リダイレクト）
 public/
-├── robots.txt                # クロール許可 + Sitemap 参照
-├── feeds/products.xml        # Google Merchant Center 商品フィード
-└── google*.html              # Search Console 検証
-scripts/                      # eBay → Shopify インポート等の運用スクリプト
+├── images/                      # WebP 最適化済み画像（logo, tokyo-night, og-home）
+├── robots.txt                   # クロール許可 + Sitemap 参照
+├── feeds/products.xml           # Google Merchant Center 商品フィード
+├── site.webmanifest             # PWA マニフェスト
+└── google*.html                 # Search Console 検証
+scripts/                         # eBay → Shopify インポート等の運用スクリプト（.gitignore）
+docs/                            # 運用・開発ドキュメント（8ファイル）
 ```
 
 ## データフロー
