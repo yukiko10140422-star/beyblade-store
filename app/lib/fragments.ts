@@ -34,7 +34,7 @@ export const MONEY_FRAGMENT = `#graphql
 
 /**
  * Shared ProductItem fragment — use for product cards / list views.
- * Includes Beyblade type metafield for TypeBadge display.
+ * Includes tags for availability badges (Pre-Order, Limited, etc.).
  * Requires MONEY_FRAGMENT to also be interpolated in the same query.
  */
 export const PRODUCT_ITEM_FRAGMENT = `#graphql
@@ -43,6 +43,7 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
     handle
     title
     vendor
+    tags
     featuredImage {
       id
       altText

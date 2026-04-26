@@ -13,9 +13,13 @@ import clsx from 'clsx';
 export function ProductForm({
   productOptions,
   selectedVariant,
+  isPreOrder = false,
+  expectedShipDate,
 }: {
   productOptions: MappedProductOptions[];
   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
+  isPreOrder?: boolean;
+  expectedShipDate?: string;
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
@@ -132,8 +136,70 @@ export function ProductForm({
         </div>
       </div>
 
+      {isPreOrder && (
+        <div className="rounded-xl overflow-hidden border border-gold-400/30 bg-gradient-to-r from-gold-400/10 to-vault-800/80">
+          <div className="px-4 py-2 bg-gold-400/15 border-b border-gold-400/20 flex items-center gap-2">
+            <svg
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-4 h-4 text-gold-400"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400">
+              Pre-Order
+            </span>
+          </div>
+          <div className="px-4 py-3 space-y-1">
+            {expectedShipDate &&
+              (() => {
+                const d = new Date(expectedShipDate + 'T00:00:00');
+                const month = d
+                  .toLocaleDateString('en-US', {month: 'short'})
+                  .toUpperCase();
+                const day = d.getDate();
+                const year = d.getFullYear();
+                return (
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-lg bg-vault-900 border border-vault-600 flex flex-col items-center justify-center shrink-0">
+                      <span className="text-gold-400 text-[10px] font-heading uppercase leading-none">
+                        {month}
+                      </span>
+                      <span className="text-chrome-100 text-xl font-heading font-bold leading-tight">
+                        {day}
+                      </span>
+                      <span className="text-chrome-500 text-[9px] leading-none">
+                        {year}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-chrome-200 text-sm font-heading">
+                        Japan Release Date
+                      </p>
+                      <p className="text-chrome-500 text-xs mt-0.5">
+                        Ships within 3-5 days after release
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
+            {!expectedShipDate && (
+              <p className="text-chrome-400 text-sm">
+                Ships as soon as released in Japan
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
       <AddToCartButton
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
+        disabled={
+          !selectedVariant || (!selectedVariant.availableForSale && !isPreOrder)
+        }
         onClick={() => {
           open('cart');
         }}
@@ -149,7 +215,11 @@ export function ProductForm({
             : []
         }
       >
-        {selectedVariant?.availableForSale ? 'Add to Vault' : 'Sold Out'}
+        {isPreOrder
+          ? 'Pre-Order Now'
+          : selectedVariant?.availableForSale
+            ? 'Add to Vault'
+            : 'Sold Out'}
       </AddToCartButton>
     </div>
   );

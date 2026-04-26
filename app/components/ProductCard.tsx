@@ -22,6 +22,7 @@ interface ProductCardProps {
     } | null;
     vendor?: string | null;
     beybladeType?: {value: string} | null;
+    tags?: string[] | null;
   };
   loading?: 'eager' | 'lazy';
 }
@@ -50,10 +51,10 @@ export function ProductCard({product, loading}: ProductCardProps) {
         )}
       </div>
 
-      {/* Type Badge */}
-      {product.beybladeType?.value && (
+      {/* Availability Badge */}
+      {product.tags && (
         <div className="absolute top-2 left-2 z-10">
-          <TypeBadge type={product.beybladeType.value} />
+          <TypeBadge tags={product.tags.join(', ')} />
         </div>
       )}
 

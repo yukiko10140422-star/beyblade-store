@@ -5,11 +5,14 @@ import {FeaturedHero} from '~/components/home/FeaturedHero';
 import {NewArrivals} from '~/components/home/NewArrivals';
 import {TypeCategories} from '~/components/home/TypeCategories';
 import {TrustSignals} from '~/components/home/TrustSignals';
-import {VaultExclusives} from '~/components/home/VaultExclusives';
+import {AllProducts} from '~/components/home/AllProducts';
 import {ShippingBanner} from '~/components/home/ShippingBanner';
 import {Newsletter} from '~/components/home/Newsletter';
 import {SITE_URL} from '~/lib/constants';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
+
+const FEATURED_HERO_HANDLE =
+  'beyblade-x-ux-00-aero-pegasus-3-70a-red-version-japan-exclusive';
 
 export const meta: Route.MetaFunction = () => {
   const title = 'Tokyo Spin Vault | Authentic Beyblades from Japan';
@@ -72,8 +75,21 @@ export async function loader(args: Route.LoaderArgs) {
 }
 
 async function loadCriticalData({context}: Route.LoaderArgs) {
+  const [{product: featuredProduct}] = await Promise.all([
+    context.storefront
+      .query(FEATURED_HERO_QUERY, {
+        variables: {handle: FEATURED_HERO_HANDLE},
+        cache: context.storefront.CacheShort(),
+      })
+      .catch((error: Error) => {
+        console.error(error);
+        return {product: null};
+      }),
+  ]);
+
   return {
     isShopLinked: Boolean(context.env.PUBLIC_STORE_DOMAIN),
+    featuredProduct,
   };
 }
 
@@ -87,7 +103,16 @@ function loadDeferredData({context}: Route.LoaderArgs) {
       return null;
     });
 
-  return {recommendedProducts};
+  const allProducts = context.storefront
+    .query(ALL_PRODUCTS_QUERY, {
+      cache: context.storefront.CacheShort(),
+    })
+    .catch((error: Error) => {
+      console.error(error);
+      return null;
+    });
+
+  return {recommendedProducts, allProducts};
 }
 
 export default function Homepage() {
@@ -95,11 +120,11 @@ export default function Homepage() {
   return (
     <div>
       <HeroSection />
-      <FeaturedHero />
+      <FeaturedHero product={data.featuredProduct} />
       <NewArrivals products={data.recommendedProducts} />
       <TypeCategories />
+      <AllProducts products={data.allProducts} />
       <TrustSignals />
-      <VaultExclusives products={data.recommendedProducts} />
       <ShippingBanner />
       <Newsletter />
     </div>
@@ -112,7 +137,47 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 8, sortKey: UPDATED_AT, reverse: true) {
+    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...ProductItem
+      }
+    }
+  }
+` as const;
+
+const FEATURED_HERO_QUERY = `#graphql
+  ${MONEY_FRAGMENT}
+  query FeaturedHeroProduct(
+    $country: CountryCode
+    $handle: String!
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    product(handle: $handle) {
+      id
+      handle
+      title
+      featuredImage {
+        id
+        altText
+        url
+        width
+        height
+      }
+      priceRange {
+        minVariantPrice {
+          ...Money
+        }
+      }
+    }
+  }
+` as const;
+
+const ALL_PRODUCTS_QUERY = `#graphql
+  ${MONEY_FRAGMENT}
+  ${PRODUCT_ITEM_FRAGMENT}
+  query AllProducts ($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    products(first: 24, sortKey: BEST_SELLING) {
       nodes {
         ...ProductItem
       }

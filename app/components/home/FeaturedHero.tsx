@@ -1,5 +1,6 @@
 import {Link} from 'react-router';
-import {Image} from '@shopify/hydrogen';
+import {Image, Money} from '@shopify/hydrogen';
+import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import {
   ShieldCheckIcon,
   CheckCircleIcon,
@@ -8,7 +9,43 @@ import {
 } from '~/components/icons';
 import {Reveal} from '~/components/motion';
 
-export function FeaturedHero() {
+interface FeaturedHeroImage {
+  id?: string | null;
+  altText?: string | null;
+  url: string;
+  width?: number | null;
+  height?: number | null;
+}
+
+interface FeaturedHeroProduct {
+  handle: string;
+  title?: string | null;
+  featuredImage?: FeaturedHeroImage | null;
+  priceRange: {
+    minVariantPrice: Pick<MoneyV2, 'amount' | 'currencyCode'>;
+  };
+}
+
+interface FeaturedHeroProps {
+  product?: FeaturedHeroProduct | null;
+}
+
+const FALLBACK_HANDLE =
+  'beyblade-x-ux-00-aero-pegasus-3-70a-red-version-japan-exclusive';
+const FALLBACK_IMAGE_URL =
+  'https://cdn.shopify.com/s/files/1/0675/6945/1074/files/tsv-8215548133442-main.png';
+const FALLBACK_IMAGE_ALT = 'Beyblade X UX-00 Aero Pegasus 3-70A RED Version';
+
+export function FeaturedHero({product}: FeaturedHeroProps) {
+  const handle = product?.handle ?? FALLBACK_HANDLE;
+  const productPath = `/products/${handle}`;
+  const image = product?.featuredImage;
+  const imageUrl = image?.url ?? FALLBACK_IMAGE_URL;
+  const imageAlt = image?.altText ?? FALLBACK_IMAGE_ALT;
+  const imageWidth = image?.width ?? 800;
+  const imageHeight = image?.height ?? 800;
+  const price = product?.priceRange.minVariantPrice;
+
   return (
     <section className="relative py-16 md:py-24 overflow-hidden">
       {/* Background glow */}
@@ -19,20 +56,17 @@ export function FeaturedHero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Left: Product Image */}
           <Reveal direction="left">
-            <Link
-              to="/products/beyblade-x-ux-00-aero-pegasus-3-70a-red-version-japan-exclusive"
-              className="group block relative"
-            >
+            <Link to={productPath} className="group block relative">
               <div className="relative aspect-square max-w-lg mx-auto">
                 {/* Glow ring behind product */}
                 <div className="absolute inset-8 rounded-full border border-bey-attack/20 animate-[pulse-gold_3s_ease-in-out_infinite]" />
                 <div className="absolute inset-16 rounded-full border border-bey-attack/10" />
                 <Image
                   data={{
-                    url: 'https://cdn.shopify.com/s/files/1/0675/6945/1074/files/tsv-8215548133442-main.png',
-                    altText: 'Beyblade X UX-00 Aero Pegasus 3-70A RED Version',
-                    width: 800,
-                    height: 800,
+                    url: imageUrl,
+                    altText: imageAlt,
+                    width: imageWidth,
+                    height: imageHeight,
                   }}
                   aspectRatio="1/1"
                   sizes="(min-width: 1024px) 50vw, 100vw"
@@ -102,15 +136,23 @@ export function FeaturedHero() {
               {/* Price + CTA */}
               <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
                 <div>
-                  <span className="text-gold-400 font-heading text-3xl">
-                    $70.00
-                  </span>
+                  {price ? (
+                    <Money
+                      data={price}
+                      as="span"
+                      className="text-gold-400 font-heading text-3xl"
+                    />
+                  ) : (
+                    <span className="text-gold-400 font-heading text-3xl">
+                      $70.00
+                    </span>
+                  )}
                   <span className="text-chrome-500 text-xs ml-2">
                     Shipping & duties included
                   </span>
                 </div>
                 <Link
-                  to="/products/beyblade-x-ux-00-aero-pegasus-3-70a-red-version-japan-exclusive"
+                  to={productPath}
                   className="group inline-flex items-center gap-2 bg-bey-attack hover:bg-bey-attack/90 text-white font-heading uppercase tracking-[0.15em] text-sm px-8 py-4 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]"
                 >
                   View Details

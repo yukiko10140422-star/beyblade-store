@@ -1,60 +1,38 @@
-import {Link} from 'react-router';
-import {ShieldCheckIcon, ClockIcon} from '~/components/icons';
 import {Reveal, StaggerContainer, StaggerItem} from '~/components/motion';
 
 export function TypeCategories() {
-  const types = [
+  const points = [
     {
-      name: 'Attack',
-      description: 'Speed & Power',
-      color: 'from-blue-500/20',
-      text: 'text-bey-attack',
-      border: 'bg-bey-attack',
-      icon: (
-        <svg
-          className="w-12 h-12"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
+      title: 'Pre-Order New Releases',
+      desc: 'Reserve upcoming Beyblades before they launch in Japan. Shipped within days of release.',
+      color: 'text-blue-400',
+      gradient: 'from-blue-500/20',
+      border: 'bg-blue-500',
+      icon: 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z',
     },
     {
-      name: 'Defense',
-      description: 'Solid & Unyielding',
-      color: 'from-green-500/20',
-      text: 'text-bey-defense',
-      border: 'bg-bey-defense',
-      icon: <ShieldCheckIcon className="w-12 h-12" />,
+      title: 'Japan-Only Exclusives',
+      desc: 'Event prizes, app exclusives, and store-limited editions unavailable outside Japan.',
+      color: 'text-red-400',
+      gradient: 'from-red-500/20',
+      border: 'bg-red-500',
+      icon: 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z',
     },
     {
-      name: 'Stamina',
-      description: 'Endurance & Spin',
-      color: 'from-orange-500/20',
-      text: 'text-bey-stamina',
-      border: 'bg-bey-stamina',
-      icon: <ClockIcon className="w-12 h-12" />,
+      title: 'Official Collaborations',
+      desc: 'J.League, JFA, and special crossover models sourced directly from partner retailers.',
+      color: 'text-purple-400',
+      gradient: 'from-purple-500/20',
+      border: 'bg-purple-500',
+      icon: 'M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z',
     },
     {
-      name: 'Balance',
-      description: 'Versatile & Adaptive',
-      color: 'from-red-500/20',
-      text: 'text-bey-balance',
-      border: 'bg-bey-balance',
-      icon: (
-        <svg
-          className="w-12 h-12"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-        </svg>
-      ),
+      title: 'Free DDP Shipping',
+      desc: 'All duties and taxes included. No surprise fees at delivery. Ships from Tokyo worldwide.',
+      color: 'text-gold-400',
+      gradient: 'from-gold-400/20',
+      border: 'bg-gold-400',
+      icon: 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0H21M3.375 14.25h4.875c.621 0 1.125-.504 1.125-1.125v-3a1.125 1.125 0 00-1.125-1.125H3.375m0 5.25V7.5a1.125 1.125 0 011.125-1.125h8.25M16.5 12h2.25m-2.25 0a1.125 1.125 0 00-1.125 1.125v3c0 .621.504 1.125 1.125 1.125h2.25',
     },
   ];
 
@@ -63,37 +41,46 @@ export function TypeCategories() {
       <div className="max-w-7xl mx-auto">
         <Reveal>
           <h2 className="font-heading text-xl md:text-2xl text-gold-metallic uppercase tracking-wider text-center mb-3">
-            Choose Your Type
+            Why Tokyo Spin Vault
           </h2>
-          <p className="text-chrome-500 text-sm text-center mb-12">
-            Every blade has its destiny
+          <p className="text-chrome-500 text-sm text-center mb-12 max-w-lg mx-auto">
+            Your direct line to Japan's rarest Beyblades
           </p>
         </Reveal>
         <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {types.map((type) => (
-            <StaggerItem key={type.name}>
-              <Link
-                to={`/collections/all-beyblades?type=${type.name}`}
-                className="group relative aspect-[3/4] rounded-xl overflow-hidden surface-vault transition-all duration-300 hover:glow-gold-sm block"
-              >
+          {points.map((p) => (
+            <StaggerItem key={p.title}>
+              <div className="relative h-full rounded-xl overflow-hidden surface-vault p-5 md:p-6">
                 <div
-                  className={`absolute inset-0 bg-gradient-to-b ${type.color} to-transparent opacity-30 group-hover:opacity-50 transition-opacity`}
+                  className={`absolute inset-0 bg-gradient-to-b ${p.gradient} to-transparent opacity-20`}
                 />
-                <div className="relative h-full flex flex-col items-center justify-center p-6 text-center">
-                  <div className={`mb-4 ${type.text}`}>{type.icon}</div>
-                  <h3
-                    className={`font-heading text-lg uppercase tracking-wider ${type.text}`}
+                <div className="relative">
+                  <svg
+                    className={`w-8 h-8 mb-4 ${p.color}`}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    viewBox="0 0 24 24"
                   >
-                    {type.name}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d={p.icon}
+                    />
+                  </svg>
+                  <h3
+                    className={`font-heading text-sm uppercase tracking-wider mb-2 ${p.color}`}
+                  >
+                    {p.title}
                   </h3>
-                  <p className="text-chrome-500 text-xs mt-2">
-                    {type.description}
+                  <p className="text-chrome-500 text-xs leading-relaxed">
+                    {p.desc}
                   </p>
                 </div>
                 <div
-                  className={`absolute bottom-0 left-0 right-0 h-0.5 ${type.border} opacity-40 group-hover:opacity-100 transition-opacity`}
+                  className={`absolute bottom-0 left-0 right-0 h-0.5 ${p.border} opacity-30`}
                 />
-              </Link>
+              </div>
             </StaggerItem>
           ))}
         </StaggerContainer>
