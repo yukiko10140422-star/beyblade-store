@@ -27,7 +27,7 @@ export function Header({
 }: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="sticky top-0 z-50 h-[72px] bg-vault-950/95 backdrop-blur-md border-b border-gold-400/10">
+    <header className="sticky top-0 z-50 h-[72px] bg-vault-950/95 backdrop-blur-md border-b border-vault-700">
       <div className="mx-auto max-w-7xl h-full flex items-center justify-between px-4 lg:px-8">
         {/* Logo */}
         <NavLink
@@ -94,8 +94,8 @@ export function HeaderMenu({
             clsx(
               'font-heading text-sm uppercase tracking-widest py-3 px-4 rounded-lg transition-colors',
               isActive
-                ? 'text-gold-400 bg-gold-400/5'
-                : 'text-chrome-300 hover:text-gold-400 hover:bg-vault-800',
+                ? 'text-vermillion-500 bg-vermillion-50'
+                : 'text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800',
             )
           }
         >
@@ -130,10 +130,10 @@ export function HeaderMenu({
                         : 'text-chrome-300 hover:text-gold-400 hover:bg-vault-800',
                     )
                   : clsx(
-                      'font-heading text-xs uppercase tracking-[0.15em]',
+                      'font-heading text-[11px] uppercase tracking-[0.18em] font-semibold',
                       isActive
-                        ? 'text-gold-400'
-                        : 'text-chrome-400 hover:text-gold-400',
+                        ? 'text-vermillion-500'
+                        : 'text-chrome-300 hover:text-vermillion-500',
                     ),
               )
             }
@@ -157,7 +157,7 @@ function HeaderCtas({
       <NavLink
         prefetch="intent"
         to="/account"
-        className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg text-chrome-400 hover:text-gold-400 hover:bg-vault-800 transition-colors"
+        className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
       >
         <Suspense fallback={<UserIcon />}>
           <Await resolve={isLoggedIn} errorElement={<UserIcon />}>
@@ -174,7 +174,7 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-chrome-400 hover:text-gold-400 hover:bg-vault-800 transition-colors"
+      className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
       onClick={() => open('mobile')}
       aria-label="Open menu"
     >
@@ -187,7 +187,7 @@ function SearchToggle() {
   const {open} = useAside();
   return (
     <button
-      className="flex items-center justify-center w-10 h-10 rounded-lg text-chrome-400 hover:text-gold-400 hover:bg-vault-800 transition-colors"
+      className="flex items-center justify-center w-10 h-10 rounded-lg text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
       onClick={() => open('search')}
       aria-label="Search"
     >
@@ -202,7 +202,7 @@ function CartBadge({count}: {count: number}) {
 
   return (
     <button
-      className="relative flex items-center justify-center w-10 h-10 rounded-lg text-chrome-400 hover:text-gold-400 hover:bg-vault-800 transition-colors"
+      className="relative flex items-center justify-center w-10 h-10 rounded-lg text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
       onClick={() => {
         open('cart');
         publish('cart_viewed', {
@@ -216,7 +216,7 @@ function CartBadge({count}: {count: number}) {
     >
       <CartIcon />
       {count > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 bg-gold-500 text-vault-950 text-[10px] font-heading font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+        <span className="absolute -top-0.5 -right-0.5 bg-vermillion-500 text-white text-[10px] font-heading font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
           {count}
         </span>
       )}

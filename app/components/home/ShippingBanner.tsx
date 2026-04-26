@@ -21,15 +21,15 @@ export function ShippingBanner() {
   ];
 
   return (
-    <section className="py-6 bg-vault-800/30 border-y border-vault-700/30">
+    <section className="py-6 bg-vault-50 text-white">
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
         {items.map((item, i) => (
           <div key={i} className="flex items-center gap-3">
             {i > 0 && (
-              <div className="hidden md:block w-px h-5 bg-vault-600 -ml-6 mr-3" />
+              <div className="hidden md:block w-px h-5 bg-chrome-500 -ml-6 mr-3" />
             )}
-            <span className="text-gold-400">{item.icon}</span>
-            <span className="text-chrome-300 text-sm">{item.text}</span>
+            <span className="text-vermillion-300">{item.icon}</span>
+            <span className="text-white text-sm font-medium">{item.text}</span>
           </div>
         ))}
       </div>

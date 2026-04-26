@@ -31,7 +31,7 @@ export function ProductForm({
 
         return (
           <div key={option.name}>
-            <h5 className="font-heading text-xs uppercase tracking-[0.15em] text-chrome-200 mb-3">
+            <h5 className="font-heading text-xs uppercase tracking-[0.15em] text-vault-50 mb-3 font-semibold">
               {option.name}
             </h5>
             <div className="flex flex-wrap gap-2">
@@ -50,8 +50,8 @@ export function ProductForm({
                 const optionClasses = clsx(
                   'px-4 py-2 rounded-lg border text-sm font-heading uppercase tracking-wider transition-all duration-200',
                   selected
-                    ? 'border-gold-400 bg-gold-400/10 text-gold-400'
-                    : 'border-vault-600 text-chrome-400 hover:border-gold-400/30 hover:text-chrome-200',
+                    ? 'border-vermillion-500 bg-vermillion-50 text-vermillion-600 font-semibold'
+                    : 'border-vault-700 bg-white text-vault-50 hover:border-vermillion-300 hover:bg-vault-800',
                   !available && 'opacity-30 cursor-not-allowed',
                   !exists && 'hidden',
                 );
@@ -98,17 +98,17 @@ export function ProductForm({
       <div>
         <label
           htmlFor="product-quantity"
-          className="block font-heading text-xs uppercase tracking-[0.15em] text-chrome-200 mb-3"
+          className="block font-heading text-xs uppercase tracking-[0.15em] text-vault-50 mb-3 font-semibold"
         >
           Quantity
         </label>
-        <div className="inline-flex items-center bg-vault-800 border border-vault-600 rounded-lg overflow-hidden">
+        <div className="inline-flex items-center bg-white border border-vault-700 rounded-full overflow-hidden">
           <button
             type="button"
             aria-label="Decrease quantity"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
             disabled={quantity <= 1}
-            className="px-3 py-2 text-chrome-300 hover:text-gold-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 text-vault-50 hover:text-vermillion-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-lg"
           >
             −
           </button>
@@ -122,14 +122,14 @@ export function ProductForm({
               const n = parseInt(e.target.value, 10);
               if (!isNaN(n) && n >= 1 && n <= 99) setQuantity(n);
             }}
-            className="w-12 py-2 text-center bg-transparent border-x border-vault-600 text-chrome-100 font-heading text-sm focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="w-12 py-2 text-center bg-transparent border-x border-vault-700 text-vault-50 font-heading text-sm font-semibold focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
           <button
             type="button"
             aria-label="Increase quantity"
             onClick={() => setQuantity((q) => Math.min(99, q + 1))}
             disabled={quantity >= 99}
-            className="px-3 py-2 text-chrome-300 hover:text-gold-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 text-vault-50 hover:text-vermillion-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-lg"
           >
             +
           </button>
@@ -137,12 +137,12 @@ export function ProductForm({
       </div>
 
       {isPreOrder && (
-        <div className="rounded-xl overflow-hidden border border-gold-400/30 bg-gradient-to-r from-gold-400/10 to-vault-800/80">
-          <div className="px-4 py-2 bg-gold-400/15 border-b border-gold-400/20 flex items-center gap-2">
+        <div className="rounded-xl overflow-hidden border border-vermillion-200 bg-vermillion-50">
+          <div className="px-4 py-2 bg-vermillion-100 border-b border-vermillion-200 flex items-center gap-2">
             <svg
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="w-4 h-4 text-gold-400"
+              className="w-4 h-4 text-vermillion-600"
             >
               <path
                 fillRule="evenodd"
@@ -150,7 +150,7 @@ export function ProductForm({
                 clipRule="evenodd"
               />
             </svg>
-            <span className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400">
+            <span className="font-heading text-xs uppercase tracking-[0.2em] text-vermillion-600 font-semibold">
               Pre-Order
             </span>
           </div>
@@ -165,11 +165,11 @@ export function ProductForm({
                 const year = d.getFullYear();
                 return (
                   <div className="flex items-center gap-3">
-                    <div className="w-14 h-14 rounded-lg bg-vault-900 border border-vault-600 flex flex-col items-center justify-center shrink-0">
-                      <span className="text-gold-400 text-[10px] font-heading uppercase leading-none">
+                    <div className="w-14 h-14 rounded-lg bg-white border border-vermillion-200 flex flex-col items-center justify-center shrink-0">
+                      <span className="text-vermillion-500 text-[10px] font-heading uppercase leading-none font-semibold">
                         {month}
                       </span>
-                      <span className="text-chrome-100 text-xl font-heading font-bold leading-tight">
+                      <span className="text-vault-50 text-xl font-display font-bold leading-tight">
                         {day}
                       </span>
                       <span className="text-chrome-500 text-[9px] leading-none">
@@ -177,10 +177,10 @@ export function ProductForm({
                       </span>
                     </div>
                     <div>
-                      <p className="text-chrome-200 text-sm font-heading">
+                      <p className="text-vault-50 text-sm font-semibold">
                         Japan Release Date
                       </p>
-                      <p className="text-chrome-500 text-xs mt-0.5">
+                      <p className="text-chrome-400 text-xs mt-0.5">
                         Ships within 3-5 days after release
                       </p>
                     </div>
@@ -188,7 +188,7 @@ export function ProductForm({
                 );
               })()}
             {!expectedShipDate && (
-              <p className="text-chrome-400 text-sm">
+              <p className="text-vault-50 text-sm">
                 Ships as soon as released in Japan
               </p>
             )}

@@ -32,13 +32,13 @@ export function TrustSignals() {
   ];
 
   return (
-    <section className="py-10 border-y border-vault-800/50">
+    <section className="py-12 bg-vault-800 border-y border-vault-700">
       <div className="max-w-7xl mx-auto px-4">
         <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {signals.map((s) => {
             const inner = (
               <>
-                <div className="text-gold-400">{s.icon}</div>
+                <div className="text-vermillion-500">{s.icon}</div>
                 <h3 className="font-heading text-[11px] uppercase tracking-[0.15em] text-chrome-200">
                   {s.title}
                 </h3>
@@ -55,7 +55,7 @@ export function TrustSignals() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center gap-3 hover:text-gold-400 transition-colors"
+                    className="flex flex-col items-center gap-3 hover:text-vermillion-500 transition-colors"
                   >
                     {inner}
                   </a>

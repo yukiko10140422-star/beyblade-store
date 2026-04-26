@@ -97,7 +97,7 @@ export function Aside({
     >
       {/* Overlay backdrop */}
       <button
-        className="absolute inset-0 bg-vault-950/80 backdrop-blur-sm cursor-default"
+        className="absolute inset-0 bg-vault-50/30 backdrop-blur-sm cursor-default"
         onClick={close}
         aria-label="Close"
       />
@@ -107,9 +107,9 @@ export function Aside({
         ref={panelRef}
         className={clsx(
           'absolute right-0 top-0 h-full w-full max-w-[420px] flex flex-col',
-          'bg-gradient-to-b from-vault-800 to-vault-900',
-          'border-l border-gold-400/10',
-          'shadow-[-20px_0_60px_rgba(0,0,0,0.5)]',
+          'bg-vault-950',
+          'border-l border-vault-700',
+          'shadow-[-20px_0_60px_rgba(0,0,0,0.12)]',
           'transition-transform duration-300 ease-out',
           expanded ? 'translate-x-0' : 'translate-x-full',
         )}
@@ -118,12 +118,12 @@ export function Aside({
         <header className="flex items-center justify-between px-6 py-4 border-b border-vault-700">
           <h3
             id={id}
-            className="font-heading text-sm uppercase tracking-[0.2em] text-gold-400"
+            className="font-display text-lg font-semibold text-vault-50 tracking-tight"
           >
             {heading}
           </h3>
           <button
-            className="flex items-center justify-center w-8 h-8 rounded-lg text-chrome-400 hover:text-gold-400 hover:bg-vault-700 transition-colors"
+            className="flex items-center justify-center w-8 h-8 rounded-lg text-chrome-400 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
             onClick={close}
             aria-label="Close"
           >

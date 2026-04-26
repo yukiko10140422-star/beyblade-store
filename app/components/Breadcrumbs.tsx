@@ -33,14 +33,14 @@ export function Breadcrumbs({
               <Link
                 to={item.href}
                 prefetch="intent"
-                className="hover:text-gold-400 transition-colors"
+                className="hover:text-vermillion-500 transition-colors"
               >
                 {item.label}
               </Link>
             ) : (
               <span
                 className={clsx(
-                  'text-chrome-300',
+                  'text-vault-50 font-medium',
                   truncateLast && isLast && 'truncate max-w-[200px]',
                 )}
                 aria-current={isLast ? 'page' : undefined}
@@ -48,7 +48,7 @@ export function Breadcrumbs({
                 {item.label}
               </span>
             )}
-            {!isLast && <span className="text-vault-600">/</span>}
+            {!isLast && <span className="text-chrome-500">/</span>}
           </span>
         );
       })}

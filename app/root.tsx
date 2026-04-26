@@ -53,10 +53,13 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
  * It's a temporary fix until the issue is resolved.
  * https://github.com/remix-run/remix/issues/9242
  */
-// Subset weights: Orbitron 500/700/900, Inter 400/500/700, Noto Sans JP 400/700
-// (only weights actually used in the project — saves ~30-50% of font bytes)
+// Washi & Sumi white theme fonts:
+// - Fraunces (display H1) — editorial-premium serif, opsz 9-144 variable
+// - Inter (UI/body) — high x-height, mobile-legible
+// - Orbitron (tech labels only) — kept for SKU/spec accents
+// - Noto Sans JP — JP fallback
 export const FONTS_HREF =
-  'https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;700&family=Noto+Sans+JP:wght@400;700&display=swap';
+  'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700&family=Noto+Sans+JP:wght@400;700&display=swap';
 
 export function links() {
   return [

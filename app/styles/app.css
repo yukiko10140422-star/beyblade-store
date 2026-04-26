@@ -1,87 +1,95 @@
 @import 'tailwindcss';
 
 /* ============================================
-   TOKYO SPIN VAULT — Design System
-   Gold x Black x Chrome x Electric Blue
+   TOKYO SPIN VAULT — Washi & Sumi Design System
+   Warm white × Sumi black × Matte gold × Vermillion
+   White-theme rebrand 2026-04-22
    ============================================ */
 
 @theme {
-  /* === GOLD PRIMARY (logo-derived) === */
-  --color-gold-50: #FFFDF0;
-  --color-gold-100: #FFF9D6;
-  --color-gold-200: #FFF0A3;
-  --color-gold-300: #FFE066;
-  --color-gold-400: #FFD700;
-  --color-gold-500: #DAA520;
-  --color-gold-600: #B8860B;
-  --color-gold-700: #8B6914;
-  --color-gold-800: #6B4F10;
-  --color-gold-900: #4A370B;
-  --color-gold-950: #2D2106;
+  /* === GOLD (matte, demoted from primary to accent) === */
+  --color-gold-50: #FBF6E8;
+  --color-gold-100: #F5EBC9;
+  --color-gold-200: #EADDA5;
+  --color-gold-300: #DCC57E;
+  --color-gold-400: #C9A961;
+  --color-gold-500: #B8943F;
+  --color-gold-600: #A07F2B;
+  --color-gold-700: #806529;
+  --color-gold-800: #604B22;
+  --color-gold-900: #3D3014;
+  --color-gold-950: #221A0A;
 
-  /* === VAULT (dark backgrounds) === */
-  --color-vault-50: #F5F5F7;
-  --color-vault-100: #E0E0E5;
-  --color-vault-200: #B8B8C4;
-  --color-vault-300: #8A8A9E;
-  --color-vault-400: #5C5C75;
-  --color-vault-500: #3D3D54;
-  --color-vault-600: #2A2A3D;
-  --color-vault-700: #1E1E2F;
-  --color-vault-800: #141422;
-  --color-vault-900: #0C0C18;
-  --color-vault-950: #06060C;
+  /* === VAULT (re-purposed as paper/surface scale, light-first) ===
+     Body bg = vault-950 (warm washi). Components using bg-vault-950
+     automatically pick up the new paper background. */
+  --color-vault-50: #1A1A1A;       /* deepest sumi (was lightest) */
+  --color-vault-100: #2D2D2D;
+  --color-vault-200: #3D3833;
+  --color-vault-300: #5C5546;
+  --color-vault-400: #8A8270;
+  --color-vault-500: #B8B0A0;
+  --color-vault-600: #D5CFBE;
+  --color-vault-700: #E8E2D5;      /* divider/border */
+  --color-vault-800: #F5F1EA;      /* elevated paper */
+  --color-vault-900: #FFFFFF;      /* pure white surface */
+  --color-vault-950: #FAF7F2;      /* page bg — warm washi off-white */
 
-  /* === CHROME/STEEL === */
-  --color-chrome-50: #FAFAFA;
-  --color-chrome-100: #F0F0F2;
-  --color-chrome-200: #D9D9DF;
-  --color-chrome-300: #B8B8C2;
-  --color-chrome-400: #9898A6;
-  --color-chrome-500: #78788A;
-  --color-chrome-600: #5C5C6E;
-  --color-chrome-700: #444454;
+  /* === CHROME (text scale on light bg, inverted from old) === */
+  --color-chrome-50: #FAFAFA;       /* near-white (rare use) */
+  --color-chrome-100: #E8E8E8;
+  --color-chrome-200: #2D2D2D;      /* primary text (was light text) */
+  --color-chrome-300: #4A4A4A;      /* heading text */
+  --color-chrome-400: #6B6B6B;      /* secondary text */
+  --color-chrome-500: #8A8A8A;      /* tertiary text / labels */
+  --color-chrome-600: #A8A8A8;      /* muted */
+  --color-chrome-700: #C8C8C8;      /* very muted */
 
-  /* === ELECTRIC BLUE (shield accent) === */
+  /* === ELECTRIC BLUE (kept, for product-spec pop) === */
   --color-electric-50: #EBF3FF;
   --color-electric-100: #D1E4FF;
   --color-electric-200: #A8CCFF;
   --color-electric-300: #6EA8FF;
-  --color-electric-400: #3D85F0;
-  --color-electric-500: #1E6FD9;
-  --color-electric-600: #155ABB;
-  --color-electric-700: #0F4494;
+  --color-electric-400: #2B6FD9;
+  --color-electric-500: #1E5BB5;
+  --color-electric-600: #154795;
+  --color-electric-700: #0F3470;
 
-  /* === BEYBLADE TYPE COLORS === */
-  --color-bey-attack: #3B82F6;
-  --color-bey-defense: #22C55E;
-  --color-bey-stamina: #F97316;
-  --color-bey-balance: #EF4444;
+  /* === BEYBLADE TYPE COLORS (saturated, stay vivid on white) === */
+  --color-bey-attack: #2563EB;
+  --color-bey-defense: #16A34A;
+  --color-bey-stamina: #EA580C;
+  --color-bey-balance: #DC2626;
 
-  /* === DANGER === */
+  /* === VERMILLION (朱色) — primary CTA, Japanese rouge === */
+  --color-vermillion-50: #FDF2F2;
+  --color-vermillion-100: #FCE3E5;
+  --color-vermillion-200: #F8BFC4;
+  --color-vermillion-300: #F08993;
+  --color-vermillion-400: #DC5663;
+  --color-vermillion-500: #B23A48;     /* primary CTA */
+  --color-vermillion-600: #962B38;
+  --color-vermillion-700: #7A1F2C;
+
+  /* === DANGER (kept for cart/error states) === */
   --color-danger-500: #DC2626;
   --color-danger-600: #B91C1C;
 
   /* === FONT FAMILIES === */
-  --font-heading: 'Orbitron', system-ui, sans-serif;
+  --font-display: 'Fraunces', 'Noto Serif JP', Georgia, serif;
+  --font-heading: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
   --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+  --font-tech: 'Orbitron', 'Inter', system-ui, sans-serif;
 
-  /* === ANIMATIONS === */
-  --animate-gold-glow: gold-glow 2s ease-in-out infinite;
-  --animate-vault-open: vault-open 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-spin-slow: spin 4s linear infinite;
-  --animate-shimmer: shimmer 3s linear infinite;
+  /* === ANIMATIONS (subtler, no glowing for white theme) === */
   --animate-fade-up: fade-up 0.6s ease-out;
   --animate-slide-in-right: slide-in-right 0.3s ease-out;
-  --animate-pulse-gold: pulse-gold 2s ease-in-out infinite;
-
-  @keyframes gold-glow {
-    0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.3), 0 0 16px rgba(255, 215, 0, 0.1); }
-    50% { box-shadow: 0 0 16px rgba(255, 215, 0, 0.6), 0 0 32px rgba(255, 215, 0, 0.3), 0 0 48px rgba(255, 215, 0, 0.1); }
-  }
+  --animate-spin-slow: spin 4s linear infinite;
+  --animate-shimmer: shimmer 3s linear infinite;
+  --animate-vault-open: vault-open 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 
   @keyframes vault-open {
-    0% { transform: scale(0.95) translateY(20px); opacity: 0; }
+    0% { transform: scale(0.98) translateY(12px); opacity: 0; }
     100% { transform: scale(1) translateY(0); opacity: 1; }
   }
 
@@ -91,7 +99,7 @@
   }
 
   @keyframes fade-up {
-    0% { transform: translateY(20px); opacity: 0; }
+    0% { transform: translateY(16px); opacity: 0; }
     100% { transform: translateY(0); opacity: 1; }
   }
 
@@ -99,50 +107,92 @@
     0% { transform: translateX(100%); }
     100% { transform: translateX(0); }
   }
-
-  @keyframes pulse-gold {
-    0%, 100% { text-shadow: 0 0 4px rgba(255, 215, 0, 0.4); }
-    50% { text-shadow: 0 0 12px rgba(255, 215, 0, 0.8), 0 0 24px rgba(255, 215, 0, 0.3); }
-  }
 }
 
 /* === CUSTOM UTILITY CLASSES === */
 
 @utility text-gold-metallic {
-  background: linear-gradient(180deg, #FFD700 0%, #DAA520 40%, #B8860B 70%, #8B6914 100%);
+  background: linear-gradient(180deg, #C9A961 0%, #A07F2B 60%, #806529 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 @utility text-chrome-metallic {
-  background: linear-gradient(180deg, #E8E8E8 0%, #B8B8C2 30%, #9898A6 60%, #C8C8D0 100%);
+  /* Subtle metallic sumi gradient for headers on white */
+  background: linear-gradient(180deg, #2D2D2D 0%, #4A4A4A 60%, #2D2D2D 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
+/* Light paper-like surface (replaces dark glassmorphism) */
 @utility surface-vault {
-  background: linear-gradient(145deg, rgba(20, 20, 34, 0.9), rgba(12, 12, 24, 0.95));
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 215, 0, 0.1);
+  background: #FFFFFF;
+  border: 1px solid #E8E2D5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+@utility surface-paper {
+  background: #FFFFFF;
+  border: 1px solid #E8E2D5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+@utility surface-paper-elevated {
+  background: #FFFFFF;
+  border: 1px solid #E8E2D5;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 @utility border-gold-glow {
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.1), inset 0 0 8px rgba(255, 215, 0, 0.05);
+  border: 1px solid #C9A961;
+  box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.12);
 }
 
+/* "Glow" utilities re-purposed as soft elevation shadows */
 @utility glow-gold-sm {
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(201, 169, 97, 0.18);
 }
 
 @utility glow-gold-md {
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2), 0 0 40px rgba(255, 215, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(201, 169, 97, 0.22);
 }
 
 @utility glow-gold-lg {
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.1);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10), 0 0 0 1px rgba(201, 169, 97, 0.28);
+}
+
+/* Brand wordmark gradient (Fraunces serif treatment) */
+@utility wordmark {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  background: linear-gradient(180deg, #1A1A1A 0%, #4A4A4A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Primary CTA — vermillion 朱色 */
+@utility btn-primary {
+  background: #B23A48;
+  color: #FFFFFF;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+@utility btn-primary-hover {
+  background: #962B38;
+  box-shadow: 0 4px 12px rgba(178, 58, 72, 0.25);
+}
+
+/* Subtle paper grain (optional decorative) */
+@utility paper-grain {
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(201, 169, 97, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(178, 58, 72, 0.03) 0%, transparent 50%);
 }
 
 /* === BASE STYLES === */
@@ -150,43 +200,71 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    background: #FAF7F2;
   }
 
   body {
+    background: #FAF7F2;
+    color: #1A1A1A;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #1A1A1A;
+    line-height: 1.2;
   }
 
   ::selection {
-    background-color: rgba(255, 215, 0, 0.2);
-    color: #FFD700;
+    background-color: rgba(178, 58, 72, 0.18);
+    color: #1A1A1A;
   }
 
   ::-webkit-scrollbar {
     width: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--color-vault-900);
+    background: #F5F1EA;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--color-vault-600);
+    background: #D5CFBE;
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-vault-500);
+    background: #B8B0A0;
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-gold-400);
+    outline: 2px solid #B23A48;
     outline-offset: 2px;
+  }
+
+  /* Default link styling for non-component contexts */
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 }
 
-/* === LEGACY LAYOUT VARS (needed by existing skeleton components until fully migrated) === */
+/* === LEGACY LAYOUT VARS === */
 
 :root {
   --aside-width: 400px;
   --cart-aside-summary-height-with-discount: 300px;
   --cart-aside-summary-height: 250px;
   --header-height: 72px;
+
+  /* Semantic aliases for the new theme (used by future components) */
+  --color-paper: #FAF7F2;
+  --color-paper-elevated: #FFFFFF;
+  --color-paper-soft: #F5F1EA;
+  --color-ink: #1A1A1A;
+  --color-ink-soft: #4A4A4A;
+  --color-ink-muted: #6B6B6B;
+  --color-divider: #E8E2D5;
+  --color-accent-gold: #C9A961;
+  --color-accent-vermillion: #B23A48;
 }

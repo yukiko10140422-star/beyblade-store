@@ -96,34 +96,34 @@ function FreeShippingBar({
   const progress = Math.max(subtotalProgress, qtyProgress);
 
   return (
-    <div className="px-1 py-3 border-t border-vault-700">
-      <p className="text-chrome-500 text-[10px] text-center mb-2">
-        Free shipping & duties included on all orders
+    <div className="px-1 py-4 border-t border-vault-700">
+      <p className="text-vermillion-500 text-[11px] text-center mb-2 font-heading uppercase tracking-wider font-semibold">
+        Free shipping &amp; duties pre-paid (DDP) on all orders
       </p>
       {qualified ? (
-        <p className="text-gold-400 text-xs font-heading uppercase tracking-wider text-center flex items-center justify-center gap-2">
+        <p className="text-vermillion-600 text-sm font-semibold text-center flex items-center justify-center gap-2">
           <CheckCircleIcon className="w-4 h-4" />
           Free DHL/FedEx Express upgrade unlocked!
         </p>
       ) : (
         <>
-          <p className="text-chrome-400 text-xs text-center mb-2">
+          <p className="text-chrome-300 text-xs text-center mb-2">
             Add{' '}
-            <span className="text-gold-400 font-heading">
+            <span className="text-vermillion-500 font-semibold">
               ${subtotalRemaining.toFixed(2)}
             </span>{' '}
-            more <span className="text-chrome-500">or</span>{' '}
-            <span className="text-gold-400 font-heading">
+            <span className="text-chrome-500">or</span>{' '}
+            <span className="text-vermillion-500 font-semibold">
               {qtyRemaining} item{qtyRemaining === 1 ? '' : 's'}
             </span>{' '}
             for{' '}
-            <span className="text-chrome-200">
-              free DHL/FedEx Express upgrade
+            <span className="text-vault-50 font-semibold">
+              free Express upgrade
             </span>
           </p>
           <div className="w-full h-1.5 bg-vault-700 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gold-500 rounded-full transition-all duration-500"
+              className="h-full bg-vermillion-500 rounded-full transition-all duration-500"
               style={{width: `${progress}%`}}
             />
           </div>
@@ -146,12 +146,17 @@ function CartEmpty({
       className="flex flex-col items-center justify-center py-12 text-center"
     >
       <LockIcon className="w-16 h-16 text-vault-600 mb-6" strokeWidth={1} />
-      <p className="text-chrome-400 text-sm mb-6">Your vault is empty</p>
+      <p className="text-vault-50 text-base font-display font-semibold mb-2">
+        Your vault is empty
+      </p>
+      <p className="text-chrome-400 text-sm mb-6">
+        Start your authentic Beyblade collection
+      </p>
       <Link
-        to="/collections"
+        to="/collections/all-beyblades"
         onClick={close}
         prefetch="viewport"
-        className="text-gold-500 hover:text-gold-400 font-heading text-xs uppercase tracking-wider transition-colors"
+        className="inline-flex items-center justify-center gap-2 bg-vermillion-500 hover:bg-vermillion-600 text-white font-heading font-semibold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all"
       >
         Start collecting &rarr;
       </Link>

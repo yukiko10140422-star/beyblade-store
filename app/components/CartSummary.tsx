@@ -23,7 +23,7 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
     >
       <div className="flex items-center justify-between">
         <span className="text-chrome-400 text-sm">Subtotal</span>
-        <span className="text-gold-400 font-heading text-lg">
+        <span className="text-vault-50 font-display text-2xl font-semibold">
           {cart?.cost?.subtotalAmount?.amount ? (
             <Money data={cart.cost.subtotalAmount} />
           ) : (
@@ -32,9 +32,14 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
         </span>
       </div>
 
-      <p className="text-chrome-600 text-xs">
-        Shipping & taxes calculated at checkout
-      </p>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-chrome-400">Shipping</span>
+        <span className="text-vault-50 font-semibold">FREE worldwide</span>
+      </div>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-chrome-400">Duties &amp; taxes</span>
+        <span className="text-vault-50 font-semibold">Pre-paid (DDP)</span>
+      </div>
 
       <CartDiscounts
         discountCodes={cart?.discountCodes}
@@ -57,19 +62,19 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
     <a
       href={checkoutUrl}
       target="_self"
-      className="block w-full py-4 text-center rounded-lg font-heading uppercase tracking-[0.2em] text-sm bg-gold-500 hover:bg-gold-400 text-vault-950 transition-all duration-300 hover:glow-gold-lg"
+      className="block w-full py-4 text-center rounded-full font-heading font-semibold uppercase tracking-[0.15em] text-sm bg-vermillion-500 hover:bg-vermillion-600 text-white transition-all duration-200 hover:shadow-lg hover:shadow-vermillion-500/30"
     >
-      Checkout
+      Secure Checkout &rarr;
     </a>
   );
 }
 
 const inputClass =
-  'flex-1 bg-vault-800 border border-vault-600 rounded-lg px-3 py-2 text-xs text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/20 transition-all';
+  'flex-1 bg-white border border-vault-700 rounded-lg px-3 py-2 text-xs text-vault-50 placeholder:text-chrome-500 focus:outline-none focus:border-vermillion-300 focus:ring-1 focus:ring-vermillion-300/30 transition-all';
 const applyBtnClass =
-  'text-[10px] font-heading uppercase tracking-wider text-gold-500 hover:text-gold-400 px-3 py-2 border border-vault-600 hover:border-gold-400/30 rounded-lg transition-all';
+  'text-[10px] font-heading uppercase tracking-wider font-semibold text-vermillion-500 hover:text-vermillion-600 px-3 py-2 border border-vault-700 hover:border-vermillion-300 rounded-lg transition-all';
 const removeBtnClass =
-  'text-[10px] text-chrome-600 hover:text-danger-500 transition-colors';
+  'text-[10px] text-chrome-500 hover:text-danger-500 transition-colors';
 
 function CartDiscounts({
   discountCodes,
@@ -96,7 +101,7 @@ function CartDiscounts({
               aria-labelledby={discountsHeadingId}
             >
               <span className="text-xs text-chrome-300">
-                <code className="bg-vault-700 px-2 py-0.5 rounded text-gold-400">
+                <code className="bg-vermillion-50 border border-vermillion-200 px-2 py-0.5 rounded text-vermillion-600 font-semibold">
                   {codes?.join(', ')}
                 </code>
               </span>
@@ -203,10 +208,10 @@ function CartGiftCard({
               }}
             >
               <div className="flex items-center gap-2">
-                <code className="bg-vault-700 px-2 py-0.5 rounded text-xs text-chrome-300">
+                <code className="bg-vault-800 border border-vault-700 px-2 py-0.5 rounded text-xs text-vault-50">
                   ***{giftCard.lastCharacters}
                 </code>
-                <span className="text-xs text-gold-400">
+                <span className="text-xs text-vermillion-500 font-semibold">
                   <Money data={giftCard.amountUsed} />
                 </span>
               </div>

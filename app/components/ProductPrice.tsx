@@ -15,7 +15,7 @@ export function ProductPrice({
           {price ? (
             <Money
               data={price}
-              className="text-gold-400 font-heading text-2xl"
+              className="text-vault-50 font-display text-3xl font-semibold"
             />
           ) : null}
           <s>
@@ -29,7 +29,10 @@ export function ProductPrice({
           </span>
         </>
       ) : price ? (
-        <Money data={price} className="text-gold-400 font-heading text-2xl" />
+        <Money
+          data={price}
+          className="text-vault-50 font-display text-3xl font-semibold"
+        />
       ) : (
         <span>&nbsp;</span>
       )}

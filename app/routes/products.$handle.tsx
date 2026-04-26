@@ -13,6 +13,7 @@ import type {RelatedProductsQuery} from 'storefrontapi.generated';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {StickyAtcBar} from '~/components/StickyAtcBar';
 import {ProductCard} from '~/components/ProductCard';
 import {ProductCardSkeleton} from '~/components/home/ProductCardSkeleton';
 import {TypeBadge} from '~/components/TypeBadge';
@@ -287,14 +288,14 @@ export default function Product() {
         <div className="lg:sticky lg:top-[104px] lg:self-start space-y-6">
           {/* Vendor */}
           {product.vendor && (
-            <p className="text-chrome-500 text-xs font-heading uppercase tracking-[0.2em]">
+            <p className="text-vermillion-500 text-[11px] font-heading uppercase tracking-[0.2em] font-semibold">
               {product.vendor}
             </p>
           )}
 
           {/* Availability Badge + Title */}
           <TypeBadge tags={product.tags?.join(', ')} size="md" />
-          <h1 className="font-heading text-2xl md:text-3xl text-chrome-100 uppercase tracking-wide">
+          <h1 className="font-display text-3xl md:text-4xl lg:text-5xl text-vault-50 font-semibold tracking-tight leading-[1.1]">
             {title}
           </h1>
 
@@ -315,51 +316,74 @@ export default function Product() {
             expectedShipDate={product.expectedShipDate?.value ?? undefined}
           />
 
-          {/* Shipping & Duties Notice */}
-          <div className="py-3 px-4 rounded-lg bg-gold-400/5 border border-gold-400/10 space-y-2">
-            <div className="flex items-center gap-2">
-              <CheckCircleIcon className="w-4 h-4 text-gold-400 flex-shrink-0" />
-              <p className="text-chrome-200 text-sm">
-                <span className="text-gold-400 font-heading uppercase tracking-wider">
-                  Free shipping & duties included
-                </span>
+          {/* Real scarcity — addresses #1 cross-border purchase blocker.
+              Triggers on tag-based limited inventory signals. */}
+          {selectedVariant?.availableForSale &&
+            (product.tags?.includes('limited-edition') ||
+              product.tags?.includes('rare')) && (
+              <div className="py-3 px-4 rounded-lg bg-vermillion-50 border border-vermillion-200">
+                <p className="text-vermillion-600 text-sm font-semibold">
+                  Limited stock — restocks from Japan every 4-6 weeks
+                </p>
+              </div>
+            )}
+
+          {/* Shipping & Duties Notice — primary trust signal */}
+          <div className="py-4 px-5 rounded-lg bg-vault-800 border border-vault-700 space-y-2">
+            <div className="flex items-center gap-2.5">
+              <CheckCircleIcon className="w-5 h-5 text-vermillion-500 flex-shrink-0" />
+              <p className="text-vault-50 text-sm font-semibold">
+                Free shipping &amp; duties included
               </p>
             </div>
-            <p className="text-chrome-400 text-xs pl-6">
+            <p className="text-chrome-400 text-xs pl-7 leading-relaxed">
               Ships from Tokyo via ePacket Light (7-14 days). All import taxes
-              and customs fees are included in the price &mdash; no extra
-              charges at delivery.
+              and customs fees are pre-paid &mdash; no surprise charges at
+              delivery.
             </p>
           </div>
 
           {/* Express Upgrade */}
-          <div className="py-4 border-t border-vault-700 space-y-2">
-            <div className="flex items-center gap-3">
-              <PaperAirplaneIcon className="w-5 h-5 text-gold-400 flex-shrink-0" />
-              <div>
-                <p className="text-chrome-200 text-sm">
-                  DHL/FedEx Express Upgrade available
-                </p>
-                <p className="text-chrome-500 text-xs">
-                  3-7 days &middot; Free upgrade on $300+ orders or 3+ items
-                </p>
-              </div>
+          <div className="flex items-start gap-3 py-3">
+            <PaperAirplaneIcon className="w-5 h-5 text-vermillion-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-vault-50 text-sm font-medium">
+                DHL/FedEx Express Upgrade available
+              </p>
+              <p className="text-chrome-400 text-xs mt-0.5">
+                3-7 days &middot; Free upgrade on $300+ orders or 3+ items
+              </p>
             </div>
           </div>
 
           {/* Trust badges */}
-          <div className="flex flex-wrap items-center gap-4 py-4 border-t border-vault-700">
-            <div className="flex items-center gap-2 text-chrome-500 text-xs">
-              <ShieldCheckIcon className="w-4 h-4 text-gold-400" />
-              100% Authentic
+          <div className="grid grid-cols-3 gap-3 py-4 border-t border-vault-700">
+            <div className="flex flex-col items-center text-center gap-1.5">
+              <ShieldCheckIcon className="w-5 h-5 text-vermillion-500" />
+              <span className="text-vault-50 text-[11px] font-semibold">
+                Authentic
+              </span>
+              <span className="text-chrome-500 text-[10px] uppercase tracking-wider">
+                Takara Tomy
+              </span>
             </div>
-            <div className="flex items-center gap-2 text-chrome-500 text-xs">
-              <GlobeIcon className="w-4 h-4 text-gold-400" />
-              Fully Tracked
+            <div className="flex flex-col items-center text-center gap-1.5">
+              <GlobeIcon className="w-5 h-5 text-vermillion-500" />
+              <span className="text-vault-50 text-[11px] font-semibold">
+                Tracked
+              </span>
+              <span className="text-chrome-500 text-[10px] uppercase tracking-wider">
+                All Orders
+              </span>
             </div>
-            <div className="flex items-center gap-2 text-chrome-500 text-xs">
-              <LockIcon className="w-4 h-4 text-gold-400" />
-              DDP — Tax Included
+            <div className="flex flex-col items-center text-center gap-1.5">
+              <LockIcon className="w-5 h-5 text-vermillion-500" />
+              <span className="text-vault-50 text-[11px] font-semibold">
+                DDP
+              </span>
+              <span className="text-chrome-500 text-[10px] uppercase tracking-wider">
+                Duties Paid
+              </span>
             </div>
           </div>
 
@@ -376,11 +400,11 @@ export default function Product() {
 
           {/* Description */}
           <div className="border-t border-vault-700 pt-6">
-            <h2 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400 mb-4">
+            <h2 className="font-display text-xl font-semibold text-vault-50 mb-4 tracking-tight">
               Description
             </h2>
             <div
-              className="text-chrome-400 text-sm leading-relaxed [&>p]:mb-3 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-3 [&_a]:text-gold-400 [&_a]:underline"
+              className="text-chrome-300 text-[15px] leading-relaxed [&>p]:mb-3 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-3 [&_a]:text-vermillion-500 [&_a]:underline [&_strong]:text-vault-50 [&_strong]:font-semibold"
               dangerouslySetInnerHTML={{__html: descriptionHtml}}
             />
           </div>
@@ -404,6 +428,13 @@ export default function Product() {
       />
 
       <RelatedProducts products={relatedProducts} />
+
+      {/* Mobile sticky ATC — appears after scrolling past primary ATC */}
+      <StickyAtcBar
+        selectedVariant={selectedVariant}
+        productTitle={title}
+        productImage={selectedVariant?.image}
+      />
     </div>
   );
 }

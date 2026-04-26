@@ -1,11 +1,10 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/_index';
-import {HeroSection} from '~/components/home/HeroSection';
-import {FeaturedHero} from '~/components/home/FeaturedHero';
+import {SplitHero} from '~/components/home/SplitHero';
 import {NewArrivals} from '~/components/home/NewArrivals';
 import {TypeCategories} from '~/components/home/TypeCategories';
+import {FounderStory} from '~/components/home/FounderStory';
 import {TrustSignals} from '~/components/home/TrustSignals';
-import {AllProducts} from '~/components/home/AllProducts';
 import {ShippingBanner} from '~/components/home/ShippingBanner';
 import {Newsletter} from '~/components/home/Newsletter';
 import {SITE_URL} from '~/lib/constants';
@@ -119,11 +118,10 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div>
-      <HeroSection />
-      <FeaturedHero product={data.featuredProduct} />
+      <SplitHero product={data.featuredProduct} />
       <NewArrivals products={data.recommendedProducts} />
       <TypeCategories />
-      <AllProducts products={data.allProducts} />
+      <FounderStory />
       <TrustSignals />
       <ShippingBanner />
       <Newsletter />

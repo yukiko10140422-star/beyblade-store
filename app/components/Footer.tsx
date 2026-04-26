@@ -20,7 +20,45 @@ export function Footer({
     <Suspense>
       <Await resolve={footerPromise}>
         {(footer) => (
-          <footer className="bg-vault-950 border-t border-gold-400/10 mt-auto">
+          <footer className="bg-vault-800 border-t border-vault-700 mt-auto">
+            {/* Trust strip — leverages NinJapon's eBay track record */}
+            <div className="border-b border-vault-700 bg-white">
+              <div className="mx-auto max-w-7xl px-4 lg:px-8 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 text-center md:text-left">
+                <div>
+                  <div className="font-display text-xl font-semibold text-vault-50">
+                    3,800+
+                  </div>
+                  <div className="text-chrome-400 text-xs uppercase tracking-wider">
+                    Verified Shipments via NinJapon
+                  </div>
+                </div>
+                <div>
+                  <div className="font-display text-xl font-semibold text-vault-50">
+                    100%
+                  </div>
+                  <div className="text-chrome-400 text-xs uppercase tracking-wider">
+                    Authentic Takara Tomy
+                  </div>
+                </div>
+                <div>
+                  <div className="font-display text-xl font-semibold text-vault-50">
+                    Free DDP
+                  </div>
+                  <div className="text-chrome-400 text-xs uppercase tracking-wider">
+                    All Duties Included
+                  </div>
+                </div>
+                <div>
+                  <div className="font-display text-xl font-semibold text-vault-50">
+                    Tokyo, JP
+                  </div>
+                  <div className="text-chrome-400 text-xs uppercase tracking-wider">
+                    Ships Direct from Japan
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="mx-auto max-w-7xl px-4 lg:px-8 py-16">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                 {/* Brand Column */}
@@ -34,16 +72,17 @@ export function Footer({
                     className="h-16 w-auto mb-4"
                     loading="lazy"
                   />
-                  <p className="text-chrome-500 text-sm leading-relaxed">
-                    Premium authentic Beyblades sourced direct from Japan.
-                    Collector grade. Vault sealed.
+                  <p className="text-chrome-400 text-sm leading-relaxed">
+                    Authentic Takara Tomy Beyblades, sourced directly in Tokyo
+                    by NinJapon — a trusted Japanese exporter with 3,800+
+                    international shipments.
                   </p>
                   <div className="flex gap-3 mt-5">
                     <a
                       href="https://www.instagram.com/tsv_2026"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-lg bg-vault-800 border border-vault-700 flex items-center justify-center text-chrome-400 hover:text-gold-400 hover:border-gold-400/30 transition-all"
+                      className="w-9 h-9 rounded-lg bg-white border border-vault-700 flex items-center justify-center text-chrome-400 hover:text-vermillion-500 hover:border-vermillion-300 transition-all"
                       aria-label="Instagram"
                     >
                       <InstagramIcon className="w-4 h-4" />
@@ -52,7 +91,7 @@ export function Footer({
                       href="https://www.tiktok.com/@tokyo.spin.vault"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-lg bg-vault-800 border border-vault-700 flex items-center justify-center text-chrome-400 hover:text-gold-400 hover:border-gold-400/30 transition-all"
+                      className="w-9 h-9 rounded-lg bg-white border border-vault-700 flex items-center justify-center text-chrome-400 hover:text-vermillion-500 hover:border-vermillion-300 transition-all"
                       aria-label="TikTok"
                     >
                       <TikTokIcon className="w-4 h-4" />
@@ -62,7 +101,7 @@ export function Footer({
 
                 {/* Shop Column */}
                 <div>
-                  <h3 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400 mb-4">
+                  <h3 className="font-heading text-xs uppercase tracking-[0.2em] text-chrome-300 mb-4 font-semibold">
                     Shop
                   </h3>
                   <ul className="space-y-3">
@@ -83,7 +122,7 @@ export function Footer({
 
                 {/* Info Column */}
                 <div>
-                  <h3 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400 mb-4">
+                  <h3 className="font-heading text-xs uppercase tracking-[0.2em] text-chrome-300 mb-4 font-semibold">
                     Information
                   </h3>
                   {footer?.menu && header.shop.primaryDomain?.url && (
@@ -128,8 +167,8 @@ function FooterLink({to, children}: {to: string; children: React.ReactNode}) {
           clsx(
             'text-sm transition-colors duration-200',
             isActive
-              ? 'text-gold-400'
-              : 'text-chrome-400 hover:text-chrome-200',
+              ? 'text-vermillion-500'
+              : 'text-chrome-400 hover:text-vault-50',
           )
         }
       >
@@ -167,7 +206,7 @@ function FooterMenu({
                 href={url}
                 rel="noopener noreferrer"
                 target="_blank"
-                className="text-sm text-chrome-400 hover:text-chrome-200 transition-colors duration-200"
+                className="text-sm text-chrome-400 hover:text-vault-50 transition-colors duration-200"
               >
                 {item.title}
               </a>
@@ -240,10 +279,10 @@ const FALLBACK_FOOTER_MENU = {
 function FooterNewsletter() {
   return (
     <div>
-      <h3 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400 mb-4">
+      <h3 className="font-heading text-xs uppercase tracking-[0.2em] text-chrome-300 mb-4 font-semibold">
         Vault Access
       </h3>
-      <p className="text-chrome-500 text-sm mb-4">
+      <p className="text-chrome-400 text-sm mb-4">
         Get notified about new drops and exclusive releases.
       </p>
       <NewsletterForm variant="compact" />

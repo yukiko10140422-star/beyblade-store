@@ -11,19 +11,21 @@ interface NewArrivalsProps {
 
 export function NewArrivals({products}: NewArrivalsProps) {
   return (
-    <section className="py-16 md:py-24 px-4">
+    <section className="py-16 md:py-24 px-4 bg-vault-950">
       <div className="max-w-7xl mx-auto">
         <Reveal>
-          <div className="flex items-center justify-between mb-12">
+          <div className="flex items-end justify-between mb-10 md:mb-14">
             <div>
-              <h2 className="font-heading text-xl md:text-2xl text-gold-metallic uppercase tracking-wider">
+              <p className="text-vermillion-500 font-heading text-[11px] uppercase tracking-[0.2em] font-semibold mb-2">
+                Fresh from Tokyo
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl font-semibold text-vault-50 tracking-tight">
                 New Arrivals
               </h2>
-              <p className="text-chrome-500 text-sm mt-2">Fresh from Tokyo</p>
             </div>
             <Link
-              to="/collections/all"
-              className="text-gold-500 hover:text-gold-400 font-heading text-xs uppercase tracking-wider transition-colors"
+              to="/collections/all-beyblades"
+              className="text-vermillion-500 hover:text-vermillion-600 font-heading text-xs uppercase tracking-wider font-semibold transition-colors"
             >
               View All &rarr;
             </Link>
@@ -43,7 +45,7 @@ export function NewArrivals({products}: NewArrivalsProps) {
               const nodes = response?.products?.nodes;
               if (!nodes || nodes.length === 0) {
                 return (
-                  <p className="text-chrome-500 text-sm text-center py-8">
+                  <p className="text-chrome-400 text-sm text-center py-8">
                     Products are temporarily unavailable. Please check back
                     soon.
                   </p>

@@ -50,7 +50,7 @@ export function CartLineItem({
             prefetch="intent"
             to={lineItemUrl}
             onClick={() => layout === 'aside' && close()}
-            className="text-sm text-chrome-200 hover:text-gold-400 transition-colors font-medium line-clamp-2"
+            className="text-sm text-vault-50 hover:text-vermillion-500 transition-colors font-medium line-clamp-2"
           >
             {product.title}
           </Link>
@@ -104,12 +104,12 @@ function CartLineQuantity({line}: {line: CartLine}) {
             disabled={quantity <= 1 || !!isOptimistic}
             name="decrease-quantity"
             value={prevQuantity}
-            className="w-8 h-8 flex items-center justify-center text-chrome-400 hover:text-gold-400 disabled:opacity-30 transition-colors"
+            className="w-8 h-8 flex items-center justify-center text-vault-50 hover:text-vermillion-500 disabled:opacity-30 transition-colors"
           >
             &#8722;
           </button>
         </CartLineUpdateButton>
-        <span className="w-8 text-center text-sm text-chrome-200 font-heading">
+        <span className="w-8 text-center text-sm text-vault-50 font-heading font-semibold">
           {quantity}
         </span>
         <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
@@ -118,7 +118,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
             name="increase-quantity"
             value={nextQuantity}
             disabled={!!isOptimistic}
-            className="w-8 h-8 flex items-center justify-center text-chrome-400 hover:text-gold-400 disabled:opacity-30 transition-colors"
+            className="w-8 h-8 flex items-center justify-center text-vault-50 hover:text-vermillion-500 disabled:opacity-30 transition-colors"
           >
             &#43;
           </button>
