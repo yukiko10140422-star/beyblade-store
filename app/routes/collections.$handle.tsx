@@ -42,24 +42,57 @@ export const meta: Route.MetaFunction = ({data}) => {
     {
       'script:ld+json': {
         '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        itemListElement: [
+        '@graph': [
           {
-            '@type': 'ListItem',
-            position: 1,
-            name: 'Home',
-            item: SITE_URL,
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: SITE_URL,
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Collections',
+                item: `${SITE_URL}/collections`,
+              },
+              {
+                '@type': 'ListItem',
+                position: 3,
+                name: data?.collection.title ?? 'Collection',
+              },
+            ],
           },
           {
-            '@type': 'ListItem',
-            position: 2,
-            name: 'Collections',
-            item: `${SITE_URL}/collections`,
-          },
-          {
-            '@type': 'ListItem',
-            position: 3,
-            name: data?.collection.title ?? 'Collection',
+            '@type': 'CollectionPage',
+            name: data?.collection.title,
+            description:
+              data?.collection.description ||
+              `Browse ${data?.collection.title} at Tokyo Spin Vault.`,
+            url: collectionUrl,
+            isPartOf: {
+              '@type': 'WebSite',
+              name: 'Tokyo Spin Vault',
+              url: SITE_URL,
+            },
+            mainEntity: {
+              '@type': 'ItemList',
+              itemListElement: (data?.collection.products.nodes ?? [])
+                .slice(0, 12)
+                .map(
+                  (
+                    product: {handle: string; title: string},
+                    index: number,
+                  ) => ({
+                    '@type': 'ListItem',
+                    position: index + 1,
+                    name: product.title,
+                    url: `${SITE_URL}/products/${product.handle}`,
+                  }),
+                ),
+            },
           },
         ],
       },

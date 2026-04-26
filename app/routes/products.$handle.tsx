@@ -16,6 +16,7 @@ import {ProductForm} from '~/components/ProductForm';
 import {ProductCard} from '~/components/ProductCard';
 import {ProductCardSkeleton} from '~/components/home/ProductCardSkeleton';
 import {TypeBadge} from '~/components/TypeBadge';
+import {PerformanceChart} from '~/components/PerformanceChart';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
@@ -72,7 +73,7 @@ export const meta: Route.MetaFunction = ({data}) => {
     {property: 'product:price:currency', content: currency},
     {
       property: 'product:availability',
-      content: available ? 'instock' : 'oos',
+      content: available ? 'in stock' : 'out of stock',
     },
     {property: 'product:condition', content: 'new'},
     {
@@ -87,57 +88,74 @@ export const meta: Route.MetaFunction = ({data}) => {
     {
       'script:ld+json': {
         '@context': 'https://schema.org',
-        '@type': 'Product',
-        name: product?.title,
-        description: product?.description,
-        image: image,
-        sku,
-        brand: {
-          '@type': 'Brand',
-          name: product?.vendor || 'Takara Tomy',
-        },
-        offers: {
-          '@type': 'Offer',
-          price,
-          priceCurrency: currency,
-          availability: available
-            ? 'https://schema.org/InStock'
-            : 'https://schema.org/OutOfStock',
-          seller: {
-            '@type': 'Organization',
-            name: 'Tokyo Spin Vault',
-          },
-          shippingDetails: {
-            '@type': 'OfferShippingDetails',
-            shippingOrigin: {
-              '@type': 'DefinedRegion',
-              addressCountry: 'JP',
-            },
-          },
-        },
-      },
-    },
-    {
-      'script:ld+json': {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        itemListElement: [
+        '@graph': [
+          buildProductJsonLd({
+            product,
+            productUrl,
+            image,
+            sku,
+            price,
+            currency,
+            available,
+          }),
           {
-            '@type': 'ListItem',
-            position: 1,
-            name: 'Home',
-            item: SITE_URL,
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: SITE_URL,
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Collections',
+                item: `${SITE_URL}/collections`,
+              },
+              {
+                '@type': 'ListItem',
+                position: 3,
+                name: rawTitle,
+              },
+            ],
           },
           {
-            '@type': 'ListItem',
-            position: 2,
-            name: 'Collections',
-            item: `${SITE_URL}/collections`,
-          },
-          {
-            '@type': 'ListItem',
-            position: 3,
-            name: rawTitle,
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'Is this an authentic Takara Tomy product?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. Every Beyblade sold at Tokyo Spin Vault is 100% authentic Takara Tomy, sourced directly from authorized Japanese retailers. We are based in Tokyo, Japan.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Do I have to pay customs duties or import taxes?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'No. All prices include duties and taxes (DDP — Delivered Duty Paid). You will never be charged extra fees at delivery.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'How long does shipping take?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Free shipping via ePacket Light takes 7-14 business days to the US/Canada, 10-18 days to Europe, and 5-12 days to Asia-Pacific. DHL/FedEx Express upgrade (3-7 days) is available and free on orders over $300 or 3+ items.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'What is your return policy?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'We accept returns within 30 days of delivery for unused items in original packaging. Contact us at support@tokyospinvault.com to initiate a return.',
+                },
+              },
+            ],
           },
         ],
       },
@@ -232,6 +250,23 @@ export default function Product() {
 
   const {title, descriptionHtml} = product;
 
+  // Extract media images for gallery
+  const mediaImages = (product.media?.nodes ?? []).filter(
+    (
+      n,
+    ): n is {
+      __typename: 'MediaImage';
+      id: string;
+      image: {
+        id?: string;
+        url: string;
+        altText?: string | null;
+        width?: number;
+        height?: number;
+      };
+    } => n.__typename === 'MediaImage' && !!n.image,
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
       <Breadcrumbs
@@ -245,8 +280,8 @@ export default function Product() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-        {/* Left: Image */}
-        <ProductImage image={selectedVariant?.image} />
+        {/* Left: Image Gallery */}
+        <ProductImage image={selectedVariant?.image} media={mediaImages} />
 
         {/* Right: Product Info */}
         <div className="lg:sticky lg:top-[104px] lg:self-start space-y-6">
@@ -257,8 +292,8 @@ export default function Product() {
             </p>
           )}
 
-          {/* Type + Title */}
-          <TypeBadge type={product.beybladeType?.value} size="md" />
+          {/* Availability Badge + Title */}
+          <TypeBadge tags={product.tags?.join(', ')} size="md" />
           <h1 className="font-heading text-2xl md:text-3xl text-chrome-100 uppercase tracking-wide">
             {title}
           </h1>
@@ -276,6 +311,8 @@ export default function Product() {
           <ProductForm
             productOptions={productOptions}
             selectedVariant={selectedVariant}
+            isPreOrder={product.tags?.includes('pre-order') ?? false}
+            expectedShipDate={product.expectedShipDate?.value ?? undefined}
           />
 
           {/* Shipping & Duties Notice */}
@@ -328,6 +365,14 @@ export default function Product() {
 
           {/* Beyblade Specs (metafields) */}
           <BeybladeSpecs product={product} />
+
+          {/* Performance Chart (if data exists for this product) */}
+          {PERFORMANCE_DATA[product.handle] && (
+            <PerformanceChart
+              stats={PERFORMANCE_DATA[product.handle].stats}
+              staminaRange={PERFORMANCE_DATA[product.handle].staminaRange}
+            />
+          )}
 
           {/* Description */}
           <div className="border-t border-vault-700 pt-6">
@@ -479,10 +524,27 @@ const PRODUCT_FRAGMENT = `#graphql
     adjacentVariants (selectedOptions: $selectedOptions) {
       ...ProductVariant
     }
+    media(first: 30) {
+      nodes {
+        __typename
+        ... on MediaImage {
+          id
+          image {
+            id
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
+    tags
     seo {
       description
       title
     }
+    expectedShipDate: metafield(namespace: "custom", key: "expected_ship_date") { value }
     beybladeType: metafield(namespace: "beyblade", key: "type") { value }
     bladeName: metafield(namespace: "beyblade", key: "blade_name") { value }
     ratchetSpec: metafield(namespace: "beyblade", key: "ratchet_spec") { value }
@@ -523,6 +585,251 @@ const RELATED_PRODUCTS_QUERY = `#graphql
     }
   }
 ` as const;
+
+/**
+ * Builds an enriched Product JSON-LD schema for Google rich results,
+ * AI shopping surfaces (Google AI Overviews, Bing Copilot), and
+ * the Universal Commerce Protocol (UCP).
+ *
+ * Includes: countryOfOrigin, manufacturer, itemCondition,
+ * shippingDetails with rate/time, returnPolicy, and Beyblade-specific
+ * additionalProperty fields from metafields.
+ */
+function buildProductJsonLd({
+  product,
+  productUrl,
+  image,
+  sku,
+  price,
+  currency,
+  available,
+}: {
+  product: Record<string, unknown> | undefined;
+  productUrl: string;
+  image: string;
+  sku: string | undefined;
+  price: string;
+  currency: string;
+  available: boolean;
+}) {
+  const p = product as
+    | {
+        title?: string;
+        description?: string;
+        vendor?: string;
+        beybladeType?: {value: string} | null;
+        bladeName?: {value: string} | null;
+        series?: {value: string} | null;
+        modelNumber?: {value: string} | null;
+        generation?: {value: string} | null;
+        condition?: {value: string} | null;
+        ratchetSpec?: {value: string} | null;
+        bitSpec?: {value: string} | null;
+      }
+    | undefined;
+
+  // Build additionalProperty from metafields
+  const additionalProperty = [
+    p?.beybladeType?.value && {
+      '@type': 'PropertyValue' as const,
+      name: 'Beyblade Type',
+      value: p.beybladeType.value,
+    },
+    p?.series?.value && {
+      '@type': 'PropertyValue' as const,
+      name: 'Series',
+      value: p.series.value,
+    },
+    p?.modelNumber?.value && {
+      '@type': 'PropertyValue' as const,
+      name: 'Model Number',
+      value: p.modelNumber.value,
+    },
+    p?.bladeName?.value && {
+      '@type': 'PropertyValue' as const,
+      name: 'Blade',
+      value: p.bladeName.value,
+    },
+    p?.ratchetSpec?.value && {
+      '@type': 'PropertyValue' as const,
+      name: 'Ratchet',
+      value: p.ratchetSpec.value,
+    },
+    p?.bitSpec?.value && {
+      '@type': 'PropertyValue' as const,
+      name: 'Bit',
+      value: p.bitSpec.value,
+    },
+    p?.generation?.value && {
+      '@type': 'PropertyValue' as const,
+      name: 'Generation',
+      value: p.generation.value,
+    },
+  ].filter(Boolean);
+
+  const conditionValue = p?.condition?.value?.toLowerCase();
+  const itemCondition =
+    conditionValue === 'used'
+      ? 'https://schema.org/UsedCondition'
+      : 'https://schema.org/NewCondition';
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: p?.title,
+    description: p?.description,
+    image,
+    url: productUrl,
+    sku,
+    brand: {
+      '@type': 'Brand',
+      name: p?.vendor || 'Takara Tomy',
+    },
+    manufacturer: {
+      '@type': 'Organization',
+      name: 'Takara Tomy',
+    },
+    countryOfOrigin: {
+      '@type': 'Country',
+      name: 'Japan',
+    },
+    category: 'Toys & Games > Spinning Tops',
+    ...(additionalProperty.length > 0 && {additionalProperty}),
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy',
+      applicableCountry: ['US', 'GB', 'AU', 'CA'],
+      returnPolicyCategory:
+        'https://schema.org/MerchantReturnFiniteReturnWindow',
+      merchantReturnDays: 30,
+      returnMethod: 'https://schema.org/ReturnByMail',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: productUrl,
+      price: parseFloat(price),
+      priceCurrency: currency,
+      itemCondition,
+      availability: available
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'Tokyo Spin Vault',
+        url: 'https://tokyospinvault.com',
+      },
+      shippingDetails: [
+        {
+          '@type': 'OfferShippingDetails',
+          shippingRate: {
+            '@type': 'MonetaryAmount',
+            value: '0',
+            currency: 'USD',
+          },
+          shippingDestination: {
+            '@type': 'DefinedRegion',
+            addressCountry: 'US',
+          },
+          deliveryTime: {
+            '@type': 'ShippingDeliveryTime',
+            handlingTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 1,
+              maxValue: 2,
+              unitCode: 'DAY',
+            },
+            transitTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 7,
+              maxValue: 14,
+              unitCode: 'DAY',
+            },
+          },
+        },
+        {
+          '@type': 'OfferShippingDetails',
+          shippingRate: {
+            '@type': 'MonetaryAmount',
+            value: '0',
+            currency: 'USD',
+          },
+          shippingDestination: {
+            '@type': 'DefinedRegion',
+            addressCountry: 'GB',
+          },
+          deliveryTime: {
+            '@type': 'ShippingDeliveryTime',
+            handlingTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 1,
+              maxValue: 2,
+              unitCode: 'DAY',
+            },
+            transitTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 10,
+              maxValue: 18,
+              unitCode: 'DAY',
+            },
+          },
+        },
+        {
+          '@type': 'OfferShippingDetails',
+          shippingRate: {
+            '@type': 'MonetaryAmount',
+            value: '0',
+            currency: 'USD',
+          },
+          shippingDestination: {
+            '@type': 'DefinedRegion',
+            addressCountry: 'AU',
+          },
+          deliveryTime: {
+            '@type': 'ShippingDeliveryTime',
+            handlingTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 1,
+              maxValue: 2,
+              unitCode: 'DAY',
+            },
+            transitTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 5,
+              maxValue: 12,
+              unitCode: 'DAY',
+            },
+          },
+        },
+        {
+          '@type': 'OfferShippingDetails',
+          shippingRate: {
+            '@type': 'MonetaryAmount',
+            value: '0',
+            currency: 'USD',
+          },
+          shippingDestination: {
+            '@type': 'DefinedRegion',
+            addressCountry: 'CA',
+          },
+          deliveryTime: {
+            '@type': 'ShippingDeliveryTime',
+            handlingTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 1,
+              maxValue: 2,
+              unitCode: 'DAY',
+            },
+            transitTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 7,
+              maxValue: 14,
+              unitCode: 'DAY',
+            },
+          },
+        },
+      ],
+    },
+  };
+}
 
 /**
  * Returns the SKU only if it looks valid.
@@ -618,6 +925,94 @@ function buildProductMetaDescription({
   const full = parts.join('. ') + '.';
   return full.length > 160 ? full.substring(0, 157) + '...' : full;
 }
+
+/**
+ * Performance data per product handle.
+ * Stats: 1-5 scale (attack, stamina, defense, burst resistance, versatility).
+ * Sourced from kyoganken spin-time database + competitive meta analysis.
+ */
+const PERFORMANCE_DATA: Record<
+  string,
+  {
+    stats: {
+      attack: number;
+      stamina: number;
+      defense: number;
+      burst: number;
+      versatility: number;
+    };
+    staminaRange?: string;
+  }
+> = {
+  'beyblade-x-ux-00-aero-pegasus-3-70a-red-version-japan-exclusive': {
+    stats: {attack: 5, stamina: 3, defense: 2, burst: 3, versatility: 4},
+    staminaRange: '125–168s',
+  },
+  'beyblade-x-bx-00-starter-cobaltdragoon-9-60f-metal-coat-white-j-league-ver':
+    {
+      stats: {attack: 3, stamina: 4, defense: 4, burst: 4, versatility: 5},
+      staminaRange: '140–185s',
+    },
+  'beyblade-x-bx-00-starter-dransword-1-60v-metal-coat-black-j-league-ver': {
+    stats: {attack: 4, stamina: 3, defense: 3, burst: 4, versatility: 4},
+    staminaRange: '110–136s',
+  },
+  'beyblade-x-takara-tomy-cx-16-bahamut-blitz-bk1-50i-special-ver': {
+    stats: {attack: 4, stamina: 4, defense: 3, burst: 4, versatility: 5},
+    staminaRange: '130–175s',
+  },
+  'beyblade-x-ux-00-dran-buster-1-60a-color-booster-choice-violet': {
+    stats: {attack: 5, stamina: 2, defense: 2, burst: 3, versatility: 3},
+    staminaRange: '95–130s',
+  },
+  'beyblade-x-valkyrie-volt-s4-70v-metal-coat-gold-cx-11-emperor-might-deck-set':
+    {
+      stats: {attack: 5, stamina: 3, defense: 3, burst: 4, versatility: 5},
+      staminaRange: '115–155s',
+    },
+  'beyblade-x-perseus-dark-gold-g3-tournament-winning-prize-set-of-3': {
+    stats: {attack: 3, stamina: 4, defense: 5, burst: 5, versatility: 4},
+    staminaRange: '155–200s',
+  },
+  'beyblade-x-wizard-rod-metal-coat-gold-unused-g3-tournament-1st-prize-only-blade':
+    {
+      stats: {attack: 2, stamina: 5, defense: 3, burst: 4, versatility: 4},
+      staminaRange: '180–247s',
+    },
+  'beyblade-x-orochi-cluster-6-60lf-corocoro-comic-executive-2025': {
+    stats: {attack: 3, stamina: 4, defense: 4, burst: 3, versatility: 3},
+    staminaRange: '135–170s',
+  },
+  'set-of-2-beyblade-x-bx-00-cobaltdragoon-9-60f-draonsword-1-60v-j-league-cobalt':
+    {
+      stats: {attack: 4, stamina: 4, defense: 4, burst: 4, versatility: 5},
+      staminaRange: '110–185s',
+    },
+  'us-duty-free-beyblade-x-valkyrie-volt-s4-70v-metal-coat-gold': {
+    stats: {attack: 5, stamina: 3, defense: 3, burst: 4, versatility: 4},
+    staminaRange: '115–155s',
+  },
+  'set-of-10-beyblade-x-valkyrie-volt-s4-70v-metal-coat-gold-us-duty-free': {
+    stats: {attack: 5, stamina: 3, defense: 3, burst: 4, versatility: 4},
+    staminaRange: '115–155s',
+  },
+  'us-duty-free-beyblade-x-wizard-rod-gold-tournament-winning-prize-no-bey-code':
+    {
+      stats: {attack: 2, stamina: 5, defense: 3, burst: 4, versatility: 4},
+      staminaRange: '180–247s',
+    },
+  'v-bit-vortex-j-league-ver-beyblade-x': {
+    stats: {attack: 3, stamina: 4, defense: 3, burst: 3, versatility: 3},
+  },
+  'beyblade-x-g2-tournament-winner-prize-string-launcher-gold': {
+    stats: {attack: 3, stamina: 3, defense: 3, burst: 3, versatility: 5},
+  },
+  'beyblade-x-ux-00-samurai-saber-5-60k-metal-coat-samurai-blue-japan-national-team-ver':
+    {
+      stats: {attack: 4, stamina: 3, defense: 3, burst: 4, versatility: 4},
+      staminaRange: '120–160s',
+    },
+};
 
 interface BeybladeSpecsProduct {
   beybladeType?: {value: string} | null;
