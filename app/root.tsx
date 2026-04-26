@@ -17,6 +17,7 @@ import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import {SITE_URL} from '~/lib/constants';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
+import {GoogleTagManager} from './components/GoogleTagManager';
 
 export type RootLoader = typeof loader;
 
@@ -238,6 +239,7 @@ export default function App() {
       shop={data.shop}
       consent={data.consent}
     >
+      <GoogleTagManager />
       <PageLayout {...data}>
         <Outlet />
       </PageLayout>
