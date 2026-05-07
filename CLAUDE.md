@@ -53,14 +53,16 @@
 
 ### 既知の制限・未対応
 
-- 旧 Rise テーマが `tokyo-spin-vault.myshopify.com` で並列稼働中（重複コンテンツリスク）
-- Burst / Metal Fight コレクションが main nav に配置されているが商品 0 件
-- FAQ/About ページの配送情報が PDP/Shipping Policy と矛盾（旧情報のまま）
-- About ページで em dash が「?」に文字化け
-- 商品サブ画像が 225x225 の eBay サムネイル流用（低解像度）
-- メタフィールドの Storefront API 可視性を PUBLIC_READ に変更済み（反映待ち）
+- 商品サブ画像が 225x225 の eBay サムネイル流用（低解像度、PDP のメイン以外）
 - CountryPicker UI 未実装（`customerCountry` cookie の手動セット手段なし。auto detection は機能中）
 - 本番 Oxygen の env vars (`PUBLIC_STORE_DOMAIN` 等) は Admin UI で要更新 (ローカル `.env` は同期済み)
+
+### 解決済み (履歴)
+
+- 旧 Rise テーマ → カスタムドメイン化により Shopify が自動的に `noindex,nofollow` を付与済み (重複コンテンツリスクなし)
+- Burst / Metal Fight コレクション → main-menu から除去済み
+- FAQ / Shipping ページ → 8 ゾーン 108 ヵ国構成に合わせて全面更新 (em dash モジ化も同時修正)
+- メタフィールド Storefront API 可視性 → 全 9 件 PUBLIC_READ で反映済み
 
 ## デザインシステム
 
