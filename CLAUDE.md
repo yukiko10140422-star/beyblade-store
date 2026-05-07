@@ -42,22 +42,26 @@
   - ePacket Light 送料無料 (4 ゾーン: NA / EU / APAC / RoW = 38 国)
   - Japan Post EMS 有料 (4 拡張ゾーン: EU Ext $15 / APAC Ext $12 / Latin America $20 / ME&Africa $25 / Pacific Islands $35)
 - **Express アップグレード**: DHL/FedEx — $300+ or 3個+ で **$55 まで無料** (Pacific Islands $65 のみ対象外、Shopify 自動割引 2件)
-- **i18n**: EN 言語固定 + Country 動的検出 (cookie → `oxygen-buyer-country` ヘッダ → US fallback)。Markets 対象 9 国 (US/AU/DE/FR/GB/IE/SG/TW/PH) は現地通貨表示
+- **i18n**: EN 言語固定 + Country 動的検出 (cookie → `oxygen-buyer-country` ヘッダ → US fallback)
+- **Markets**: 4 地域別 Market 構成 (108 ヵ国カバー)
+  - `United States` (PRIMARY, US 1ヵ国, USD 基準)
+  - `Europe` (43 ヵ国, USD 基準 + EUR/GBP 等 local)
+  - `Asia-Pacific` (22 ヵ国, USD 基準 + AUD/SGD/TWD/PHP local)
+  - `International` (42 ヵ国 = LatAm + ME&Africa + CA + MX, USD 基準のみ)
+- **WebPresence**: `tokyospinvault.com` ドメイン経由 (旧 `idmrin-0x.myshopify.com` から修正済み)
 - **TypeScript**: `npm run typecheck` 0 errors（Wave 2 で 12→0 に解消済み）
 
 ### 既知の制限・未対応
 
-- Shopify primaryDomain が `tokyo-spin-vault.myshopify.com` のまま（Admin UI で要変更）
+- **Shopify primaryDomain が `tokyo-spin-vault.myshopify.com` のまま** (Admin UI > Settings > Domains で `tokyospinvault.com` に変更必要 — API 不可)
 - 旧 Rise テーマが `tokyo-spin-vault.myshopify.com` で並列稼働中（重複コンテンツリスク）
-- Markets が 1 つ「United States」に 9 国混在（US/AU/DE/FR/GB/IE/SG/TW/PH）→ 地域別 Market 分割推奨
-- Markets webPresence URL が dev ストア `idmrin-0x.myshopify.com` のまま（→ `tokyospinvault.com` に変更必要）
-- `.env` の `PUBLIC_STORE_DOMAIN=idmrin-0x.myshopify.com` と `PUBLIC_CHECKOUT_DOMAIN=tokyo-spin-vault.myshopify.com` の不整合
 - Burst / Metal Fight コレクションが main nav に配置されているが商品 0 件
 - FAQ/About ページの配送情報が PDP/Shipping Policy と矛盾（旧情報のまま）
 - About ページで em dash が「?」に文字化け
 - 商品サブ画像が 225x225 の eBay サムネイル流用（低解像度）
 - メタフィールドの Storefront API 可視性を PUBLIC_READ に変更済み（反映待ち）
 - CountryPicker UI 未実装（`customerCountry` cookie の手動セット手段なし。auto detection は機能中）
+- 本番 Oxygen の env vars (`PUBLIC_STORE_DOMAIN` 等) は Admin UI で要更新 (ローカル `.env` は同期済み)
 
 ## デザインシステム
 
