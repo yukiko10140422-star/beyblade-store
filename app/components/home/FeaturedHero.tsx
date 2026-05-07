@@ -33,7 +33,7 @@ interface FeaturedHeroProps {
 const FALLBACK_HANDLE =
   'beyblade-x-ux-00-aero-pegasus-3-70a-red-version-japan-exclusive';
 const FALLBACK_IMAGE_URL =
-  'https://cdn.shopify.com/s/files/1/0675/6945/1074/files/tsv-hq-8215548133442-0.png';
+  'https://cdn.shopify.com/s/files/1/0675/6945/1074/files/tsv-official-BXG24.png?v=1776347549';
 const FALLBACK_IMAGE_ALT = 'Beyblade X UX-00 Aero Pegasus 3-70A RED Version';
 
 export function FeaturedHero({product}: FeaturedHeroProps) {
