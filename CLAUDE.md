@@ -36,11 +36,10 @@
 
 - **ステージ**: 本番稼働中
 - **ドメイン**: tokyospinvault.com（Oxygen プライマリー、Markets webPresence も同ドメイン）
-- **商品数**: 131 件（15 件 ACTIVE、106 件 DRAFT）
+- **商品数**: 131 件（22 件 ACTIVE、97 件 DRAFT、12 件 ARCHIVED）
   - ACTIVE: SEO/alt/HQ 画像すべて充足
-  - DRAFT: 96/106 が HQ 画像化完了 (10 件のみ eBay 不在で未対応)
-  - 7 件が公開準備完了 (在庫 >0、適正価格、HQ 画像あり) — 公開判断は要ユーザー
-  - 2 件が $99.99 プレースホルダのまま (要価格設定または archive)
+  - DRAFT: 87/97 が HQ 画像化完了 (10 件のみ eBay 不在で未対応 — 手動ソース必要)
+  - 2026-05-07 に 7 件を DRAFT → ACTIVE 公開、2 件の $99.99 placeholder を ARCHIVED 化
 - **コレクション**: 9 スマートコレクション（タグ分類が一部不正確 — balance-type に全商品集中）
 - **配送モデル**: 8 ゾーン / 108 ヵ国対応
   - ePacket Light 送料無料 (4 ゾーン: NA / EU / APAC / RoW = 38 国)
@@ -58,7 +57,7 @@
 ### 既知の制限・未対応
 
 - 本番 Oxygen の env vars (`PUBLIC_STORE_DOMAIN` 等) は Admin UI で要更新 (ローカル `.env` は同期済み)
-- `app/components/CountryPicker.tsx` 作成済みだが Header.tsx への統合は WIP デザイン作業の完了待ち
+- DRAFT 残り 10 件の低解像度画像は eBay 未掲載のため手動ソース必要
 
 ### 解決済み (履歴)
 
@@ -70,7 +69,9 @@
 - ACTIVE 商品画像の alt text 欠落 → ゼロに
 - 低解像度 featured image (eBay 225px サムネ + 586x709) → 全 9 ACTIVE 商品 1200x1200 以上に差替え
 - DRAFT 商品の低解像度画像 → 94 → 10 (89% 改善、eBay HQ 取得 + 1200x1200 正規化)
-- CountryPicker.tsx スタンドアロン作成 (cookie 書込 + リロード型、35 ヵ国)
+- CountryPicker.tsx スタンドアロン作成 + Header 統合 (デスクトップ右上、35 ヵ国 cookie 切替)
+- 公開準備完了 DRAFT 7 件 → ACTIVE 化 (2026-05-07)
+- $99.99 placeholder 2 件 → ARCHIVED 化 (2026-05-07、reversible)
 
 ## デザインシステム
 
