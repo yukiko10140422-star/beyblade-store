@@ -47,15 +47,15 @@ export function SplitHero({product}: SplitHeroProps) {
             <Link
               to={`/products/${product.handle}`}
               prefetch="intent"
-              className="block relative aspect-[4/3] rounded-2xl overflow-hidden bg-white border border-vault-700 group"
+              className="block relative aspect-square rounded-2xl overflow-hidden bg-white border border-vault-700 group"
             >
               {product.featuredImage && (
                 <Image
                   data={product.featuredImage}
-                  aspectRatio="4/3"
+                  aspectRatio="1/1"
                   sizes="(min-width: 1024px) 60vw, 100vw"
                   loading="eager"
-                  className="w-full h-full object-contain p-8 md:p-12 transition-transform duration-700 group-hover:scale-[1.02]"
+                  className="w-full h-full object-contain p-4 md:p-6 transition-transform duration-700 group-hover:scale-[1.02]"
                 />
               )}
               <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-vermillion-500 text-white text-[10px] font-heading font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
