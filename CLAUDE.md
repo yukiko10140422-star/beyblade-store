@@ -34,9 +34,13 @@
 
 ## 現在の状態
 
-- **ステージ**: 本番稼働中（初期フェーズ、監査指摘対応中）
-- **ドメイン**: tokyospinvault.com（Oxygen プライマリー）
-- **商品数**: 130 件（18 件 ACTIVE、112 件 DRAFT — Draft は $99.99 プレースホルダ価格あり）
+- **ステージ**: 本番稼働中
+- **ドメイン**: tokyospinvault.com（Oxygen プライマリー、Markets webPresence も同ドメイン）
+- **商品数**: 131 件（15 件 ACTIVE、106 件 DRAFT）
+  - ACTIVE: SEO/alt/HQ 画像すべて充足
+  - DRAFT: 96/106 が HQ 画像化完了 (10 件のみ eBay 不在で未対応)
+  - 7 件が公開準備完了 (在庫 >0、適正価格、HQ 画像あり) — 公開判断は要ユーザー
+  - 2 件が $99.99 プレースホルダのまま (要価格設定または archive)
 - **コレクション**: 9 スマートコレクション（タグ分類が一部不正確 — balance-type に全商品集中）
 - **配送モデル**: 8 ゾーン / 108 ヵ国対応
   - ePacket Light 送料無料 (4 ゾーン: NA / EU / APAC / RoW = 38 国)
@@ -64,7 +68,8 @@
 - メタフィールド Storefront API 可視性 → 全 9 件 PUBLIC_READ で反映済み
 - ACTIVE 商品の SEO title/description (6/15) → 全 ACTIVE 充足
 - ACTIVE 商品画像の alt text 欠落 → ゼロに
-- 低解像度 featured image (eBay 225px サムネ + 586x709) → 全 9 商品 1200x1200 以上に差替え
+- 低解像度 featured image (eBay 225px サムネ + 586x709) → 全 9 ACTIVE 商品 1200x1200 以上に差替え
+- DRAFT 商品の低解像度画像 → 94 → 10 (89% 改善、eBay HQ 取得 + 1200x1200 正規化)
 - CountryPicker.tsx スタンドアロン作成 (cookie 書込 + リロード型、35 ヵ国)
 
 ## デザインシステム
