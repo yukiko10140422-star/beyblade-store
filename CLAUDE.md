@@ -38,21 +38,26 @@
 - **ドメイン**: tokyospinvault.com（Oxygen プライマリー）
 - **商品数**: 130 件（18 件 ACTIVE、112 件 DRAFT — Draft は $99.99 プレースホルダ価格あり）
 - **コレクション**: 9 スマートコレクション（タグ分類が一部不正確 — balance-type に全商品集中）
-- **配送モデル**: ePacket Light 送料無料（価格込み）+ DDP 関税込み
-- **Express アップグレード**: DHL/FedEx — $300+ or 3個+ で無料（Shopify 自動割引 2件）
-- **i18n**: EN-US 単一ロケールのみ実装（i18next 未インストール、9ロケール計画は未着手）
+- **配送モデル**: 8 ゾーン / 108 ヵ国対応
+  - ePacket Light 送料無料 (4 ゾーン: NA / EU / APAC / RoW = 38 国)
+  - Japan Post EMS 有料 (4 拡張ゾーン: EU Ext $15 / APAC Ext $12 / Latin America $20 / ME&Africa $25 / Pacific Islands $35)
+- **Express アップグレード**: DHL/FedEx — $300+ or 3個+ で **$55 まで無料** (Pacific Islands $65 のみ対象外、Shopify 自動割引 2件)
+- **i18n**: EN 言語固定 + Country 動的検出 (cookie → `oxygen-buyer-country` ヘッダ → US fallback)。Markets 対象 9 国 (US/AU/DE/FR/GB/IE/SG/TW/PH) は現地通貨表示
 - **TypeScript**: `npm run typecheck` 0 errors（Wave 2 で 12→0 に解消済み）
 
 ### 既知の制限・未対応
 
 - Shopify primaryDomain が `tokyo-spin-vault.myshopify.com` のまま（Admin UI で要変更）
 - 旧 Rise テーマが `tokyo-spin-vault.myshopify.com` で並列稼働中（重複コンテンツリスク）
-- Primary Market が JP（US に変更必要）
+- Markets が 1 つ「United States」に 9 国混在（US/AU/DE/FR/GB/IE/SG/TW/PH）→ 地域別 Market 分割推奨
+- Markets webPresence URL が dev ストア `idmrin-0x.myshopify.com` のまま（→ `tokyospinvault.com` に変更必要）
+- `.env` の `PUBLIC_STORE_DOMAIN=idmrin-0x.myshopify.com` と `PUBLIC_CHECKOUT_DOMAIN=tokyo-spin-vault.myshopify.com` の不整合
 - Burst / Metal Fight コレクションが main nav に配置されているが商品 0 件
 - FAQ/About ページの配送情報が PDP/Shipping Policy と矛盾（旧情報のまま）
 - About ページで em dash が「?」に文字化け
 - 商品サブ画像が 225x225 の eBay サムネイル流用（低解像度）
 - メタフィールドの Storefront API 可視性を PUBLIC_READ に変更済み（反映待ち）
+- CountryPicker UI 未実装（`customerCountry` cookie の手動セット手段なし。auto detection は機能中）
 
 ## デザインシステム
 
@@ -125,14 +130,32 @@ docs/                      # 運用・開発ドキュメント（8ファイル�
 
 ## 配送設定
 
-| ゾーン | ePacket Light | DHL/FedEx Express |
-|-------|--------------|-------------------|
-| North America | 無料 (7-14日) | $22 (3-7日) |
-| Europe | 無料 (10-18日) | $25 (4-8日) |
-| Asia-Pacific | 無料 (5-12日) | $18 (2-5日) |
-| Rest of World | 無料 (10-21日) | $30 (5-10日) |
+8 ゾーン構成 (108 ヵ国対応、2026-05-07 拡張)。
 
-**Express 無料条件**: $300以上 or 3個以上（Shopify 自動割引設定済み）
+### ePacket Light ゾーン (送料無料、価格込み)
+| ゾーン | 国数 | 標準 | Express |
+|-------|------|------|---------|
+| North America | 3 (US, CA, MX) | 無料 (7-14日) | $22 (3-7日) |
+| Europe | 16 (西欧主要) | 無料 (10-18日) | $25 (4-8日) |
+| Asia-Pacific | 11 (主要アジア+豪NZ) | 無料 (5-12日) | $18 (2-5日) |
+
+### Japan Post EMS ゾーン (実費請求)
+| ゾーン | 国数 | 標準 | Express |
+|-------|------|------|---------|
+| Europe Extended | 27 (中東欧/北欧離島/トルコ) | $15 (7-14日) | $35 (4-8日) |
+| Asia-Pacific Extended | 8 (印/南アジア/東南ア) | $12 (5-10日) | $30 (3-7日) |
+| Latin America | 19 (南米/カリブ) | $20 (10-15日) | $45 (5-9日) |
+| Middle East & Africa | 21 (湾岸/北アフリカ) | $25 (10-18日) | $55 (5-10日) |
+| Pacific Islands | 3 (FJ, NC, PG) | $35 (7-14日) | $65 (4-8日) |
+
+**Express 無料条件**: $300以上 or 3個以上で Express **$55 まで無料**
+（Shopify 自動割引設定済み、Pacific Islands $65 のみ対象外）
+
+### 除外国 (リスク回避、23 国)
+- 制裁/紛争: RU, BY, UA, IR, KP, SY, YE, IQ, AF, SD
+- 経済不安定: CU, VE, LB, MM
+- 高詐欺率: NG, BD, PK, ZW
+- インフラ脆弱: AO, MZ, MW, ZM, ET, RW
 
 ## Shopify Admin API
 

@@ -1,6 +1,41 @@
 import {createHydrogenContext} from '@shopify/hydrogen';
+import type {
+  CountryCode,
+  LanguageCode,
+} from '@shopify/hydrogen/storefront-api-types';
 import {AppSession} from '~/lib/session';
 import {CART_QUERY_FRAGMENT, MONEY_FRAGMENT} from '~/lib/fragments';
+
+/**
+ * Resolve the storefront i18n context for the current request.
+ *
+ * Precedence:
+ *   1. `customerCountry` cookie (set by a future country picker UI)
+ *   2. `oxygen-buyer-country` header (Shopify Oxygen edge geo)
+ *   3. Default `US`
+ *
+ * Language is locked to EN — store is English-only at the storefront layer.
+ * Country is forwarded to the Storefront API via `@inContext(country: ...)`,
+ * so Markets-covered countries see localized currency, others fall back to base USD.
+ */
+function getLocaleFromRequest(request: Request): {
+  language: LanguageCode;
+  country: CountryCode;
+} {
+  const language: LanguageCode = 'EN';
+  const cookie = request.headers.get('cookie') || '';
+  const cookieMatch = cookie.match(/(?:^|;\s*)customerCountry=([A-Za-z]{2})/);
+  if (cookieMatch) {
+    return {language, country: cookieMatch[1].toUpperCase() as CountryCode};
+  }
+
+  const buyerCountry = request.headers.get('oxygen-buyer-country');
+  if (buyerCountry && /^[A-Za-z]{2}$/.test(buyerCountry)) {
+    return {language, country: buyerCountry.toUpperCase() as CountryCode};
+  }
+
+  return {language, country: 'US' as CountryCode};
+}
 
 // Define the additional context object
 const additionalContext = {
@@ -55,8 +90,9 @@ export async function createHydrogenRouterContext(
       cache,
       waitUntil,
       session,
-      // Or detect from URL path based on locale subpath, cookies, or any other strategy
-      i18n: {language: 'EN', country: 'US'},
+      // Detect country from cookie / Oxygen buyer-country header so Markets-covered
+      // countries see localized currency. Defaults to US.
+      i18n: getLocaleFromRequest(request),
       cart: {
         queryFragment: `${MONEY_FRAGMENT}\n${CART_QUERY_FRAGMENT}`,
       },
