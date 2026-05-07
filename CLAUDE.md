@@ -53,9 +53,8 @@
 
 ### 既知の制限・未対応
 
-- 商品サブ画像が 225x225 の eBay サムネイル流用（低解像度、PDP のメイン以外）
-- CountryPicker UI 未実装（`customerCountry` cookie の手動セット手段なし。auto detection は機能中）
 - 本番 Oxygen の env vars (`PUBLIC_STORE_DOMAIN` 等) は Admin UI で要更新 (ローカル `.env` は同期済み)
+- `app/components/CountryPicker.tsx` 作成済みだが Header.tsx への統合は WIP デザイン作業の完了待ち
 
 ### 解決済み (履歴)
 
@@ -63,6 +62,10 @@
 - Burst / Metal Fight コレクション → main-menu から除去済み
 - FAQ / Shipping ページ → 8 ゾーン 108 ヵ国構成に合わせて全面更新 (em dash モジ化も同時修正)
 - メタフィールド Storefront API 可視性 → 全 9 件 PUBLIC_READ で反映済み
+- ACTIVE 商品の SEO title/description (6/15) → 全 ACTIVE 充足
+- ACTIVE 商品画像の alt text 欠落 → ゼロに
+- 低解像度 featured image (eBay 225px サムネ + 586x709) → 全 9 商品 1200x1200 以上に差替え
+- CountryPicker.tsx スタンドアロン作成 (cookie 書込 + リロード型、35 ヵ国)
 
 ## デザインシステム
 
