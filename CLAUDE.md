@@ -53,7 +53,6 @@
 
 ### 既知の制限・未対応
 
-- **Shopify primaryDomain が `tokyo-spin-vault.myshopify.com` のまま** (Admin UI > Settings > Domains で `tokyospinvault.com` に変更必要 — API 不可)
 - 旧 Rise テーマが `tokyo-spin-vault.myshopify.com` で並列稼働中（重複コンテンツリスク）
 - Burst / Metal Fight コレクションが main nav に配置されているが商品 0 件
 - FAQ/About ページの配送情報が PDP/Shipping Policy と矛盾（旧情報のまま）
