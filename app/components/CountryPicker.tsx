@@ -13,40 +13,40 @@ import {useEffect, useRef, useState} from 'react';
 
 const COUNTRIES: ReadonlyArray<{code: string; name: string; flag: string}> = [
   {code: 'US', name: 'United States', flag: '🇺🇸'},
-  {code: 'CA', name: 'Canada',        flag: '🇨🇦'},
+  {code: 'CA', name: 'Canada', flag: '🇨🇦'},
   {code: 'GB', name: 'United Kingdom', flag: '🇬🇧'},
-  {code: 'DE', name: 'Germany',       flag: '🇩🇪'},
-  {code: 'FR', name: 'France',        flag: '🇫🇷'},
-  {code: 'IT', name: 'Italy',         flag: '🇮🇹'},
-  {code: 'ES', name: 'Spain',         flag: '🇪🇸'},
-  {code: 'AU', name: 'Australia',     flag: '🇦🇺'},
-  {code: 'NZ', name: 'New Zealand',   flag: '🇳🇿'},
-  {code: 'SG', name: 'Singapore',     flag: '🇸🇬'},
-  {code: 'TW', name: 'Taiwan',        flag: '🇹🇼'},
-  {code: 'HK', name: 'Hong Kong',     flag: '🇭🇰'},
-  {code: 'KR', name: 'South Korea',   flag: '🇰🇷'},
-  {code: 'PH', name: 'Philippines',   flag: '🇵🇭'},
-  {code: 'IE', name: 'Ireland',       flag: '🇮🇪'},
-  {code: 'NL', name: 'Netherlands',   flag: '🇳🇱'},
-  {code: 'SE', name: 'Sweden',        flag: '🇸🇪'},
-  {code: 'CH', name: 'Switzerland',   flag: '🇨🇭'},
-  {code: 'NO', name: 'Norway',        flag: '🇳🇴'},
-  {code: 'DK', name: 'Denmark',       flag: '🇩🇰'},
-  {code: 'FI', name: 'Finland',       flag: '🇫🇮'},
-  {code: 'BE', name: 'Belgium',       flag: '🇧🇪'},
-  {code: 'AT', name: 'Austria',       flag: '🇦🇹'},
-  {code: 'PT', name: 'Portugal',      flag: '🇵🇹'},
-  {code: 'PL', name: 'Poland',        flag: '🇵🇱'},
-  {code: 'MX', name: 'Mexico',        flag: '🇲🇽'},
-  {code: 'BR', name: 'Brazil',        flag: '🇧🇷'},
-  {code: 'AE', name: 'UAE',           flag: '🇦🇪'},
-  {code: 'IL', name: 'Israel',        flag: '🇮🇱'},
-  {code: 'ZA', name: 'South Africa',  flag: '🇿🇦'},
-  {code: 'IN', name: 'India',         flag: '🇮🇳'},
-  {code: 'TH', name: 'Thailand',      flag: '🇹🇭'},
-  {code: 'MY', name: 'Malaysia',      flag: '🇲🇾'},
-  {code: 'ID', name: 'Indonesia',     flag: '🇮🇩'},
-  {code: 'VN', name: 'Vietnam',       flag: '🇻🇳'},
+  {code: 'DE', name: 'Germany', flag: '🇩🇪'},
+  {code: 'FR', name: 'France', flag: '🇫🇷'},
+  {code: 'IT', name: 'Italy', flag: '🇮🇹'},
+  {code: 'ES', name: 'Spain', flag: '🇪🇸'},
+  {code: 'AU', name: 'Australia', flag: '🇦🇺'},
+  {code: 'NZ', name: 'New Zealand', flag: '🇳🇿'},
+  {code: 'SG', name: 'Singapore', flag: '🇸🇬'},
+  {code: 'TW', name: 'Taiwan', flag: '🇹🇼'},
+  {code: 'HK', name: 'Hong Kong', flag: '🇭🇰'},
+  {code: 'KR', name: 'South Korea', flag: '🇰🇷'},
+  {code: 'PH', name: 'Philippines', flag: '🇵🇭'},
+  {code: 'IE', name: 'Ireland', flag: '🇮🇪'},
+  {code: 'NL', name: 'Netherlands', flag: '🇳🇱'},
+  {code: 'SE', name: 'Sweden', flag: '🇸🇪'},
+  {code: 'CH', name: 'Switzerland', flag: '🇨🇭'},
+  {code: 'NO', name: 'Norway', flag: '🇳🇴'},
+  {code: 'DK', name: 'Denmark', flag: '🇩🇰'},
+  {code: 'FI', name: 'Finland', flag: '🇫🇮'},
+  {code: 'BE', name: 'Belgium', flag: '🇧🇪'},
+  {code: 'AT', name: 'Austria', flag: '🇦🇹'},
+  {code: 'PT', name: 'Portugal', flag: '🇵🇹'},
+  {code: 'PL', name: 'Poland', flag: '🇵🇱'},
+  {code: 'MX', name: 'Mexico', flag: '🇲🇽'},
+  {code: 'BR', name: 'Brazil', flag: '🇧🇷'},
+  {code: 'AE', name: 'UAE', flag: '🇦🇪'},
+  {code: 'IL', name: 'Israel', flag: '🇮🇱'},
+  {code: 'ZA', name: 'South Africa', flag: '🇿🇦'},
+  {code: 'IN', name: 'India', flag: '🇮🇳'},
+  {code: 'TH', name: 'Thailand', flag: '🇹🇭'},
+  {code: 'MY', name: 'Malaysia', flag: '🇲🇾'},
+  {code: 'ID', name: 'Indonesia', flag: '🇮🇩'},
+  {code: 'VN', name: 'Vietnam', flag: '🇻🇳'},
 ];
 
 function readCookie(name: string): string | undefined {
@@ -79,7 +79,8 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
   useEffect(() => {
     if (!open) return;
     const onClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
     };
     const onEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false);
@@ -102,8 +103,7 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
     window.location.reload();
   };
 
-  const currentMeta =
-    COUNTRIES.find((c) => c.code === current) ?? COUNTRIES[0];
+  const currentMeta = COUNTRIES.find((c) => c.code === current) ?? COUNTRIES[0];
 
   return (
     <div ref={ref} className={`relative ${className}`}>
@@ -113,7 +113,7 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
         aria-expanded={open}
         aria-label={`Ship to: ${currentMeta.name}`}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-2 rounded-lg border border-chrome-700 bg-vault-800 px-3 py-1.5 text-sm text-chrome-200 hover:border-gold-500 hover:text-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-500"
+        className="inline-flex items-center gap-1.5 h-10 rounded-lg px-3 text-sm text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 focus:outline-none focus:ring-2 focus:ring-vermillion-500 transition-colors"
       >
         <span aria-hidden="true">{currentMeta.flag}</span>
         <span className="font-medium">{currentMeta.code}</span>
@@ -124,7 +124,12 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
           viewBox="0 0 12 12"
           className={`transition-transform ${open ? 'rotate-180' : ''}`}
         >
-          <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <path
+            d="M2 4l4 4 4-4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            fill="none"
+          />
         </svg>
       </button>
 
@@ -132,7 +137,7 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
         <ul
           role="listbox"
           aria-label="Select shipping country"
-          className="absolute right-0 top-full z-50 mt-2 max-h-80 w-56 overflow-y-auto rounded-lg border border-chrome-700 bg-vault-900 py-1 shadow-xl"
+          className="absolute right-0 top-full z-50 mt-2 max-h-80 w-56 overflow-y-auto rounded-lg border border-vault-700 bg-vault-950 py-1 shadow-xl"
         >
           {COUNTRIES.map((c) => {
             const selected = c.code === current;
@@ -141,13 +146,15 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
                 <button
                   type="button"
                   onClick={() => handleSelect(c.code)}
-                  className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-vault-800 ${
-                    selected ? 'text-gold-400' : 'text-chrome-200'
+                  className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-vault-800 hover:text-vermillion-500 transition-colors ${
+                    selected ? 'text-gold-400' : 'text-chrome-300'
                   }`}
                 >
                   <span aria-hidden="true">{c.flag}</span>
                   <span className="flex-1">{c.name}</span>
-                  <span className="font-mono text-xs text-chrome-500">{c.code}</span>
+                  <span className="font-mono text-xs text-chrome-500">
+                    {c.code}
+                  </span>
                 </button>
               </li>
             );

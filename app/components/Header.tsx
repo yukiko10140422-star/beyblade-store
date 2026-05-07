@@ -7,6 +7,7 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import {CountryPicker} from '~/components/CountryPicker';
 import {MenuIcon, SearchIcon, UserIcon, CartIcon} from '~/components/icons';
 import clsx from 'clsx';
 
@@ -154,6 +155,7 @@ function HeaderCtas({
     <nav className="flex items-center gap-1 md:gap-3" role="navigation">
       <HeaderMenuMobileToggle />
       <SearchToggle />
+      <CountryPicker className="hidden md:block" />
       <NavLink
         prefetch="intent"
         to="/account"
@@ -261,34 +263,34 @@ const FALLBACK_HEADER_MENU = {
       tags: [],
       title: 'Shop All',
       type: 'HTTP',
-      url: '/collections/all-beyblades',
+      url: '/collections/all',
       items: [],
     },
     {
-      id: 'nav-limited',
+      id: 'nav-pre-order',
       resourceId: null,
       tags: [],
-      title: 'Limited & Rare',
+      title: 'Pre-Order',
       type: 'HTTP',
-      url: '/collections/limited-edition-rare',
+      url: '/collections/pre-order',
       items: [],
     },
     {
-      id: 'nav-sets',
+      id: 'nav-beyblade-x',
       resourceId: null,
       tags: [],
-      title: 'Sets & Bundles',
+      title: 'Beyblade X',
       type: 'HTTP',
-      url: '/collections/beyblade-sets-bundles',
+      url: '/collections/beyblade-x',
       items: [],
     },
     {
-      id: 'nav-launchers',
+      id: 'nav-shipping',
       resourceId: null,
       tags: [],
-      title: 'Launchers',
+      title: 'Shipping',
       type: 'HTTP',
-      url: '/collections/launchers-accessories',
+      url: '/policies/shipping-policy',
       items: [],
     },
   ],
