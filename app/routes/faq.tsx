@@ -2,10 +2,13 @@ import type {Route} from './+types/faq';
 import {InfoPage} from '~/components/InfoPage';
 import {
   DUTIES,
+  DHL_EXPRESS_LABEL,
   EXPRESS_OPTIONS,
-  EXPRESS_UPGRADE,
+  EXPRESS_UPGRADE_LINE,
+  PRICE_AT_CHECKOUT,
   RETURNS,
   SHIPPING_METHODS,
+  expressFromText,
 } from '~/lib/shipping';
 import {COMPANY, CONTACT_EMAIL, SITE} from '~/lib/site';
 
@@ -22,7 +25,7 @@ export default function Faq() {
   const items: Array<[string, React.ReactNode]> = [
     [
       'Where do orders ship from?',
-      `From Kanagawa, Japan, by Japan Post with tracking: ${SHIPPING_METHODS.epacket.label} (standard) or ${SHIPPING_METHODS.ems.label} (express).`,
+      `From Kanagawa, Japan, with tracking: ${SHIPPING_METHODS.epacket.label} (standard; over 2 kg by EMS) or ${SHIPPING_METHODS.ems.label} (express). Where EMS does not reach, Express goes by ${DHL_EXPRESS_LABEL}.`,
     ],
     ['Will I pay duties or import taxes on delivery?', `No. ${DUTIES.line}.`],
     [
@@ -30,8 +33,8 @@ export default function Faq() {
       'Each product page shows when the item ships, when this is set for the item. With Express + priority handling, your order ships within 5 business days.',
     ],
     [
-      'How fast is Express?',
-      `${EXPRESS_OPTIONS.map((o) => `${o.label}: ${o.surcharge}`).join('; ')}. Free Express upgrade on orders of US$${EXPRESS_UPGRADE.subtotalThreshold}+ or ${EXPRESS_UPGRADE.quantityThreshold}+ items (up to US$${EXPRESS_UPGRADE.maxShippingValue} shipping value).`,
+      'How much is Express?',
+      `Express is ${SHIPPING_METHODS.ems.label} (${DHL_EXPRESS_LABEL} to the few countries EMS does not serve), ${expressFromText(EXPRESS_OPTIONS[0])}. Express + priority handling costs US$${EXPRESS_OPTIONS[1].extraUsd} more and ships within ${EXPRESS_OPTIONS[1].handling} business days. ${PRICE_AT_CHECKOUT} ${EXPRESS_UPGRADE_LINE}`,
     ],
     ['Can I return an item?', RETURNS.summary],
     [

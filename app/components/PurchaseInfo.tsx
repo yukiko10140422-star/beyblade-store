@@ -5,9 +5,10 @@ import {
   DUTIES,
   EXPRESS_OPTIONS,
   EXPRESS_PROMO_LIVE,
-  EXPRESS_UPGRADE,
+  EXPRESS_UPGRADE_LINE,
   RETURNS,
   SHIPPING_METHODS,
+  expressFromText,
   optionHandlingDays,
 } from '~/lib/shipping';
 
@@ -92,27 +93,26 @@ export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
         <ul className="m-0 flex list-none flex-col gap-1 p-0 pl-[30px]">
           {EXPRESS_OPTIONS.map((o) => {
             const days = optionHandlingDays(o, estimate.handlingDays);
-            const transit =
-              o.method === 'ems'
-                ? estimate.emsTransitDays
-                : (s?.transitDays ?? null);
-            const around = arrivalAround(days, transit);
+            const around = arrivalAround(days, estimate.emsTransitDays);
+            const carrier =
+              estimate.express?.carrierLabel ?? SHIPPING_METHODS.ems.label;
             return (
               <li key={o.label}>
                 <b className="font-semibold text-chrome-200">{o.label}</b> (
-                {SHIPPING_METHODS[o.method].label}): {o.surcharge}
+                {carrier}):{' '}
+                {expressFromText(o, estimate.express ? estimate.countryCode : null)}
+                {estimate.express ? ` to ${estimate.destination}` : ''}
                 {days != null && `, ships within ${days} business days`}
                 {around ? `, estimated delivery ${around}` : ''}.
               </li>
             );
           })}
+          <li className="text-chrome-400">
+            Exact price at checkout (depends on destination and parcel
+            weight).
+          </li>
           {EXPRESS_PROMO_LIVE && (
-            <li className="text-chrome-400">
-              Free Express upgrade on orders of US$
-              {EXPRESS_UPGRADE.subtotalThreshold}+ or{' '}
-              {EXPRESS_UPGRADE.quantityThreshold}+ items (up to US$
-              {EXPRESS_UPGRADE.maxShippingValue} shipping value).
-            </li>
+            <li className="text-chrome-400">{EXPRESS_UPGRADE_LINE}</li>
           )}
         </ul>
       )}

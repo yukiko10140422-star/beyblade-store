@@ -24,14 +24,23 @@
  * Owner decisions, 2026-11-17 evening (docs/HANDOFF-2026-11-17.md §8b):
  *   - Duties are paid by the shop (DDP) and stated on the site:
  *     "Duties included — no extra charges on delivery".
- *   - Paid options, same as eBay: Express (Japan Post EMS) +US$25 /
- *     Express + priority handling +US$45; priority-handling orders ship
- *     within 5 business days.
- *   - Free Express upgrade stays: US$300+ or 3+ items, up to US$55 shipping
- *     value (automatic discounts confirmed ACTIVE in Admin 2026-11-17).
+ *   - Priority-handling orders ship within 5 business days.
+ *   - Free Express upgrade stays: US$300+ or 3+ items (automatic discounts,
+ *     ACTIVE in Admin 2026-11-17). The discount only applies to a shipping
+ *     rate of US$55 or less; it does not take US$55 off a dearer rate.
+ *
+ * Shipping prices (owner, 2026-11-17 night: "調べて調整して"): set per
+ * Shopify market from Japan Post's official rate tables, by destination and
+ * cart weight. Table and method: tokyo-card-vault
+ * docs/japanpost-rates-2026-11.md §6; DHL rows from Ship&co quotes
+ * (docs/data/shipandco-quotes-2026-11-17.json). The site only states the
+ * lowest Express price per destination ("from"); checkout shows the exact
+ * price. Express + priority handling = Express + US$20.
+ * Where Japan Post EMS is not available (owner decision 2026-11-17),
+ * Express is DHL Express Worldwide.
  *   - Contact: info@xon-corp.com (site.ts CONTACT_EMAIL).
  *
- * Still NOT stated: free standard shipping, insurance, DHL / FedEx.
+ * Still NOT stated: free standard shipping, insurance, FedEx.
  */
 
 export type ShippingMethodId = 'epacket' | 'ems';
@@ -138,26 +147,118 @@ export const DUTIES = {
 } as const;
 
 /**
- * Paid faster options (owner decision 2026-11-17, same as eBay).
- * `handling`: 'item' = the item's own dispatch time (shipping.handling_days);
- * a number = ship within that many business days at most.
+ * Paid faster options. `handling`: 'item' = the item's own dispatch time
+ * (shipping.handling_days); a number = ship within that many business days
+ * at most. `extraUsd` is added to the Express price.
  */
 export interface ExpressOption {
   label: string;
-  method: ShippingMethodId;
-  /** Added to the standard shipping price, shown as written. */
-  surcharge: string;
+  extraUsd: number;
   handling: 'item' | number;
 }
 export const EXPRESS_OPTIONS: readonly ExpressOption[] = [
-  {label: 'Express', method: 'ems', surcharge: '+US$25', handling: 'item'},
+  {label: 'Express', extraUsd: 0, handling: 'item'},
+  {label: 'Express + priority handling', extraUsd: 20, handling: 5},
+];
+
+export const DHL_EXPRESS_LABEL = 'DHL Express Worldwide (tracked)';
+
+export interface ExpressRegion {
+  region: string;
+  carrier: 'ems' | 'dhl';
+  /** Lowest Express price (USD) at checkout for this destination. */
+  fromUsd: number;
+  countries: readonly string[];
+}
+
+/**
+ * Live checkout Express prices by Shopify market, read back from Admin
+ * 2026-11-17 (lightest weight tier). Keep in sync with the store: re-read
+ * with tokyo-card-vault scripts/shipping-rates/read-markets.mjs after any
+ * change to the markets' shipping.
+ */
+export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
+  {region: 'United States', carrier: 'ems', fromUsd: 25, countries: ['US']},
+  {region: 'Canada and Mexico', carrier: 'ems', fromUsd: 25, countries: ['CA', 'MX']},
   {
-    label: 'Express + priority handling',
-    method: 'ems',
-    surcharge: '+US$45',
-    handling: 5,
+    region: 'UK and Western Europe (16 countries)',
+    carrier: 'ems',
+    fromUsd: 13,
+    countries: ['ES', 'GB', 'IE', 'IT', 'PT', 'AT', 'BE', 'CH', 'DK', 'FI', 'NL', 'NO', 'PL', 'SE', 'DE', 'FR'],
+  },
+  {
+    region: 'East and Southeast Asia, Australia, New Zealand',
+    carrier: 'ems',
+    fromUsd: 13,
+    countries: ['AU', 'HK', 'ID', 'KR', 'MY', 'NZ', 'PH', 'TH', 'SG', 'TW', 'VN'],
+  },
+  {
+    region: 'South Asia, Mongolia, Cambodia, Laos, Brunei',
+    carrier: 'ems',
+    fromUsd: 19,
+    countries: ['IN', 'BN', 'KH', 'LA', 'LK', 'MN', 'MV', 'NP'],
+  },
+  {
+    region: 'Other European countries and Turkey',
+    carrier: 'ems',
+    fromUsd: 27,
+    countries: ['RO', 'TR', 'AD', 'BG', 'CY', 'CZ', 'EE', 'GR', 'HR', 'HU', 'IS', 'LI', 'LT', 'LU', 'LV', 'MC', 'MK', 'MT', 'SI', 'SK', 'SM'],
+  },
+  {region: 'Fiji, New Caledonia, Papua New Guinea', carrier: 'ems', fromUsd: 27, countries: ['FJ', 'NC', 'PG']},
+  {
+    region: 'Middle East and Africa',
+    carrier: 'ems',
+    fromUsd: 30,
+    countries: ['AE', 'EG', 'KW', 'ZA', 'BH', 'BW', 'DZ', 'GH', 'IL', 'JO', 'KE', 'MA', 'MU', 'OM', 'QA', 'SA', 'SN', 'TN', 'TZ', 'UG'],
+  },
+  {
+    region: 'Latin America and the Caribbean',
+    carrier: 'ems',
+    fromUsd: 30,
+    countries: ['AR', 'BR', 'CL', 'CO', 'CR', 'PA', 'PE', 'SV', 'UY', 'EC', 'HN', 'JM', 'PY', 'TT'],
+  },
+  {
+    region: 'Albania, Bosnia and Herzegovina, Montenegro, Serbia, Vatican City',
+    carrier: 'dhl',
+    fromUsd: 47,
+    countries: ['AL', 'BA', 'ME', 'RS', 'VA'],
+  },
+  {region: 'Bolivia, Namibia', carrier: 'dhl', fromUsd: 51, countries: ['BO', 'NA']},
+  {
+    region: 'Moldova, Guatemala, Nicaragua, the Bahamas, Dominican Republic',
+    carrier: 'dhl',
+    fromUsd: 52,
+    countries: ['MD', 'GT', 'NI', 'BS', 'DO'],
   },
 ];
+
+/** Lowest Express price anywhere (for pages that don't know the country). */
+export const EXPRESS_FROM_MIN_USD = Math.min(
+  ...EXPRESS_REGIONS.map((r) => r.fromUsd),
+);
+
+export function expressRegionFor(
+  country: string | null | undefined,
+): ExpressRegion | undefined {
+  const cc = (country ?? '').toUpperCase();
+  return EXPRESS_REGIONS.find((r) => r.countries.includes(cc));
+}
+
+export function expressCarrierLabel(carrier: 'ems' | 'dhl'): string {
+  return carrier === 'dhl' ? DHL_EXPRESS_LABEL : SHIPPING_METHODS.ems.label;
+}
+
+/** "from US$45" for an option and destination (or the store-wide lowest). */
+export function expressFromText(
+  o: ExpressOption,
+  country?: string | null,
+): string {
+  const r = expressRegionFor(country);
+  return `from US$${(r ? r.fromUsd : EXPRESS_FROM_MIN_USD) + o.extraUsd}`;
+}
+
+export const PRICE_AT_CHECKOUT =
+  'Prices depend on your destination and the weight of your parcel; the exact price is shown at checkout, before you pay.';
 
 /** Business days to dispatch for an option, given the item's own days. */
 export function optionHandlingDays(
@@ -173,9 +274,12 @@ export const EXPRESS_PROMO_LIVE = true;
 export const EXPRESS_UPGRADE = {
   subtotalThreshold: 300,
   quantityThreshold: 3,
+  /** The discount applies only to shipping rates at or below this. */
   maxShippingValue: 55,
   currency: 'USD',
 } as const;
+
+export const EXPRESS_UPGRADE_LINE = `Free Express upgrade on orders of US$${EXPRESS_UPGRADE.subtotalThreshold}+ or ${EXPRESS_UPGRADE.quantityThreshold}+ items, when the shipping rate is US$${EXPRESS_UPGRADE.maxShippingValue} or less.`;
 
 /**
  * The Shopify policies (/policies/*) are store-wide and currently carry Spin

@@ -2,11 +2,16 @@ import type {Route} from './+types/shipping';
 import {FactTable, InfoPage} from '~/components/InfoPage';
 import {
   DUTIES,
+  DHL_EXPRESS_LABEL,
   EXPRESS_OPTIONS,
   EXPRESS_PROMO_LIVE,
-  EXPRESS_UPGRADE,
+  EXPRESS_REGIONS,
+  EXPRESS_UPGRADE_LINE,
   JAPAN_POST_DAYS,
+  PRICE_AT_CHECKOUT,
   SHIPPING_METHODS,
+  expressCarrierLabel,
+  expressFromText,
 } from '~/lib/shipping';
 import {CONTACT_EMAIL, SITE} from '~/lib/site';
 
@@ -15,7 +20,7 @@ export const meta: Route.MetaFunction = () => [
   {
     name: 'description',
     content:
-      'Orders ship from Japan by Japan Post ePacket or EMS, with tracking. Duties included — no extra charges on delivery.',
+      'Orders ship from Japan with tracking, by Japan Post ePacket or EMS (DHL Express to a few countries). Duties included — no extra charges on delivery.',
   },
 ];
 
@@ -29,18 +34,21 @@ export default function Shipping() {
   return (
     <InfoPage
       title="Shipping"
-      intro="Orders ship from Kanagawa, Japan, by Japan Post, with tracking."
+      intro="Orders ship from Kanagawa, Japan, with tracking — by Japan Post, or by DHL Express where Japan Post EMS does not reach."
     >
       <section>
         <h2>Methods</h2>
         <FactTable
           rows={[
-            ['Standard', SHIPPING_METHODS.epacket.label],
-            ['Express', SHIPPING_METHODS.ems.label],
             [
-              'Cost',
-              'Shipping options and costs for your country are shown at checkout, before you pay.',
+              'Standard',
+              `${SHIPPING_METHODS.epacket.label}; parcels over 2 kg go by ${SHIPPING_METHODS.ems.label}.`,
             ],
+            [
+              'Express',
+              `${SHIPPING_METHODS.ems.label}; ${DHL_EXPRESS_LABEL} to the few countries Japan Post EMS does not serve (listed below).`,
+            ],
+            ['Cost', PRICE_AT_CHECKOUT],
             ['Duties', DUTIES.line],
           ]}
         />
@@ -53,7 +61,7 @@ export default function Shipping() {
             (o) =>
               [
                 o.label,
-                `${SHIPPING_METHODS[o.method].label}, ${o.surcharge} on top of standard shipping. ${
+                `${expressFromText(o)}${o.extraUsd ? ` (the Express price + US$${o.extraUsd})` : ''}. ${
                   o.handling === 'item'
                     ? 'Ships within the dispatch time shown on the product page.'
                     : `Your order ships within ${o.handling} business days.`
@@ -61,14 +69,21 @@ export default function Shipping() {
               ] as const,
           )}
         />
+        <p className="mt-3">
+          Express starts at these prices for the lightest parcels.{' '}
+          {PRICE_AT_CHECKOUT}
+        </p>
+        <FactTable
+          rows={EXPRESS_REGIONS.map(
+            (r) =>
+              [
+                r.region,
+                `from US$${r.fromUsd} · ${expressCarrierLabel(r.carrier)}`,
+              ] as const,
+          )}
+        />
         {EXPRESS_PROMO_LIVE && (
-          <p className="mt-3">
-            Free Express upgrade on orders of US$
-            {EXPRESS_UPGRADE.subtotalThreshold}+ or{' '}
-            {EXPRESS_UPGRADE.quantityThreshold}+ items (up to US$
-            {EXPRESS_UPGRADE.maxShippingValue} shipping value), applied at
-            checkout.
-          </p>
+          <p className="mt-3">{EXPRESS_UPGRADE_LINE} Applied at checkout.</p>
         )}
       </section>
 

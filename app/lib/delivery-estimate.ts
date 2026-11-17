@@ -1,6 +1,8 @@
 import {
   SHIPPING_METHODS,
   destinationName,
+  expressCarrierLabel,
+  expressRegionFor,
   findMethod,
   handlingLabel,
   transitDays,
@@ -17,6 +19,8 @@ export interface MethodEstimate {
 
 export interface DeliveryEstimate {
   destination: string;
+  /** ISO code the estimate was made for (upper case), or null. */
+  countryCode: string | null;
   /** "Ships within 3 business days" — null when the product has no value. */
   handlingLabel: string | null;
   /** The item's own dispatch time (shipping.handling_days). */
@@ -25,6 +29,8 @@ export interface DeliveryEstimate {
   standard: MethodEstimate | null;
   /** EMS transit for the destination (used by paid Express rows). */
   emsTransitDays: number | null;
+  /** Express at checkout for this destination; null when the country is unknown. */
+  express: {carrierLabel: string; fromUsd: number; isDhl: boolean} | null;
 }
 
 const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
@@ -87,8 +93,10 @@ export function getDeliveryEstimate(
   // Unknown method: show nothing about method, transit or arrival (fail closed).
   const methodId: ShippingMethodId | undefined = findMethod(serviceValue)?.id;
   const transit = methodId ? transitDays(country, methodId) : null;
+  const region = expressRegionFor(country);
   return {
     destination: destinationName(country),
+    countryCode: country ? country.toUpperCase() : null,
     handlingLabel: handlingDays != null ? handlingLabel(handlingDays) : null,
     handlingDays,
     standard: methodId
@@ -98,6 +106,13 @@ export function getDeliveryEstimate(
           around: arrivalAround(handlingDays, transit, now),
         }
       : null,
-    emsTransitDays: transitDays(country, 'ems'),
+    emsTransitDays: region?.carrier === 'dhl' ? null : transitDays(country, 'ems'),
+    express: region
+      ? {
+          carrierLabel: expressCarrierLabel(region.carrier),
+          fromUsd: region.fromUsd,
+          isDhl: region.carrier === 'dhl',
+        }
+      : null,
   };
 }

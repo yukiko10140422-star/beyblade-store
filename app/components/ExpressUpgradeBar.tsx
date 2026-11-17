@@ -33,7 +33,7 @@ export function ExpressUpgradeBar({
       <p className="mb-2 text-center text-[13px] text-chrome-300">
         {qualified
           ? 'Your order qualifies for a free Express upgrade. It is applied at checkout.'
-          : `Add ${isUsd ? `US$${amountLeft.toFixed(2)} or ` : ''}${itemsLeft} more item${itemsLeft === 1 ? '' : 's'} for a free Express upgrade (up to US$${maxShippingValue} shipping value).`}
+          : `Add ${isUsd ? `US$${amountLeft.toFixed(2)} or ` : ''}${itemsLeft} more item${itemsLeft === 1 ? '' : 's'} for a free Express upgrade (on shipping rates up to US$${maxShippingValue}).`}
       </p>
       {!qualified && (
         <div

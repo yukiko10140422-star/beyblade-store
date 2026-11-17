@@ -14,7 +14,7 @@ export function AnnouncementBar() {
         <span className="hidden md:inline">
           {' '}
           · Free Express upgrade on US${subtotalThreshold}+ or{' '}
-          {quantityThreshold}+ items (up to US${maxShippingValue})
+          {quantityThreshold}+ items (shipping rates up to US${maxShippingValue})
         </span>
       )}
     </div>
