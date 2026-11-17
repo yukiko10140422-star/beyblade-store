@@ -368,6 +368,7 @@ P_min = ((原価 + 送料 + 最低利益) ÷ 為替 + 0.30 + 1.69) ÷ (1 − 0.0
 3. **推定**: eBay の重さが未入力 (0) なら、出品台帳の発送重量 `autolist_listings.ship_weight_g` + 100g。
    - これはオーナー決定の 2 段に足した段です。eBay の重さは未入力が多いためです。
 4. **不明**: どれも無い時は重さを付けません (推測しない)。
+   - **重さが無い商品も公開してよい** (オーナー決定 11-17:「重さがなくても eBay で出せていれば送料は計算されているのでいい」)。重さは空のままにし、推測で入れません。
 
 **11-17 の内訳**:
 
@@ -384,3 +385,21 @@ P_min = ((原価 + 送料 + 最低利益) ÷ 為替 + 0.30 + 1.69) ÷ (1 − 0.0
 - EU 27 か国を配送先から外したので、識別子の確認は止めました (オーナー、11-17)。
 - 途中まで写した barcode / `product.mpn` は残っています。対象は Spin・Card の一部です。
 - `lib/identifiers.mjs` と `fix-identifiers.mjs` は残してありますが、取込からは呼びません。
+
+## 17. 公開 (2026-11-17 オーナー「公開していいよ」)
+
+- 取込の 210 件を ACTIVE にし、それぞれの店の掲載先**だけ**に公開しました (`publish-vault.mjs`)。
+
+  | 店 | 件数 |
+  |---|---|
+  | Spin | 64 |
+  | Card | 24 |
+  | Character | 122 |
+
+  Online Store など、他の掲載先には出していません。
+- Spin の旧商品 30 件は削除していません。Tokyo Spin Vault の掲載先から外しました (掲載中だった 28 件)。
+  - 公開後の Storefront 確認で、旧 28 件が **Tokyo Card Vault と Tokyo Character Vault にも掲載されていた**ことが分かりました。こちらからも外しました (`unpublish-old-from-vaults.mjs`)。
+  - Online Store・Shop・Pinterest の掲載はそのままです。
+  - 未発送の注文には触れていません。
+- 変更はすべて `data/tsv-changes.jsonl` に記録しています。`node scripts/tsv.mjs undo <ID> --apply` で 1 件ずつ戻せます。
+- 確認 (`check-storefronts.mjs`、各サイトの Storefront トークン): 3 店とも、自店の商品だけが見え、件数が一致しました (64 / 24 / 122)。旧商品は 0 件です。
