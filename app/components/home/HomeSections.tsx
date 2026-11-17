@@ -192,7 +192,7 @@ export function FactsBand() {
       link: 'Shipping',
     },
     {
-      title: 'Dispatch time on every item',
+      title: 'Dispatch time',
       body: 'Pre-orders show the release date.',
       to: '/shipping',
       link: 'How ordering from Japan works',

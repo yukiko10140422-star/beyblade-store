@@ -107,7 +107,7 @@ export function ProductForm({
           >
             Quantity
           </label>
-          <div className="inline-flex items-center bg-vault-900 border border-vault-700 rounded-full overflow-hidden">
+          <div className="inline-flex items-center bg-vault-900 border border-[#8F897D] rounded-full overflow-hidden">
             <button
               type="button"
               aria-label="Decrease quantity"
@@ -127,7 +127,7 @@ export function ProductForm({
                 const n = parseInt(e.target.value, 10);
                 if (!isNaN(n) && n >= 1 && n <= max) setQuantity(n);
               }}
-              className="w-12 py-2 text-center bg-transparent border-x border-vault-700 text-vault-50 font-heading text-sm font-semibold focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-12 py-2 text-center bg-transparent border-x border-vault-700 text-vault-50 font-heading text-sm font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
             <button
               type="button"

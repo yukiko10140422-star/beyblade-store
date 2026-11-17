@@ -46,14 +46,9 @@ export function StockNote({
  * ~/lib/shipping (Japan Post's published tables) and the product's own
  * `shipping.handling_days`. Rows with unknown values are not rendered.
  */
-export function DeliveryBox({
-  estimate,
-  handlingDays,
-}: {
-  estimate: DeliveryEstimate;
-  handlingDays: number | null;
-}) {
+export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
   const s = estimate.standard;
+  const ems = estimate.emsTransitDays;
   return (
     <div className="flex flex-col gap-2 border-t border-vault-700 pt-3.5 text-sm">
       {estimate.handlingLabel && (
@@ -64,31 +59,32 @@ export function DeliveryBox({
           from Japan, with tracking.
         </Row>
       )}
-      <Row icon={<CalendarIcon />}>
-        <span>
-          Standard: {s.methodLabel}
-          {s.transitDays != null && (
-            <>
-              {' '}
-              — about {s.transitDays} days to {estimate.destination} after
-              dispatch (Japan Post standard)
-            </>
-          )}
-          .
-          {s.around && (
-            <>
-              {' '}
-              Estimated delivery:{' '}
-              <b className="font-semibold text-chrome-200">{s.around}</b>.
-            </>
-          )}
-        </span>
-      </Row>
+      {s && (
+        <Row icon={<CalendarIcon />}>
+          <span>
+            Standard: {s.methodLabel}
+            {s.transitDays != null && (
+              <>
+                {' '}
+                — about {s.transitDays} days to {estimate.destination} after
+                dispatch (Japan Post standard)
+              </>
+            )}
+            .
+            {s.around && (
+              <>
+                {' '}
+                Estimated delivery:{' '}
+                <b className="font-semibold text-chrome-200">{s.around}</b>.
+              </>
+            )}
+          </span>
+        </Row>
+      )}
       {EXPRESS_OPTIONS.length > 0 && (
         <ul className="m-0 flex list-none flex-col gap-1 p-0 pl-[30px]">
           {EXPRESS_OPTIONS.map((o) => {
-            const transit =
-              o.method === 'ems' ? estimate.emsTransitDays : s.transitDays;
+            const transit = o.method === 'ems' ? ems : (s?.transitDays ?? null);
             const around = arrivalAround(o.handlingDays, transit);
             return (
               <li key={o.label}>

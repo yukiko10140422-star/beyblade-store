@@ -19,8 +19,8 @@ export interface DeliveryEstimate {
   destination: string;
   /** "Ships within 3 business days" — null when the product has no value. */
   handlingLabel: string | null;
-  /** The product's own method (from `shipping.service`), defaulting to ePacket. */
-  standard: MethodEstimate;
+  /** The product's own method (from `shipping.service`); null when unknown. */
+  standard: MethodEstimate | null;
   /** EMS transit for the destination (used by paid Express rows). */
   emsTransitDays: number | null;
 }
@@ -31,6 +31,10 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /** Adds Japan business days (Mon–Fri) to a Japan wall-clock date. */
 function addBusinessDays(jstWall: Date, days: number): Date {
   const d = new Date(jstWall);
+  // Orders placed on a Saturday/Sunday are handled from the next weekday.
+  while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
   let added = 0;
   while (added < days) {
     d.setUTCDate(d.getUTCDate() + 1);
@@ -78,16 +82,19 @@ export function getDeliveryEstimate(
   serviceValue: string | null | undefined,
   now: Date = new Date(),
 ): DeliveryEstimate {
-  const methodId: ShippingMethodId = findMethod(serviceValue)?.id ?? 'epacket';
-  const transit = transitDays(country, methodId);
+  // Unknown method: show nothing about method, transit or arrival (fail closed).
+  const methodId: ShippingMethodId | undefined = findMethod(serviceValue)?.id;
+  const transit = methodId ? transitDays(country, methodId) : null;
   return {
     destination: destinationName(country),
     handlingLabel: handlingDays != null ? handlingLabel(handlingDays) : null,
-    standard: {
-      methodLabel: SHIPPING_METHODS[methodId].label,
-      transitDays: transit,
-      around: arrivalAround(handlingDays, transit, now),
-    },
+    standard: methodId
+      ? {
+          methodLabel: SHIPPING_METHODS[methodId].label,
+          transitDays: transit,
+          around: arrivalAround(handlingDays, transit, now),
+        }
+      : null,
     emsTransitDays: transitDays(country, 'ems'),
   };
 }

@@ -263,9 +263,7 @@ function FilterBar() {
         role="group"
         aria-label="Filter by type"
       >
-        <span className="text-chrome-500 text-xs font-heading mr-1">
-          Type
-        </span>
+        <span className="text-chrome-500 text-xs font-heading mr-1">Type</span>
         <button
           aria-pressed={!activeType}
           onClick={() => setParam('type', null)}

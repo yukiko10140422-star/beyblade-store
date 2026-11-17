@@ -42,12 +42,12 @@ export const SHIPPING_METHODS: Record<ShippingMethodId, ShippingMethod> = {
   epacket: {
     id: 'epacket',
     label: 'Japan Post ePacket (tracked)',
-    match: /e-?packet/i,
+    match: /e-?packet|eパケット|(?:^|[^a-z])epl(?:[^a-z]|$)/i,
   },
   ems: {
     id: 'ems',
     label: 'Japan Post EMS (tracked)',
-    match: /\bems\b|speed\s*post/i,
+    match: /(?:^|[^a-z])ems(?:[^a-z]|$)|speed\s*post/i,
   },
 };
 

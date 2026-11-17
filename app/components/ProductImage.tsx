@@ -62,7 +62,7 @@ export function ProductImage({
             href={current.image.url}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open the full-size photo in a new tab"
+            title="Open the full-size photo in a new tab"
             className="block cursor-zoom-in rounded-[4px] border border-vault-700 bg-white"
           >
             <img
@@ -97,7 +97,7 @@ export function ProductImage({
               aria-label={`Photo ${i + 1} of ${images.length}`}
               aria-current={i === selected}
               className={`h-[100px] w-[72px] shrink-0 overflow-hidden rounded-[3px] border bg-white ${
-                i === selected ? 'border-holo-500' : 'border-vault-600'
+                i === selected ? 'border-2 border-holo-500' : 'border-vault-600'
               }`}
             >
               <img

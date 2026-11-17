@@ -64,9 +64,7 @@ export default function Orders() {
 
   return (
     <div className="space-y-8">
-      <h2 className="font-heading text-2xl text-silver-400">
-        Orders
-      </h2>
+      <h2 className="font-heading text-2xl text-silver-400">Orders</h2>
       <OrderSearchForm currentFilters={filters} />
       <OrdersTable orders={orders} filters={filters} />
     </div>

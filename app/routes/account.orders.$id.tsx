@@ -157,9 +157,7 @@ export default function OrderRoute() {
             </div>
           )}
           <div className="flex justify-between items-center pt-2 border-t border-vault-700">
-            <span className="text-chrome-200 font-heading text-sm">
-              Total
-            </span>
+            <span className="text-chrome-200 font-heading text-sm">Total</span>
             <span className="text-silver-400 font-heading text-lg">
               {order.totalPrice ? (
                 <Money data={order.totalPrice} />

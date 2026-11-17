@@ -265,9 +265,7 @@ export function ErrorBoundary() {
           {errorStatus}
         </h1>
         <h2 className="font-heading text-xl text-chrome-200 mb-6">
-          {errorStatus === 404
-            ? 'Page not found'
-            : 'Something went wrong'}
+          {errorStatus === 404 ? 'Page not found' : 'Something went wrong'}
         </h2>
         {errorMessage && (
           <p className="text-chrome-500 text-sm mb-8">{errorMessage}</p>

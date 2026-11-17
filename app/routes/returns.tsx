@@ -30,13 +30,6 @@ export default function Returns() {
         </ul>
       </section>
       <section>
-        <h2>Damaged on arrival</h2>
-        <p>
-          If an item arrives damaged or defective, contact us within 48 hours of
-          delivery with photos of the damage.
-        </p>
-      </section>
-      <section>
         <h2>Refunds</h2>
         <p>
           Refunds are issued to the original payment method after the returned

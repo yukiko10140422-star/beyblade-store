@@ -49,9 +49,7 @@ export function NewsletterForm({
         <p
           className={clsx(
             'text-silver-400',
-            isLarge
-              ? 'text-sm font-heading'
-              : 'text-xs',
+            isLarge ? 'text-sm font-heading' : 'text-xs',
           )}
         >
           {fetcher.data?.message || successFallback}
@@ -79,7 +77,7 @@ export function NewsletterForm({
           placeholder="your@email.com"
           aria-label="Email address for newsletter"
           className={clsx(
-            'flex-1 bg-vault-800 border border-vault-700 rounded-[4px] text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-silver-400/50 focus:ring-1 focus:ring-silver-400/20 transition-all',
+            'flex-1 bg-vault-800 border border-[#8F897D] rounded-[4px] text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-silver-400/50 focus:ring-1 focus:ring-silver-400/20 transition-all',
             isLarge ? 'px-4 py-3 text-sm' : 'px-3 py-2 text-sm',
           )}
         />
@@ -88,9 +86,7 @@ export function NewsletterForm({
           disabled={isSubmitting}
           className={clsx(
             'bg-silver-500 hover:bg-silver-400 text-white font-heading rounded-[4px] transition-all duration-200 disabled:opacity-50',
-            isLarge
-              ? ' text-xs px-6 py-3 hover:'
-              : ' text-xs px-4 py-2',
+            isLarge ? ' text-xs px-6 py-3 hover:' : ' text-xs px-4 py-2',
           )}
         >
           {isSubmitting

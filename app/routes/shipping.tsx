@@ -12,7 +12,7 @@ export const meta: Route.MetaFunction = () => [
   {
     name: 'description',
     content:
-      'Orders ship from Japan by Japan Post ePacket or EMS, with tracking. Each product page shows when the item ships.',
+      'Orders ship from Japan by Japan Post ePacket or EMS, with tracking.',
   },
 ];
 
@@ -45,10 +45,8 @@ export default function Shipping() {
       <section>
         <h2>When your order ships</h2>
         <p>
-          Each product page shows when that item ships (for example, “Ships
-          within 3 business days”). Business days are Monday to Friday, Japan
-          time. If your order contains items with different times, it ships when
-          the last item is ready.
+          Product pages show when the item ships (for example, “Ships within 3
+          business days”). Business days are Monday to Friday, Japan time.
         </p>
         {EXPRESS_OPTIONS.length > 0 && (
           <p>Faster dispatch is available as a paid option at checkout.</p>

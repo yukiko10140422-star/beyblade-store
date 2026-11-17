@@ -63,7 +63,7 @@ function DesktopSearch() {
       method="get"
       action="/search"
       role="search"
-      className="hidden h-10 w-56 items-center gap-2 rounded-[4px] border border-[#8F897D] bg-white px-3 xl:flex"
+      className="hidden h-10 w-56 items-center gap-2 rounded-[4px] border border-[#8F897D] bg-white px-3 focus-within:border-holo-500 focus-within:ring-2 focus-within:ring-holo-500/30 xl:flex"
     >
       <SearchIcon className="h-4 w-4 text-chrome-400" />
       <input
@@ -71,7 +71,7 @@ function DesktopSearch() {
         name="q"
         placeholder="Search BX-, UX-, CX- numbers"
         aria-label="Search"
-        className="w-full border-0 bg-transparent p-0 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:ring-0"
+        className="w-full border-0 bg-transparent p-0 text-sm text-chrome-200 outline-none placeholder:text-chrome-600"
       />
     </Form>
   );

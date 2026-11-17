@@ -342,6 +342,7 @@ export default function Product() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-7">
           <ProductImage
+            key={product.id}
             image={selectedVariant?.image}
             media={mediaImages}
             alt={altText}
@@ -407,12 +408,7 @@ export default function Product() {
           </div>
           <PaymentMethods settings={rootData?.header?.shop.paymentSettings} />
 
-          {!isPreOrder && (
-            <DeliveryBox
-              estimate={deliveryEstimate}
-              handlingDays={handlingDays}
-            />
-          )}
+          {!isPreOrder && <DeliveryBox estimate={deliveryEstimate} />}
           <ReturnsNote />
         </div>
       </div>
@@ -895,7 +891,9 @@ function KeyFacts({product}: {product: BeyMetafields}) {
           <span className="rounded-[3px] bg-holo-500 px-2 py-0.5 font-mono text-[13px] font-medium text-white">
             {model}
           </span>
-          <span className="font-semibold text-chrome-200">Japanese version</span>
+          <span className="font-semibold text-chrome-200">
+            Japanese version
+          </span>
         </div>
       )}
       {series && <span>Series: {series}</span>}
