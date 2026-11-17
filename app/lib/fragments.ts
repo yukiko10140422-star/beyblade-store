@@ -60,6 +60,9 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
       }
     }
     beybladeType: metafield(namespace: "beyblade", key: "type") { value }
+    modelNumber: metafield(namespace: "beyblade", key: "model_number") { value }
+    series: metafield(namespace: "beyblade", key: "series") { value }
+    handlingDays: metafield(namespace: "shipping", key: "handling_days") { value }
   }
 ` as const;
 
@@ -273,6 +276,10 @@ export const HEADER_QUERY = `#graphql
           url
         }
       }
+    }
+    paymentSettings {
+      acceptedCardBrands
+      supportedDigitalWallets
     }
   }
   query Header(

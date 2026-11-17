@@ -113,7 +113,7 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
         aria-expanded={open}
         aria-label={`Ship to: ${currentMeta.name}`}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1.5 h-10 rounded-lg px-3 text-sm text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 focus:outline-none focus:ring-2 focus:ring-vermillion-500 transition-colors"
+        className="inline-flex items-center gap-1.5 h-10 rounded-[4px] px-2 text-sm text-chrome-300 hover:text-holo-500 hover:bg-vault-800 focus:outline-none focus:ring-2 focus:ring-holo-500 transition-colors"
       >
         <span aria-hidden="true">{currentMeta.flag}</span>
         <span className="font-medium">{currentMeta.code}</span>
@@ -137,7 +137,7 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
         <ul
           role="listbox"
           aria-label="Select shipping country"
-          className="absolute right-0 top-full z-50 mt-2 max-h-80 w-56 overflow-y-auto rounded-lg border border-vault-700 bg-vault-950 py-1 shadow-xl"
+          className="absolute right-0 bottom-full z-50 mb-2 max-h-80 w-56 overflow-y-auto rounded-[4px] border border-vault-700 bg-white py-1"
         >
           {COUNTRIES.map((c) => {
             const selected = c.code === current;
@@ -146,8 +146,8 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
                 <button
                   type="button"
                   onClick={() => handleSelect(c.code)}
-                  className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-vault-800 hover:text-vermillion-500 transition-colors ${
-                    selected ? 'text-gold-400' : 'text-chrome-300'
+                  className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-vault-800 hover:text-holo-500 transition-colors ${
+                    selected ? 'text-silver-400' : 'text-chrome-300'
                   }`}
                 >
                   <span aria-hidden="true">{c.flag}</span>

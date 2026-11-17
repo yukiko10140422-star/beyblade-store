@@ -90,7 +90,7 @@ function SearchResultsPredictiveArticles({
 
   return (
     <div className="mb-6" key="articles">
-      <h5 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400 mb-3 px-1">
+      <h5 className="font-heading text-xs text-silver-400 mb-3 px-1">
         Articles
       </h5>
       <ul className="space-y-1">
@@ -106,7 +106,7 @@ function SearchResultsPredictiveArticles({
               <Link
                 onClick={closeSearch}
                 to={articleUrl}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50"
+                className="flex items-center gap-3 rounded-[4px] px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-silver-400/50"
               >
                 {article.image?.url && (
                   <div className="w-10 h-10 flex-shrink-0 rounded-md overflow-hidden bg-vault-900">
@@ -119,7 +119,7 @@ function SearchResultsPredictiveArticles({
                     />
                   </div>
                 )}
-                <span className="text-chrome-200 text-sm truncate hover:text-gold-400 transition-colors">
+                <span className="text-chrome-200 text-sm truncate hover:text-silver-400 transition-colors">
                   {article.title}
                 </span>
               </Link>
@@ -140,7 +140,7 @@ function SearchResultsPredictiveCollections({
 
   return (
     <div className="mb-6" key="collections">
-      <h5 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400 mb-3 px-1">
+      <h5 className="font-heading text-xs text-silver-400 mb-3 px-1">
         Collections
       </h5>
       <ul className="space-y-1">
@@ -156,7 +156,7 @@ function SearchResultsPredictiveCollections({
               <Link
                 onClick={closeSearch}
                 to={collectionUrl}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50"
+                className="flex items-center gap-3 rounded-[4px] px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-silver-400/50"
               >
                 {collection.image?.url && (
                   <div className="w-10 h-10 flex-shrink-0 rounded-md overflow-hidden bg-vault-900">
@@ -169,7 +169,7 @@ function SearchResultsPredictiveCollections({
                     />
                   </div>
                 )}
-                <span className="text-chrome-200 text-sm truncate hover:text-gold-400 transition-colors">
+                <span className="text-chrome-200 text-sm truncate hover:text-silver-400 transition-colors">
                   {collection.title}
                 </span>
               </Link>
@@ -190,9 +190,7 @@ function SearchResultsPredictivePages({
 
   return (
     <div className="mb-6" key="pages">
-      <h5 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400 mb-3 px-1">
-        Pages
-      </h5>
+      <h5 className="font-heading text-xs text-silver-400 mb-3 px-1">Pages</h5>
       <ul className="space-y-1">
         {pages.map((page) => {
           const pageUrl = urlWithTrackingParams({
@@ -206,9 +204,9 @@ function SearchResultsPredictivePages({
               <Link
                 onClick={closeSearch}
                 to={pageUrl}
-                className="flex items-center rounded-lg px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50"
+                className="flex items-center rounded-[4px] px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-silver-400/50"
               >
-                <span className="text-chrome-200 text-sm truncate hover:text-gold-400 transition-colors">
+                <span className="text-chrome-200 text-sm truncate hover:text-silver-400 transition-colors">
                   {page.title}
                 </span>
               </Link>
@@ -229,7 +227,7 @@ function SearchResultsPredictiveProducts({
 
   return (
     <div className="mb-6" key="products">
-      <h5 className="font-heading text-xs uppercase tracking-[0.2em] text-gold-400 mb-3 px-1">
+      <h5 className="font-heading text-xs text-silver-400 mb-3 px-1">
         Products
       </h5>
       <ul className="space-y-1">
@@ -247,7 +245,7 @@ function SearchResultsPredictiveProducts({
               <Link
                 to={productUrl}
                 onClick={closeSearch}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50"
+                className="flex items-center gap-3 rounded-[4px] px-3 py-2 transition-colors hover:bg-vault-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-silver-400/50"
               >
                 {image && (
                   <div className="w-10 h-10 flex-shrink-0 rounded-md overflow-hidden bg-vault-900">
@@ -264,7 +262,7 @@ function SearchResultsPredictiveProducts({
                   <p className="text-chrome-200 text-sm truncate">
                     {product.title}
                   </p>
-                  <small className="text-gold-400 font-heading text-xs">
+                  <small className="text-silver-400 font-heading text-xs">
                     {price && <Money data={price} />}
                   </small>
                 </div>

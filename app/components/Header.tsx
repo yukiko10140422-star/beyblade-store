@@ -1,5 +1,5 @@
 import {Suspense} from 'react';
-import {Await, NavLink, useAsyncValue} from 'react-router';
+import {Await, Form, NavLink, useAsyncValue} from 'react-router';
 import {
   type CartViewPayload,
   useAnalytics,
@@ -7,9 +7,11 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
-import {CountryPicker} from '~/components/CountryPicker';
+import {AnnouncementBar} from '~/components/AnnouncementBar';
 import {MenuIcon, SearchIcon, UserIcon, CartIcon} from '~/components/icons';
 import clsx from 'clsx';
+import {Wordmark} from '~/components/Wordmark';
+import {SHELVES} from '~/lib/site';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -20,45 +22,58 @@ interface HeaderProps {
 
 type Viewport = 'desktop' | 'mobile';
 
+/**
+ * Announcement bar (facts) + white header with a 1px rule: logo, shelves,
+ * search, account, cart. No blur, no shadow.
+ */
 export function Header({
   header,
   isLoggedIn,
   cart,
   publicStoreDomain,
 }: HeaderProps) {
-  const {shop, menu} = header;
+  const {menu} = header;
   return (
-    <header className="sticky top-0 z-50 h-[72px] bg-vault-950/95 backdrop-blur-md border-b border-vault-700">
-      <div className="mx-auto max-w-7xl h-full flex items-center justify-between px-4 lg:px-8">
-        {/* Logo */}
-        <NavLink
-          prefetch="intent"
-          to="/"
-          end
-          className="flex-shrink-0 flex items-center gap-3"
-        >
-          <img
-            src="/images/logo.webp"
-            srcSet="/images/logo.webp 1x, /images/logo@2x.webp 2x"
-            alt={shop.name}
-            width={96}
-            height={96}
-            className="h-12 w-auto"
+    <>
+      <AnnouncementBar />
+      <header className="sticky top-0 z-50 bg-white border-b border-vault-700">
+        <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-3 px-4 md:h-[72px] md:gap-8 md:px-10">
+          <HeaderMenuMobileToggle />
+          <NavLink prefetch="intent" to="/" end className="shrink-0">
+            <Wordmark />
+          </NavLink>
+          <HeaderMenu
+            menu={menu}
+            viewport="desktop"
+            primaryDomainUrl={header.shop.primaryDomain.url}
+            publicStoreDomain={publicStoreDomain}
           />
-        </NavLink>
+          <div className="flex-1" />
+          <DesktopSearch />
+          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+        </div>
+      </header>
+    </>
+  );
+}
 
-        {/* Desktop Navigation */}
-        <HeaderMenu
-          menu={menu}
-          viewport="desktop"
-          primaryDomainUrl={header.shop.primaryDomain.url}
-          publicStoreDomain={publicStoreDomain}
-        />
-
-        {/* CTAs */}
-        <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
-      </div>
-    </header>
+function DesktopSearch() {
+  return (
+    <Form
+      method="get"
+      action="/search"
+      role="search"
+      className="hidden h-10 w-56 items-center gap-2 rounded-[4px] border border-[#8F897D] bg-white px-3 xl:flex"
+    >
+      <SearchIcon className="h-4 w-4 text-chrome-400" />
+      <input
+        type="search"
+        name="q"
+        placeholder="Search BX-, UX-, CX- numbers"
+        aria-label="Search"
+        className="w-full border-0 bg-transparent p-0 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:ring-0"
+      />
+    </Form>
   );
 }
 
@@ -74,16 +89,14 @@ export function HeaderMenu({
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
   const {close} = useAside();
-
   const isMobile = viewport === 'mobile';
 
   return (
     <nav
+      aria-label="Categories"
       className={clsx(
-        'flex',
-        isMobile ? 'flex-col gap-1 py-4' : 'hidden md:flex items-center gap-8',
+        isMobile ? 'flex flex-col py-2' : 'hidden items-center gap-5 lg:flex',
       )}
-      role="navigation"
     >
       {isMobile && (
         <NavLink
@@ -91,21 +104,13 @@ export function HeaderMenu({
           onClick={close}
           prefetch="intent"
           to="/"
-          className={({isActive}) =>
-            clsx(
-              'font-heading text-sm uppercase tracking-widest py-3 px-4 rounded-lg transition-colors',
-              isActive
-                ? 'text-vermillion-500 bg-vermillion-50'
-                : 'text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800',
-            )
-          }
+          className="border-b border-vault-700 px-4 py-3 text-[15px] font-medium text-chrome-200"
         >
           Home
         </NavLink>
       )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+      {FALLBACK_HEADER_MENU.items.map((item) => {
         if (!item.url) return null;
-
         const url =
           item.url.includes('myshopify.com') ||
           item.url.includes('myshopify.dev') ||
@@ -122,20 +127,10 @@ export function HeaderMenu({
             to={url}
             className={({isActive}) =>
               clsx(
-                'transition-colors duration-200',
                 isMobile
-                  ? clsx(
-                      'font-heading text-sm uppercase tracking-widest py-3 px-4 rounded-lg',
-                      isActive
-                        ? 'text-gold-400 bg-gold-400/5'
-                        : 'text-chrome-300 hover:text-gold-400 hover:bg-vault-800',
-                    )
-                  : clsx(
-                      'font-heading text-[11px] uppercase tracking-[0.18em] font-semibold',
-                      isActive
-                        ? 'text-vermillion-500'
-                        : 'text-chrome-300 hover:text-vermillion-500',
-                    ),
+                  ? 'border-b border-vault-700 px-4 py-3 text-[15px] font-medium'
+                  : 'whitespace-nowrap text-sm font-medium hover:text-holo-500',
+                isActive ? 'text-holo-500' : 'text-chrome-200',
               )
             }
           >
@@ -143,6 +138,16 @@ export function HeaderMenu({
           </NavLink>
         );
       })}
+      {isMobile && (
+        <NavLink
+          onClick={close}
+          prefetch="intent"
+          to="/account"
+          className="px-4 py-3 text-[15px] font-medium text-chrome-200"
+        >
+          Account
+        </NavLink>
+      )}
     </nav>
   );
 }
@@ -152,14 +157,13 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="flex items-center gap-1 md:gap-3" role="navigation">
-      <HeaderMenuMobileToggle />
+    <div className="-mr-2.5 flex items-center gap-1 md:gap-2">
       <SearchToggle />
-      <CountryPicker className="hidden md:block" />
       <NavLink
         prefetch="intent"
         to="/account"
-        className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
+        aria-label="Account"
+        className="hidden h-11 w-11 items-center justify-center text-chrome-200 hover:text-holo-500 md:flex"
       >
         <Suspense fallback={<UserIcon />}>
           <Await resolve={isLoggedIn} errorElement={<UserIcon />}>
@@ -168,7 +172,7 @@ function HeaderCtas({
         </Suspense>
       </NavLink>
       <CartToggle cart={cart} />
-    </nav>
+    </div>
   );
 }
 
@@ -176,9 +180,10 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
+      type="button"
+      className="-ml-2.5 flex h-11 w-11 items-center justify-center text-chrome-200 lg:hidden"
       onClick={() => open('mobile')}
-      aria-label="Open menu"
+      aria-label="Menu"
     >
       <MenuIcon />
     </button>
@@ -189,7 +194,8 @@ function SearchToggle() {
   const {open} = useAside();
   return (
     <button
-      className="flex items-center justify-center w-10 h-10 rounded-lg text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
+      type="button"
+      className="flex h-11 w-11 items-center justify-center text-chrome-200 hover:text-holo-500 xl:hidden"
       onClick={() => open('search')}
       aria-label="Search"
     >
@@ -204,7 +210,8 @@ function CartBadge({count}: {count: number}) {
 
   return (
     <button
-      className="relative flex items-center justify-center w-10 h-10 rounded-lg text-chrome-300 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
+      type="button"
+      className="relative flex h-11 w-11 items-center justify-center text-chrome-200 hover:text-holo-500"
       onClick={() => {
         open('cart');
         publish('cart_viewed', {
@@ -214,11 +221,11 @@ function CartBadge({count}: {count: number}) {
           url: window.location.href || '',
         } as CartViewPayload);
       }}
-      aria-label={`Cart (${count} items)`}
+      aria-label={`Cart, ${count} item${count === 1 ? '' : 's'}`}
     >
       <CartIcon />
       {count > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 bg-vermillion-500 text-white text-[10px] font-heading font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+        <span className="absolute right-0.5 top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-holo-500 px-1 text-[11px] font-semibold text-white">
           {count}
         </span>
       )}
@@ -254,44 +261,19 @@ export function localizeMenuTitle(title: string): string {
   return MENU_TITLE_MAP[title] || title;
 }
 
+/**
+ * Shelf navigation from ~/lib/site. The Shopify `main-menu` is not used:
+ * it links to old pages whose text no longer matches the facts.
+ */
 const FALLBACK_HEADER_MENU = {
   id: 'gid://shopify/Menu/fallback',
-  items: [
-    {
-      id: 'nav-shop-all',
-      resourceId: null,
-      tags: [],
-      title: 'Shop All',
-      type: 'HTTP',
-      url: '/collections/all',
-      items: [],
-    },
-    {
-      id: 'nav-pre-order',
-      resourceId: null,
-      tags: [],
-      title: 'Pre-Order',
-      type: 'HTTP',
-      url: '/collections/pre-order',
-      items: [],
-    },
-    {
-      id: 'nav-beyblade-x',
-      resourceId: null,
-      tags: [],
-      title: 'Beyblade X',
-      type: 'HTTP',
-      url: '/collections/beyblade-x',
-      items: [],
-    },
-    {
-      id: 'nav-shipping',
-      resourceId: null,
-      tags: [],
-      title: 'Shipping',
-      type: 'HTTP',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-  ],
+  items: SHELVES.map((s) => ({
+    id: `nav-${s.handle}`,
+    resourceId: null,
+    tags: [],
+    title: s.short,
+    type: 'HTTP',
+    url: `/collections/${s.handle}`,
+    items: [],
+  })),
 };

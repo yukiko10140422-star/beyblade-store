@@ -34,11 +34,7 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
 
       <div className="flex items-center justify-between text-xs">
         <span className="text-chrome-400">Shipping</span>
-        <span className="text-vault-50 font-semibold">FREE worldwide</span>
-      </div>
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-chrome-400">Duties &amp; taxes</span>
-        <span className="text-vault-50 font-semibold">Pre-paid (DDP)</span>
+        <span className="text-chrome-300">Calculated at checkout</span>
       </div>
 
       <CartDiscounts
@@ -62,7 +58,7 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
     <a
       href={checkoutUrl}
       target="_self"
-      className="block w-full py-4 text-center rounded-full font-heading font-semibold uppercase tracking-[0.15em] text-sm bg-vermillion-500 hover:bg-vermillion-600 text-white transition-all duration-200 hover:shadow-lg hover:shadow-vermillion-500/30"
+      className="block w-full py-4 text-center rounded-[4px] font-heading font-semibold text-sm bg-holo-500 hover:bg-holo-600 text-white transition-all duration-200"
     >
       Secure Checkout &rarr;
     </a>
@@ -70,9 +66,9 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
 }
 
 const inputClass =
-  'flex-1 bg-white border border-vault-700 rounded-lg px-3 py-2 text-xs text-vault-50 placeholder:text-chrome-500 focus:outline-none focus:border-vermillion-300 focus:ring-1 focus:ring-vermillion-300/30 transition-all';
+  'flex-1 bg-vault-900 border border-vault-700 rounded-[4px] px-3 py-2 text-xs text-vault-50 placeholder:text-chrome-500 focus:outline-none focus:border-holo-300 focus:ring-1 focus:ring-holo-300/30 transition-all';
 const applyBtnClass =
-  'text-[10px] font-heading uppercase tracking-wider font-semibold text-vermillion-500 hover:text-vermillion-600 px-3 py-2 border border-vault-700 hover:border-vermillion-300 rounded-lg transition-all';
+  'text-[10px] font-heading font-semibold text-holo-500 hover:text-holo-600 px-3 py-2 border border-vault-700 hover:border-holo-300 rounded-[4px] transition-all';
 const removeBtnClass =
   'text-[10px] text-chrome-500 hover:text-danger-500 transition-colors';
 
@@ -101,7 +97,7 @@ function CartDiscounts({
               aria-labelledby={discountsHeadingId}
             >
               <span className="text-xs text-chrome-300">
-                <code className="bg-vermillion-50 border border-vermillion-200 px-2 py-0.5 rounded text-vermillion-600 font-semibold">
+                <code className="bg-holo-50 border border-holo-200 px-2 py-0.5 rounded-[3px] text-holo-600 font-semibold">
                   {codes?.join(', ')}
                 </code>
               </span>
@@ -208,10 +204,10 @@ function CartGiftCard({
               }}
             >
               <div className="flex items-center gap-2">
-                <code className="bg-vault-800 border border-vault-700 px-2 py-0.5 rounded text-xs text-vault-50">
+                <code className="bg-vault-800 border border-vault-700 px-2 py-0.5 rounded-[3px] text-xs text-vault-50">
                   ***{giftCard.lastCharacters}
                 </code>
-                <span className="text-xs text-vermillion-500 font-semibold">
+                <span className="text-xs text-holo-500 font-semibold">
                   <Money data={giftCard.amountUsed} />
                 </span>
               </div>

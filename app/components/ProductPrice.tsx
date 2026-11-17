@@ -24,7 +24,7 @@ export function ProductPrice({
               className="text-chrome-600 font-heading text-base"
             />
           </s>
-          <span className="text-[10px] font-heading uppercase tracking-wider bg-danger-500/20 text-danger-500 border border-danger-500/30 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-heading bg-danger-500/20 text-danger-500 border border-danger-500/30 px-2 py-0.5 rounded-[4px]">
             Sale
           </span>
         </>

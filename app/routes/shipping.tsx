@@ -1,0 +1,120 @@
+import type {Route} from './+types/shipping';
+import {FactTable, InfoPage} from '~/components/InfoPage';
+import {
+  EXPRESS_OPTIONS,
+  JAPAN_POST_DAYS,
+  SHIPPING_METHODS,
+} from '~/lib/shipping';
+import {SITE} from '~/lib/site';
+
+export const meta: Route.MetaFunction = () => [
+  {title: `Shipping | ${SITE.name}`},
+  {
+    name: 'description',
+    content:
+      'Orders ship from Japan by Japan Post ePacket or EMS, with tracking. Each product page shows when the item ships.',
+  },
+];
+
+const SOURCE_EMS =
+  'https://www.post.japanpost.jp/int/deli_days/ems/minamikanto.html';
+const SOURCE_AIR =
+  'https://www.post.japanpost.jp/int/deli_days/normal/minamikanto.html';
+
+export default function Shipping() {
+  const rows = Object.entries(JAPAN_POST_DAYS);
+  return (
+    <InfoPage
+      title="Shipping"
+      intro="Orders ship from Yokohama, Japan, by Japan Post, with tracking."
+    >
+      <section>
+        <h2>Methods</h2>
+        <FactTable
+          rows={[
+            ['Standard', SHIPPING_METHODS.epacket.label],
+            ['Express', SHIPPING_METHODS.ems.label],
+            [
+              'Cost',
+              'Shipping options and costs for your country are shown at checkout, before you pay.',
+            ],
+          ]}
+        />
+      </section>
+
+      <section>
+        <h2>When your order ships</h2>
+        <p>
+          Each product page shows when that item ships (for example, “Ships
+          within 3 business days”). Business days are Monday to Friday, Japan
+          time. If your order contains items with different times, it ships when
+          the last item is ready.
+        </p>
+        {EXPRESS_OPTIONS.length > 0 && (
+          <p>Faster dispatch is available as a paid option at checkout.</p>
+        )}
+      </section>
+
+      <section>
+        <h2>Delivery time after dispatch</h2>
+        <p>
+          Japan Post’s standard delivery days from our area (Minami-Kanto).
+          These are Japan Post’s estimates, not guarantees. A dash means Japan
+          Post does not publish a single number for that destination.
+        </p>
+        <div className="overflow-x-auto rounded-[4px] border border-vault-700 bg-white">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-vault-700 text-left">
+                <th className="px-4 py-2 font-semibold text-chrome-200">
+                  Destination
+                </th>
+                <th className="px-4 py-2 font-semibold text-chrome-200">
+                  ePacket (days)
+                </th>
+                <th className="px-4 py-2 font-semibold text-chrome-200">
+                  EMS (days)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(([code, r]) => (
+                <tr
+                  key={code}
+                  className="border-b border-vault-700 last:border-b-0"
+                >
+                  <td className="px-4 py-2">
+                    {r.name
+                      .replace(/^the /, '')
+                      .replace(/^./, (c) => c.toUpperCase())}
+                  </td>
+                  <td className="px-4 py-2">{r.air ?? '–'}</td>
+                  <td className="px-4 py-2">{r.ems ?? '–'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-2 text-[13px] text-chrome-400">
+          Source: Japan Post delivery-day tables (
+          <a href={SOURCE_AIR} className="text-holo-500 hover:underline">
+            airmail
+          </a>
+          ,{' '}
+          <a href={SOURCE_EMS} className="text-holo-500 hover:underline">
+            EMS
+          </a>
+          ), read Nov 17, 2026. ePacket travels as airmail.
+        </p>
+      </section>
+
+      <section>
+        <h2>Tracking</h2>
+        <p>
+          Both methods are tracked. You receive a shipping confirmation e-mail
+          with the tracking number when your order ships.
+        </p>
+      </section>
+    </InfoPage>
+  );
+}

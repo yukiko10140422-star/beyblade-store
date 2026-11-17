@@ -85,7 +85,7 @@ export default function OrderRoute() {
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h2 className="font-heading text-2xl text-gold-400 uppercase tracking-wider">
+        <h2 className="font-heading text-2xl text-silver-400">
           Order {order.name}
         </h2>
         <p className="text-chrome-500 text-sm">
@@ -101,19 +101,19 @@ export default function OrderRoute() {
       </div>
 
       {/* Line Items */}
-      <div className="bg-vault-800 border border-vault-700 rounded-lg overflow-hidden">
+      <div className="bg-vault-800 border border-vault-700 rounded-[4px] overflow-hidden">
         {/* Table header - hidden on mobile, visible on sm+ */}
         <div className="hidden sm:grid sm:grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-3 border-b border-vault-700">
-          <span className="text-chrome-600 text-[10px] uppercase tracking-wider font-heading">
+          <span className="text-chrome-600 text-[10px] font-heading">
             Product
           </span>
-          <span className="text-chrome-600 text-[10px] uppercase tracking-wider font-heading w-24 text-right">
+          <span className="text-chrome-600 text-[10px] font-heading w-24 text-right">
             Price
           </span>
-          <span className="text-chrome-600 text-[10px] uppercase tracking-wider font-heading w-16 text-center">
+          <span className="text-chrome-600 text-[10px] font-heading w-16 text-center">
             Qty
           </span>
-          <span className="text-chrome-600 text-[10px] uppercase tracking-wider font-heading w-24 text-right">
+          <span className="text-chrome-600 text-[10px] font-heading w-24 text-right">
             Total
           </span>
         </div>
@@ -157,10 +157,10 @@ export default function OrderRoute() {
             </div>
           )}
           <div className="flex justify-between items-center pt-2 border-t border-vault-700">
-            <span className="text-chrome-200 font-heading uppercase tracking-wider text-sm">
+            <span className="text-chrome-200 font-heading text-sm">
               Total
             </span>
-            <span className="text-gold-400 font-heading text-lg">
+            <span className="text-silver-400 font-heading text-lg">
               {order.totalPrice ? (
                 <Money data={order.totalPrice} />
               ) : (
@@ -173,8 +173,8 @@ export default function OrderRoute() {
 
       {/* Shipping & Status sidebar */}
       <div className="grid sm:grid-cols-2 gap-4">
-        <div className="bg-vault-800 border border-vault-700 rounded-lg p-4 space-y-2">
-          <h3 className="font-heading text-xs text-chrome-600 uppercase tracking-wider mb-3">
+        <div className="bg-vault-800 border border-vault-700 rounded-[4px] p-4 space-y-2">
+          <h3 className="font-heading text-xs text-chrome-600 mb-3">
             Shipping Address
           </h3>
           {order?.shippingAddress ? (
@@ -196,15 +196,15 @@ export default function OrderRoute() {
           )}
         </div>
 
-        <div className="bg-vault-800 border border-vault-700 rounded-lg p-4 space-y-2">
-          <h3 className="font-heading text-xs text-chrome-600 uppercase tracking-wider mb-3">
+        <div className="bg-vault-800 border border-vault-700 rounded-[4px] p-4 space-y-2">
+          <h3 className="font-heading text-xs text-chrome-600 mb-3">
             Fulfillment Status
           </h3>
           <span
-            className={`inline-block px-3 py-1 rounded text-xs uppercase tracking-wider font-heading ${
+            className={`inline-block px-3 py-1 rounded-[3px] text-xs font-heading ${
               fulfillmentStatus === 'SUCCESS' ||
               fulfillmentStatus === 'DELIVERED'
-                ? 'bg-gold-500/15 text-gold-400 border border-gold-500/30'
+                ? 'bg-silver-500/15 text-silver-400 border border-silver-500/30'
                 : 'bg-chrome-500/10 text-chrome-400 border border-chrome-500/20'
             }`}
           >
@@ -219,7 +219,7 @@ export default function OrderRoute() {
           target="_blank"
           href={order.statusPageUrl}
           rel="noreferrer"
-          className="text-gold-500 hover:text-gold-400 font-heading uppercase tracking-wider text-sm transition-colors"
+          className="text-silver-500 hover:text-silver-400 font-heading text-sm transition-colors"
         >
           View Order Status &rarr;
         </a>
@@ -268,7 +268,7 @@ function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
           <span className="sm:hidden text-chrome-600 mr-1">&times;</span>
           {lineItem.quantity}
         </span>
-        <span className="sm:w-24 sm:text-right text-gold-400 font-heading">
+        <span className="sm:w-24 sm:text-right text-silver-400 font-heading">
           {lineItem.price ? (
             <Money
               data={{

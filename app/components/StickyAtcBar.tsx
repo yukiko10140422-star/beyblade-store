@@ -17,10 +17,11 @@ interface StickyAtcBarProps {
 }
 
 /**
- * Mobile sticky ATC bar — appears below the fold on PDP.
- * Industry data: 8-15% conversion lift on mobile, up to 25% on PDP scroll.
- * Hidden on desktop (lg+) where the regular ATC is always visible in the
- * sticky right column.
+ * Mobile sticky Add-to-cart bar.
+ * Visible whenever the primary Add-to-cart (marked `data-primary-atc` on the
+ * product page) is NOT on screen — including on first load, when the large
+ * photo pushes the primary button below the fold on phones.
+ * Hidden on desktop (lg+), where the primary button sits near the top.
  */
 export function StickyAtcBar({
   selectedVariant,
@@ -30,26 +31,21 @@ export function StickyAtcBar({
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    let ticking = false;
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          // Show after scrolling past ~600px (below the main ATC)
-          setVisible(window.scrollY > 600);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', onScroll, {passive: true});
-    return () => window.removeEventListener('scroll', onScroll);
+    const target = document.querySelector('[data-primary-atc]');
+    if (!target || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(
+      ([entry]) => setVisible(!entry.isIntersecting),
+      {threshold: 0},
+    );
+    io.observe(target);
+    return () => io.disconnect();
   }, []);
 
   if (!selectedVariant) return null;
 
   return (
     <div
-      className={`lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-vault-700 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] transition-transform duration-300 ${
+      className={`lg:hidden fixed bottom-0 inset-x-0 z-40 bg-vault-900 border-t border-vault-700 transition-transform duration-300 ${
         visible ? 'translate-y-0' : 'translate-y-full'
       }`}
       role="region"
@@ -61,7 +57,7 @@ export function StickyAtcBar({
           <img
             src={productImage.url}
             alt={productImage.altText || productTitle}
-            className="w-12 h-12 rounded-lg object-contain bg-vault-800 border border-vault-700 flex-shrink-0"
+            className="w-12 h-12 rounded-[4px] object-contain bg-vault-800 border border-vault-700 flex-shrink-0"
             loading="lazy"
             width={48}
             height={48}
@@ -85,7 +81,7 @@ export function StickyAtcBar({
               selectedVariant,
             },
           ]}
-          className="bg-vermillion-500 hover:bg-vermillion-600 text-white font-heading font-semibold text-xs uppercase tracking-wider px-5 py-3 rounded-full transition-colors whitespace-nowrap disabled:bg-vault-700 disabled:text-chrome-500 disabled:cursor-not-allowed"
+          className="bg-holo-500 hover:bg-holo-600 text-white font-heading font-semibold text-xs px-5 py-3 rounded-[4px] transition-colors whitespace-nowrap disabled:bg-vault-700 disabled:text-chrome-500 disabled:cursor-not-allowed"
         >
           {selectedVariant.availableForSale ? 'Add to Cart' : 'Sold Out'}
         </AddToCartButton>

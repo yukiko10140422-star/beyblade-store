@@ -4,7 +4,9 @@ import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {CartLineItem, type CartLine} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
-import {CheckCircleIcon, LockIcon} from '~/components/icons';
+import {ExpressUpgradeBar} from './ExpressUpgradeBar';
+import {SHELVES} from '~/lib/site';
+import {LockIcon} from '~/components/icons';
 
 export type CartLayout = 'page' | 'aside';
 export type CartMainProps = {
@@ -62,74 +64,15 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
       </div>
       {cartHasItems && (
         <>
-          <FreeShippingBar
+          <ExpressUpgradeBar
             subtotal={parseFloat(cart?.cost?.subtotalAmount?.amount ?? '0')}
+            currencyCode={cart?.cost?.subtotalAmount?.currencyCode}
             quantity={cart?.totalQuantity ?? 0}
           />
           <CartSummary cart={cart} layout={layout} />
         </>
       )}
     </section>
-  );
-}
-
-const EXPRESS_SUBTOTAL_THRESHOLD = 300;
-const EXPRESS_QTY_THRESHOLD = 3;
-
-function FreeShippingBar({
-  subtotal,
-  quantity,
-}: {
-  subtotal: number;
-  quantity: number;
-}) {
-  const subtotalRemaining = EXPRESS_SUBTOTAL_THRESHOLD - subtotal;
-  const qtyRemaining = EXPRESS_QTY_THRESHOLD - quantity;
-  const qualified = subtotalRemaining <= 0 || qtyRemaining <= 0;
-
-  // Pick whichever threshold is closer for the progress bar.
-  const subtotalProgress = Math.min(
-    (subtotal / EXPRESS_SUBTOTAL_THRESHOLD) * 100,
-    100,
-  );
-  const qtyProgress = Math.min((quantity / EXPRESS_QTY_THRESHOLD) * 100, 100);
-  const progress = Math.max(subtotalProgress, qtyProgress);
-
-  return (
-    <div className="px-1 py-4 border-t border-vault-700">
-      <p className="text-vermillion-500 text-[11px] text-center mb-2 font-heading uppercase tracking-wider font-semibold">
-        Free shipping &amp; duties pre-paid (DDP) on all orders
-      </p>
-      {qualified ? (
-        <p className="text-vermillion-600 text-sm font-semibold text-center flex items-center justify-center gap-2">
-          <CheckCircleIcon className="w-4 h-4" />
-          Free DHL/FedEx Express upgrade unlocked!
-        </p>
-      ) : (
-        <>
-          <p className="text-chrome-300 text-xs text-center mb-2">
-            Add{' '}
-            <span className="text-vermillion-500 font-semibold">
-              ${subtotalRemaining.toFixed(2)}
-            </span>{' '}
-            <span className="text-chrome-500">or</span>{' '}
-            <span className="text-vermillion-500 font-semibold">
-              {qtyRemaining} item{qtyRemaining === 1 ? '' : 's'}
-            </span>{' '}
-            for{' '}
-            <span className="text-vault-50 font-semibold">
-              free Express upgrade
-            </span>
-          </p>
-          <div className="w-full h-1.5 bg-vault-700 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-vermillion-500 rounded-full transition-all duration-500"
-              style={{width: `${progress}%`}}
-            />
-          </div>
-        </>
-      )}
-    </div>
   );
 }
 
@@ -150,16 +93,33 @@ function CartEmpty({
         Your vault is empty
       </p>
       <p className="text-chrome-400 text-sm mb-6">
-        Start your authentic Beyblade collection
+        Singles, sealed boxes and graded cards from Japan
       </p>
       <Link
-        to="/collections/all-beyblades"
+        to="/collections/all"
         onClick={close}
         prefetch="viewport"
-        className="inline-flex items-center justify-center gap-2 bg-vermillion-500 hover:bg-vermillion-600 text-white font-heading font-semibold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all"
+        className="inline-flex items-center justify-center gap-2 bg-holo-500 hover:bg-holo-600 text-white font-heading font-semibold text-xs px-6 py-3 rounded-[4px] transition-all"
       >
-        Start collecting &rarr;
+        Browse the vault &rarr;
       </Link>
+      <ul
+        className="mt-6 flex flex-wrap justify-center gap-2"
+        aria-label="Shelves"
+      >
+        {SHELVES.map((s) => (
+          <li key={s.handle}>
+            <Link
+              to={`/collections/${s.handle}`}
+              onClick={close}
+              prefetch="intent"
+              className="inline-block rounded-[4px] border border-vault-700 px-3 py-1 text-xs text-chrome-300 hover:border-holo-400 hover:text-vault-50"
+            >
+              {s.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

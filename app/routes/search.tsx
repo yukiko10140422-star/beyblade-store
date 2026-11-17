@@ -12,9 +12,10 @@ import type {
   RegularSearchQuery,
   PredictiveSearchQuery,
 } from 'storefrontapi.generated';
+import {SITE, isOwnProduct} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: 'Search | Tokyo Spin Vault'}];
+  return [{title: `Search | ${SITE.name}`}];
 };
 
 export async function loader({request, context}: Route.LoaderArgs) {
@@ -51,7 +52,7 @@ export default function SearchPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider mb-8">
+      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-8">
         Search
       </h1>
       <SearchForm>
@@ -63,11 +64,11 @@ export default function SearchPage() {
               placeholder="Search blades, parts, series..."
               ref={inputRef}
               type="search"
-              className="flex-1 bg-vault-800 border border-vault-600 rounded-lg px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/20 transition-all"
+              className="flex-1 bg-vault-800 border border-vault-600 rounded-[4px] px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-silver-400/50 focus:ring-1 focus:ring-silver-400/20 transition-all"
             />
             <button
               type="submit"
-              className="bg-gold-500 hover:bg-gold-400 text-vault-950 font-heading text-xs uppercase tracking-wider px-6 py-3 rounded-lg transition-all"
+              className="bg-silver-500 hover:bg-silver-400 text-white font-heading text-xs px-6 py-3 rounded-[4px] transition-all"
             >
               Search
             </button>
@@ -80,7 +81,7 @@ export default function SearchPage() {
           {term ? (
             <p>No results found for &ldquo;{term}&rdquo;</p>
           ) : (
-            <p>Search our vault for authentic Beyblades</p>
+            <p>Search by name or model number (BX-, UX-, CX-)</p>
           )}
         </div>
       ) : (
@@ -108,6 +109,7 @@ const SEARCH_PRODUCT_FRAGMENT = `#graphql
     __typename
     handle
     id
+    tags
     publishedAt
     title
     trackingParameters
@@ -250,11 +252,22 @@ async function regularSearch({
   // Search articles, pages, and products for the `q` term
   const {
     errors,
-    ...items
+    ...rawItems
   }: {errors?: Array<{message: string}>} & RegularSearchQuery =
     await storefront.query(SEARCH_QUERY, {
       variables: {...variables, term},
     });
+
+  // Shared Shopify store: drop sister-store products (Card / Character).
+  const items = rawItems?.products
+    ? {
+        ...rawItems,
+        products: {
+          ...rawItems.products,
+          nodes: rawItems.products.nodes.filter(isOwnProduct),
+        },
+      }
+    : rawItems;
 
   if (!items) {
     throw new Error('No search data returned from Shopify API');
@@ -325,6 +338,7 @@ const PREDICTIVE_SEARCH_PRODUCT_FRAGMENT = `#graphql
   fragment PredictiveProduct on Product {
     __typename
     id
+    tags
     title
     handle
     trackingParameters
@@ -417,7 +431,7 @@ async function predictiveSearch({
 
   // Predictively search articles, collections, pages, products, and queries (suggestions)
   const {
-    predictiveSearch: items,
+    predictiveSearch: rawPredictive,
     errors,
   }: PredictiveSearchQuery & {errors?: Array<{message: string}>} =
     await storefront.query(PREDICTIVE_SEARCH_QUERY, {
@@ -434,6 +448,16 @@ async function predictiveSearch({
       `Shopify API errors: ${errors.map(({message}: {message: string}) => message).join(', ')}`,
     );
   }
+
+  // Shared Shopify store: drop sister-store products; query suggestions
+  // are built from the whole store, so they are not shown.
+  const items = rawPredictive
+    ? {
+        ...rawPredictive,
+        products: rawPredictive.products.filter(isOwnProduct),
+        queries: [],
+      }
+    : rawPredictive;
 
   if (!items) {
     throw new Error('No predictive search data returned from Shopify API');

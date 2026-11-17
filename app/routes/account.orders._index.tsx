@@ -64,7 +64,7 @@ export default function Orders() {
 
   return (
     <div className="space-y-8">
-      <h2 className="font-heading text-2xl text-gold-400 uppercase tracking-wider">
+      <h2 className="font-heading text-2xl text-silver-400">
         Orders
       </h2>
       <OrderSearchForm currentFilters={filters} />
@@ -97,7 +97,7 @@ function OrdersTable({
 
 function EmptyOrders({hasFilters = false}: {hasFilters?: boolean}) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center bg-vault-800 border border-vault-700 rounded-lg">
+    <div className="flex flex-col items-center justify-center py-16 text-center bg-vault-800 border border-vault-700 rounded-[4px]">
       <p className="text-chrome-400 text-lg mb-4">
         {hasFilters
           ? 'No orders found matching your search.'
@@ -106,14 +106,14 @@ function EmptyOrders({hasFilters = false}: {hasFilters?: boolean}) {
       {hasFilters ? (
         <Link
           to="/account/orders"
-          className="text-gold-500 hover:text-gold-400 font-heading uppercase tracking-wider text-sm transition-colors"
+          className="text-silver-500 hover:text-silver-400 font-heading text-sm transition-colors"
         >
           Clear filters &rarr;
         </Link>
       ) : (
         <Link
           to="/collections"
-          className="inline-block mt-2 px-6 py-3 bg-gold-500 hover:bg-gold-400 text-vault-900 font-heading uppercase tracking-wider text-sm rounded-lg transition-colors"
+          className="inline-block mt-2 px-6 py-3 bg-silver-500 hover:bg-silver-400 text-vault-900 font-heading text-sm rounded-[4px] transition-colors"
         >
           Start Shopping &rarr;
         </Link>
@@ -158,11 +158,11 @@ function OrderSearchForm({
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="bg-vault-800 border border-vault-700 rounded-lg p-4"
+      className="bg-vault-800 border border-vault-700 rounded-[4px] p-4"
       aria-label="Search orders"
     >
       <fieldset className="border-0 p-0 m-0">
-        <legend className="text-chrome-400 text-xs uppercase tracking-wider font-heading mb-3">
+        <legend className="text-chrome-400 text-xs font-heading mb-3">
           Filter Orders
         </legend>
 
@@ -173,7 +173,7 @@ function OrderSearchForm({
             placeholder="Order #"
             aria-label="Order number"
             defaultValue={currentFilters.name || ''}
-            className="flex-1 bg-vault-900 border border-vault-700 rounded-md px-3 py-2 text-chrome-200 placeholder:text-chrome-600 text-sm focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-colors"
+            className="flex-1 bg-vault-900 border border-vault-700 rounded-md px-3 py-2 text-chrome-200 placeholder:text-chrome-600 text-sm focus:outline-none focus:border-silver-500 focus:ring-1 focus:ring-silver-500/30 transition-colors"
           />
           <input
             type="search"
@@ -181,13 +181,13 @@ function OrderSearchForm({
             placeholder="Confirmation #"
             aria-label="Confirmation number"
             defaultValue={currentFilters.confirmationNumber || ''}
-            className="flex-1 bg-vault-900 border border-vault-700 rounded-md px-3 py-2 text-chrome-200 placeholder:text-chrome-600 text-sm focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-colors"
+            className="flex-1 bg-vault-900 border border-vault-700 rounded-md px-3 py-2 text-chrome-200 placeholder:text-chrome-600 text-sm focus:outline-none focus:border-silver-500 focus:ring-1 focus:ring-silver-500/30 transition-colors"
           />
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={isSearching}
-              className="px-5 py-2 bg-gold-500 hover:bg-gold-400 disabled:opacity-50 text-vault-900 font-heading uppercase tracking-wider text-xs rounded-md transition-colors"
+              className="px-5 py-2 bg-silver-500 hover:bg-silver-400 disabled:opacity-50 text-vault-900 font-heading text-xs rounded-md transition-colors"
             >
               {isSearching ? 'Searching...' : 'Search'}
             </button>
@@ -199,7 +199,7 @@ function OrderSearchForm({
                   setSearchParams(new URLSearchParams());
                   formRef.current?.reset();
                 }}
-                className="px-5 py-2 border border-vault-600 hover:border-chrome-500 text-chrome-400 hover:text-chrome-200 disabled:opacity-50 font-heading uppercase tracking-wider text-xs rounded-md transition-colors"
+                className="px-5 py-2 border border-vault-600 hover:border-chrome-500 text-chrome-400 hover:text-chrome-200 disabled:opacity-50 font-heading text-xs rounded-md transition-colors"
               >
                 Clear
               </button>
@@ -217,28 +217,28 @@ function OrderItem({order}: {order: OrderItemFragment}) {
     order.financialStatus === 'PAID' || order.financialStatus === 'REFUNDED';
 
   return (
-    <div className="bg-vault-800 border border-vault-700 rounded-lg p-4 hover:border-vault-600 transition-colors">
+    <div className="bg-vault-800 border border-vault-700 rounded-[4px] p-4 hover:border-vault-600 transition-colors">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Left: Order info */}
         <div className="flex-1 min-w-0 space-y-1">
           <div className="flex items-center gap-3 flex-wrap">
             <Link
               to={`/account/orders/${btoa(order.id)}`}
-              className="font-heading text-gold-400 text-lg tracking-wider hover:text-gold-300 transition-colors"
+              className="font-heading text-silver-400 text-lg hover:text-silver-300 transition-colors"
             >
               #{order.number}
             </Link>
             <span
-              className={`inline-block px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-heading ${
+              className={`inline-block px-2 py-0.5 rounded-[3px] text-[10px] font-heading ${
                 isComplete
-                  ? 'bg-gold-500/15 text-gold-400 border border-gold-500/30'
+                  ? 'bg-silver-500/15 text-silver-400 border border-silver-500/30'
                   : 'bg-chrome-500/10 text-chrome-400 border border-chrome-500/20'
               }`}
             >
               {order.financialStatus}
             </span>
             {fulfillmentStatus && (
-              <span className="inline-block px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-heading bg-chrome-500/10 text-chrome-400 border border-chrome-500/20">
+              <span className="inline-block px-2 py-0.5 rounded-[3px] text-[10px] font-heading bg-chrome-500/10 text-chrome-400 border border-chrome-500/20">
                 {fulfillmentStatus}
               </span>
             )}
@@ -255,12 +255,12 @@ function OrderItem({order}: {order: OrderItemFragment}) {
 
         {/* Right: Price + action */}
         <div className="flex sm:flex-col items-center sm:items-end gap-3 sm:gap-1">
-          <span className="text-gold-400 font-heading text-lg">
+          <span className="text-silver-400 font-heading text-lg">
             <Money data={order.totalPrice} />
           </span>
           <Link
             to={`/account/orders/${btoa(order.id)}`}
-            className="text-gold-500 hover:text-gold-400 text-sm font-heading uppercase tracking-wider transition-colors whitespace-nowrap"
+            className="text-silver-500 hover:text-silver-400 text-sm font-heading transition-colors whitespace-nowrap"
           >
             View Order &rarr;
           </Link>

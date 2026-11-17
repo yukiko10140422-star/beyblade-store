@@ -38,19 +38,19 @@ export function NewsletterForm({
     return (
       <div
         className={clsx(
-          'flex items-center gap-2 rounded-lg bg-gold-400/10 border border-gold-400/20',
+          'flex items-center gap-2 rounded-[4px] bg-silver-400/10 border border-silver-400/20',
           isLarge ? 'justify-center py-4 px-6 max-w-md mx-auto' : 'py-2 px-3',
         )}
         role="status"
       >
         <CheckCircleIcon
-          className={clsx(isLarge ? 'w-5 h-5' : 'w-4 h-4', 'text-gold-400')}
+          className={clsx(isLarge ? 'w-5 h-5' : 'w-4 h-4', 'text-silver-400')}
         />
         <p
           className={clsx(
-            'text-gold-400',
+            'text-silver-400',
             isLarge
-              ? 'text-sm font-heading uppercase tracking-wider'
+              ? 'text-sm font-heading'
               : 'text-xs',
           )}
         >
@@ -79,7 +79,7 @@ export function NewsletterForm({
           placeholder="your@email.com"
           aria-label="Email address for newsletter"
           className={clsx(
-            'flex-1 bg-vault-800 border border-vault-700 rounded-lg text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/20 transition-all',
+            'flex-1 bg-vault-800 border border-vault-700 rounded-[4px] text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-silver-400/50 focus:ring-1 focus:ring-silver-400/20 transition-all',
             isLarge ? 'px-4 py-3 text-sm' : 'px-3 py-2 text-sm',
           )}
         />
@@ -87,10 +87,10 @@ export function NewsletterForm({
           type="submit"
           disabled={isSubmitting}
           className={clsx(
-            'bg-gold-500 hover:bg-gold-400 text-vault-950 font-heading uppercase rounded-lg transition-all duration-200 disabled:opacity-50',
+            'bg-silver-500 hover:bg-silver-400 text-white font-heading rounded-[4px] transition-all duration-200 disabled:opacity-50',
             isLarge
-              ? 'tracking-[0.2em] text-xs px-6 py-3 hover:glow-gold-sm'
-              : 'tracking-wider text-xs px-4 py-2',
+              ? ' text-xs px-6 py-3 hover:'
+              : ' text-xs px-4 py-2',
           )}
         >
           {isSubmitting

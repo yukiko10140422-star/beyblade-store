@@ -27,7 +27,7 @@ export function PaginatedResourceSection<NodesType>({
                   Loading...
                 </span>
               ) : (
-                <button className="w-full py-3 mb-8 text-center font-heading text-xs uppercase tracking-[0.15em] text-gold-500 hover:text-gold-400 border border-vault-700 hover:border-gold-400/30 rounded-lg transition-all">
+                <button className="w-full py-3 mb-8 text-center font-heading text-xs text-silver-500 hover:text-silver-400 border border-vault-700 hover:border-silver-400/30 rounded-[4px] transition-all">
                   <span aria-hidden="true">&uarr;</span> Load Previous
                 </button>
               )}
@@ -49,7 +49,7 @@ export function PaginatedResourceSection<NodesType>({
                   Loading...
                 </span>
               ) : (
-                <button className="w-full py-3 mt-8 text-center font-heading text-xs uppercase tracking-[0.15em] text-gold-500 hover:text-gold-400 border border-vault-700 hover:border-gold-400/30 rounded-lg transition-all">
+                <button className="w-full py-3 mt-8 text-center font-heading text-xs text-silver-500 hover:text-silver-400 border border-vault-700 hover:border-silver-400/30 rounded-[4px] transition-all">
                   Load More <span aria-hidden="true">&darr;</span>
                 </button>
               )}

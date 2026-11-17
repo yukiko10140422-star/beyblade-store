@@ -32,7 +32,7 @@ export function AddToCartButton({
             disabled={disabled ?? fetcher.state !== 'idle'}
             className={
               className ??
-              'w-full py-4 rounded-full font-heading uppercase tracking-[0.15em] text-sm font-semibold bg-vermillion-500 hover:bg-vermillion-600 text-white transition-all duration-200 hover:shadow-lg hover:shadow-vermillion-500/30 disabled:bg-vault-700 disabled:text-chrome-500 disabled:cursor-not-allowed disabled:shadow-none'
+              'h-[50px] w-full rounded-[4px] bg-holo-500 text-base font-semibold text-white transition-colors duration-150 hover:bg-holo-600 disabled:cursor-not-allowed disabled:bg-vault-700 disabled:text-chrome-600'
             }
           >
             {fetcher.state !== 'idle' ? (

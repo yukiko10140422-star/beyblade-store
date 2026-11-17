@@ -1,5 +1,5 @@
 /**
- * Reusable icon components for Tokyo Spin Vault.
+ * Reusable icon components for Tokyo Card Vault.
  * All icons share a consistent 24x24 viewBox and stroke style by default.
  * Pass custom className for sizing and color (via text-* utility).
  */
@@ -30,7 +30,7 @@ function BaseIcon({
   );
 }
 
-/** Shield with checkmark — "100% Authentic" / "Insured" */
+/** Shield with checkmark — condition / grading */
 export function ShieldCheckIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
@@ -39,7 +39,7 @@ export function ShieldCheckIcon(props: IconProps) {
   );
 }
 
-/** Circular checkmark — success states, "Free shipping unlocked" */
+/** Circular checkmark — success / confirmation states */
 export function CheckCircleIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
@@ -57,7 +57,7 @@ export function PaperAirplaneIcon(props: IconProps) {
   );
 }
 
-/** Lock — duties included / secure */
+/** Lock — secure checkout */
 export function LockIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
@@ -111,7 +111,7 @@ export function XMarkIcon(props: IconProps) {
   );
 }
 
-/** Star — ratings, collector grade */
+/** Star icon */
 export function StarIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
@@ -289,6 +289,32 @@ export function SearchIcon24(props: IconProps) {
         strokeLinejoin="round"
         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
       />
+    </BaseIcon>
+  );
+}
+
+export function CameraIcon(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"
+      />
+    </BaseIcon>
+  );
+}
+
+export function CardStackIcon(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <rect x="7" y="3" width="12" height="16" rx="1.5" />
+      <path strokeLinecap="round" d="M5 6.5v12A2.5 2.5 0 007.5 21H15" />
     </BaseIcon>
   );
 }

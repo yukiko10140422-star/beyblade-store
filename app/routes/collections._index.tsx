@@ -29,7 +29,7 @@ export default function Collections() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider mb-3">
+      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-3">
         Collections
       </h1>
       <p className="text-chrome-500 text-sm mb-12">Browse our curated vault</p>
@@ -61,7 +61,7 @@ function CollectionItem({
       key={collection.id}
       to={`/collections/${collection.handle}`}
       prefetch="intent"
-      className="group relative aspect-[4/3] rounded-xl overflow-hidden surface-vault transition-all duration-300 hover:glow-gold-sm"
+      className="group relative aspect-[4/3] rounded-[4px] overflow-hidden surface-vault transition-all duration-300 hover:"
     >
       {collection?.image && (
         <Image
@@ -75,7 +75,7 @@ function CollectionItem({
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-vault-950/90 via-vault-950/30 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 p-6">
-        <h3 className="font-heading text-lg uppercase tracking-wider text-chrome-100 group-hover:text-gold-400 transition-colors">
+        <h3 className="font-heading text-lg text-chrome-100 group-hover:text-silver-400 transition-colors">
           {collection.title}
         </h3>
       </div>

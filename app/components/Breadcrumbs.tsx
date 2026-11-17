@@ -21,7 +21,7 @@ export function Breadcrumbs({
     <nav
       aria-label="Breadcrumb"
       className={clsx(
-        'text-chrome-500 text-sm flex items-center gap-2',
+        'flex min-w-0 items-center gap-1.5 text-[13px] text-chrome-400',
         className,
       )}
     >
@@ -33,14 +33,14 @@ export function Breadcrumbs({
               <Link
                 to={item.href}
                 prefetch="intent"
-                className="hover:text-vermillion-500 transition-colors"
+                className="text-chrome-400 underline-offset-2 hover:underline"
               >
                 {item.label}
               </Link>
             ) : (
               <span
                 className={clsx(
-                  'text-vault-50 font-medium',
+                  'text-chrome-400',
                   truncateLast && isLast && 'truncate max-w-[200px]',
                 )}
                 aria-current={isLast ? 'page' : undefined}
@@ -48,7 +48,7 @@ export function Breadcrumbs({
                 {item.label}
               </span>
             )}
-            {!isLast && <span className="text-chrome-500">/</span>}
+            {!isLast && <span aria-hidden="true">›</span>}
           </span>
         );
       })}

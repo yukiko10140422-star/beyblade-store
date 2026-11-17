@@ -53,13 +53,9 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
  * It's a temporary fix until the issue is resolved.
  * https://github.com/remix-run/remix/issues/9242
  */
-// Washi & Sumi white theme fonts:
-// - Fraunces (display H1) — editorial-premium serif, opsz 9-144 variable
-// - Inter (UI/body) — high x-height, mobile-legible
-// - Orbitron (tech labels only) — kept for SKU/spec accents
-// - Noto Sans JP — JP fallback
+// Vault series type: Inter everywhere; JetBrains Mono for model numbers.
 export const FONTS_HREF =
-  'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700&family=Noto+Sans+JP:wght@400;700&display=swap';
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap';
 
 export function links() {
   return [
@@ -170,7 +166,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <meta name="theme-color" content="#0C0C18" />
+        <meta name="theme-color" content="#FBFAF7" />
         {/* Search engine & social verification -- replace PLACEHOLDER with real values */}
         <meta
           name="google-site-verification"
@@ -214,10 +210,10 @@ export function Layout({children}: {children?: React.ReactNode}) {
           }}
         />
       </head>
-      <body className="bg-vault-900 text-chrome-300 font-body antialiased min-h-screen flex flex-col">
+      <body className="bg-vault-950 text-chrome-300 font-body antialiased min-h-screen flex flex-col">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:bg-gold-500 focus:text-vault-950 focus:px-4 focus:py-2 focus:rounded-lg focus:font-heading focus:text-sm focus:uppercase focus:tracking-wider"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:bg-silver-500 focus:text-white focus:px-4 focus:py-2 focus:rounded-[4px] focus:font-heading focus:text-sm"
         >
           Skip to content
         </a>
@@ -265,12 +261,12 @@ export function ErrorBoundary() {
   return (
     <div className="min-h-screen bg-vault-900 flex items-center justify-center px-4">
       <div className="text-center max-w-md">
-        <h1 className="font-heading text-6xl text-gold-metallic mb-4">
+        <h1 className="mb-2 text-4xl font-bold text-chrome-200">
           {errorStatus}
         </h1>
-        <h2 className="font-heading text-xl text-chrome-200 uppercase tracking-wider mb-6">
+        <h2 className="font-heading text-xl text-chrome-200 mb-6">
           {errorStatus === 404
-            ? 'This blade has left the stadium'
+            ? 'Page not found'
             : 'Something went wrong'}
         </h2>
         {errorMessage && (
@@ -278,9 +274,9 @@ export function ErrorBoundary() {
         )}
         <a
           href="/"
-          className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-vault-950 font-heading uppercase tracking-wider text-sm px-6 py-3 rounded-lg transition-all"
+          className="inline-flex items-center gap-2 bg-silver-500 hover:bg-silver-400 text-white font-heading text-sm px-6 py-3 rounded-[4px] transition-all"
         >
-          Back to the Vault
+          Back to the home page
         </a>
       </div>
     </div>

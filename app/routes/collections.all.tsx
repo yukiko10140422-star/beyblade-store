@@ -5,9 +5,10 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductCard} from '~/components/ProductCard';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import type {ProductItemFragment} from 'storefrontapi.generated';
+import {EXCLUDE_QUERY, SITE, isOwnProduct} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: 'All Products | Tokyo Spin Vault'}];
+  return [{title: `All products | ${SITE.name}`}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -21,11 +22,15 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
 
   const [{products}] = await Promise.all([
     storefront.query(CATALOG_QUERY, {
-      variables: {...paginationVariables},
+      variables: {...paginationVariables, query: EXCLUDE_QUERY},
       cache: storefront.CacheShort(),
     }),
   ]);
-  return {products};
+  // Shared Shopify store: sister-store products are excluded in the query
+  // and again here.
+  return {
+    products: {...products, nodes: products.nodes.filter(isOwnProduct)},
+  };
 }
 
 export default function Collection() {
@@ -33,7 +38,7 @@ export default function Collection() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider mb-3">
+      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-3">
         All Products
       </h1>
       <p className="text-chrome-500 text-sm mb-12">
@@ -59,6 +64,7 @@ const CATALOG_QUERY = `#graphql
   ${MONEY_FRAGMENT}
   ${PRODUCT_ITEM_FRAGMENT}
   query Catalog(
+    $query: String
     $country: CountryCode
     $language: LanguageCode
     $first: Int
@@ -66,7 +72,7 @@ const CATALOG_QUERY = `#graphql
     $startCursor: String
     $endCursor: String
   ) @inContext(country: $country, language: $language) {
-    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {
+    products(first: $first, last: $last, before: $startCursor, after: $endCursor, query: $query) {
       nodes {
         ...ProductItem
       }

@@ -57,7 +57,7 @@ export function PageLayout({
 
 function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
   return (
-    <Aside type="cart" heading="YOUR VAULT">
+    <Aside type="cart" heading="Your cart">
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {
@@ -72,7 +72,7 @@ function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
 function SearchAside() {
   const queriesDatalistId = useId();
   return (
-    <Aside type="search" heading="SEARCH">
+    <Aside type="search" heading="Search">
       <div role="search" aria-label="Site search">
         <SearchFormPredictive>
           {({fetchResults, goToSearch, inputRef}) => (
@@ -81,18 +81,18 @@ function SearchAside() {
                 name="q"
                 onChange={fetchResults}
                 onFocus={fetchResults}
-                placeholder="Search blades, parts, series..."
+                placeholder="Search card name, set or number..."
                 aria-label="Search products"
                 ref={inputRef}
                 type="search"
                 list={queriesDatalistId}
-                className="flex-1 bg-vault-900 border border-vault-600 rounded-lg px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/20 transition-all"
+                className="flex-1 bg-vault-900 border border-vault-600 rounded-[4px] px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-silver-400/50 focus:ring-1 focus:ring-silver-400/20 transition-all"
               />
               <button
                 type="button"
                 onClick={goToSearch}
                 aria-label="Submit search"
-                className="bg-gold-500 hover:bg-gold-400 text-vault-950 font-heading text-xs uppercase tracking-wider px-4 py-3 rounded-lg transition-all"
+                className="bg-silver-500 hover:bg-silver-400 text-white font-heading text-xs px-4 py-3 rounded-[4px] transition-all"
               >
                 Search
               </button>
@@ -165,10 +165,11 @@ function MobileMenuAside({
   header: PageLayoutProps['header'];
   publicStoreDomain: PageLayoutProps['publicStoreDomain'];
 }) {
+  // Always rendered: the menu is built from the shelves in ~/lib/site,
+  // HeaderMenu falls back to the shelf list (mobile must never lose nav).
   return (
-    header.menu &&
     header.shop.primaryDomain?.url && (
-      <Aside type="mobile" heading="MENU">
+      <Aside type="mobile" heading="Menu">
         <HeaderMenu
           menu={header.menu}
           viewport="mobile"

@@ -66,7 +66,7 @@ export default function Article() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider mb-4">
+      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-4">
         {title}
       </h1>
       <div className="flex items-center gap-3 text-chrome-500 text-xs mb-8">
@@ -79,13 +79,13 @@ export default function Article() {
         )}
       </div>
       {image && (
-        <div className="rounded-xl overflow-hidden mb-10">
+        <div className="rounded-[4px] overflow-hidden mb-10">
           <Image data={image} sizes="90vw" loading="eager" className="w-full" />
         </div>
       )}
       <div
         dangerouslySetInnerHTML={{__html: contentHtml}}
-        className="text-chrome-400 text-sm leading-relaxed [&>p]:mb-4 [&>h2]:font-heading [&>h2]:text-lg [&>h2]:text-chrome-200 [&>h2]:uppercase [&>h2]:tracking-wider [&>h2]:mt-8 [&>h2]:mb-4 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-4 [&_a]:text-gold-400 [&_a]:underline [&>img]:rounded-xl [&>img]:my-6"
+        className="text-chrome-400 text-sm leading-relaxed [&>p]:mb-4 [&>h2]:font-heading [&>h2]:text-lg [&>h2]:text-chrome-200 [&>h2]: [&>h2]: [&>h2]:mt-8 [&>h2]:mb-4 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-4 [&_a]:text-silver-400 [&_a]:underline [&>img]:rounded-[4px] [&>img]:my-6"
       />
     </div>
   );

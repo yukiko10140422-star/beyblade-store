@@ -44,7 +44,7 @@ export default function Blogs() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider mb-8">
+      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-8">
         Blog
       </h1>
       <div className="grid gap-4">
@@ -54,9 +54,9 @@ export default function Blogs() {
               key={blog.handle}
               prefetch="intent"
               to={`/blogs/${blog.handle}`}
-              className="surface-vault rounded-xl p-6 hover:border-gold-400/30 hover:glow-gold-sm transition-all group"
+              className="surface-vault rounded-[4px] p-6 hover:border-silver-400/30 hover: transition-all group"
             >
-              <h2 className="font-heading text-sm uppercase tracking-wider text-chrome-200 group-hover:text-gold-400 transition-colors">
+              <h2 className="font-heading text-sm text-chrome-200 group-hover:text-silver-400 transition-colors">
                 {blog.title}
               </h2>
             </Link>

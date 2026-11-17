@@ -1,270 +1,200 @@
 @import 'tailwindcss';
 
 /* ============================================
-   TOKYO SPIN VAULT — Washi & Sumi Design System
-   Warm white × Sumi black × Matte gold × Vermillion
-   White-theme rebrand 2026-04-22
+   TOKYO SPIN VAULT — Vault series design (2026-11-17 brief)
+   Paper ground #FBFAF7, white surfaces, one accent colour (gold-brown
+   #7A5C10). No gradients, glow, blur, dark mode or drawn illustrations.
+   Type: Inter everywhere; JetBrains Mono only for set codes / grades.
+   Token names are kept from the first version so existing components keep
+   working; their values are now the light palette below.
    ============================================ */
 
 @theme {
-  /* === GOLD (matte, demoted from primary to accent) === */
-  --color-gold-50: #FBF6E8;
-  --color-gold-100: #F5EBC9;
-  --color-gold-200: #EADDA5;
-  --color-gold-300: #DCC57E;
-  --color-gold-400: #C9A961;
-  --color-gold-500: #B8943F;
-  --color-gold-600: #A07F2B;
-  --color-gold-700: #806529;
-  --color-gold-800: #604B22;
-  --color-gold-900: #3D3014;
-  --color-gold-950: #221A0A;
+  /* --- Surfaces & ink (role names kept) ---
+     950 page ground / 900 surface / 800 surface 2 / 700 rule / 600 strong
+     rule / 50 ink (headings, prices). */
+  --color-vault-50: #1B2230;
+  --color-vault-100: #1B2230;
+  --color-vault-200: #3A4252;
+  --color-vault-300: #3A4252;
+  --color-vault-400: #5F6675;
+  --color-vault-500: #8A8F99;
+  --color-vault-600: #C9C4B8;
+  --color-vault-700: #E3E0D8;
+  --color-vault-800: #F3F1EB;
+  --color-vault-900: #FFFFFF;
+  --color-vault-950: #FBFAF7;
 
-  /* === VAULT (re-purposed as paper/surface scale, light-first) ===
-     Body bg = vault-950 (warm washi). Components using bg-vault-950
-     automatically pick up the new paper background. */
-  --color-vault-50: #1A1A1A;       /* deepest sumi (was lightest) */
-  --color-vault-100: #2D2D2D;
-  --color-vault-200: #3D3833;
-  --color-vault-300: #5C5546;
-  --color-vault-400: #8A8270;
-  --color-vault-500: #B8B0A0;
-  --color-vault-600: #D5CFBE;
-  --color-vault-700: #E8E2D5;      /* divider/border */
-  --color-vault-800: #F5F1EA;      /* elevated paper */
-  --color-vault-900: #FFFFFF;      /* pure white surface */
-  --color-vault-950: #FAF7F2;      /* page bg — warm washi off-white */
+  /* --- Text --- */
+  --color-chrome-50: #FFFFFF;
+  --color-chrome-100: #FFFFFF;
+  --color-chrome-200: #1B2230; /* headings / strong text */
+  --color-chrome-300: #3A4252; /* body */
+  --color-chrome-400: #5F6675; /* secondary (5.6:1 on ground) */
+  --color-chrome-500: #5F6675;
+  --color-chrome-600: #656B79; /* muted, still >= 4.5:1 */
+  --color-chrome-700: #8A8F99; /* decoration only, never text */
 
-  /* === CHROME (text scale on light bg, inverted from old) === */
-  --color-chrome-50: #FAFAFA;       /* near-white (rare use) */
-  --color-chrome-100: #E8E8E8;
-  --color-chrome-200: #2D2D2D;      /* primary text (was light text) */
-  --color-chrome-300: #4A4A4A;      /* heading text */
-  --color-chrome-400: #6B6B6B;      /* secondary text */
-  --color-chrome-500: #8A8A8A;      /* tertiary text / labels */
-  --color-chrome-600: #A8A8A8;      /* muted */
-  --color-chrome-700: #C8C8C8;      /* very muted */
+  /* --- Accent: gold-brown (buttons, links, selected state, logo mark) --- */
+  --color-silver-50: #F7F1E3;
+  --color-silver-100: #EFE4C8;
+  --color-silver-200: #DCC995;
+  --color-silver-300: #7A5C10;
+  --color-silver-400: #7A5C10;
+  --color-silver-500: #7A5C10;
+  --color-silver-600: #5E460B;
+  --color-silver-700: #4A370A;
+  --color-silver-800: #4A370A;
+  --color-silver-900: #4A370A;
+  --color-silver-950: #4A370A;
 
-  /* === ELECTRIC BLUE (kept, for product-spec pop) === */
-  --color-electric-50: #EBF3FF;
-  --color-electric-100: #D1E4FF;
-  --color-electric-200: #A8CCFF;
-  --color-electric-300: #6EA8FF;
-  --color-electric-400: #2B6FD9;
-  --color-electric-500: #1E5BB5;
-  --color-electric-600: #154795;
-  --color-electric-700: #0F3470;
+  --color-holo-50: #F7F1E3;
+  --color-holo-100: #EFE4C8;
+  --color-holo-200: #DCC995;
+  --color-holo-300: #B0924A;
+  --color-holo-400: #7A5C10;
+  --color-holo-500: #7A5C10;
+  --color-holo-600: #5E460B;
+  --color-holo-700: #4A370A;
 
-  /* === BEYBLADE TYPE COLORS (saturated, stay vivid on white) === */
-  --color-bey-attack: #2563EB;
-  --color-bey-defense: #16A34A;
-  --color-bey-stamina: #EA580C;
-  --color-bey-balance: #DC2626;
+  --color-electric-50: #F7F1E3;
+  --color-electric-100: #EFE4C8;
+  --color-electric-200: #DCC995;
+  --color-electric-300: #7A5C10;
+  --color-electric-400: #7A5C10;
+  --color-electric-500: #7A5C10;
+  --color-electric-600: #5E460B;
+  --color-electric-700: #4A370A;
 
-  /* === VERMILLION (朱色) — primary CTA, Japanese rouge === */
-  --color-vermillion-50: #FDF2F2;
-  --color-vermillion-100: #FCE3E5;
-  --color-vermillion-200: #F8BFC4;
-  --color-vermillion-300: #F08993;
-  --color-vermillion-400: #DC5663;
-  --color-vermillion-500: #B23A48;     /* primary CTA */
-  --color-vermillion-600: #962B38;
-  --color-vermillion-700: #7A1F2C;
+  /* --- Status --- */
+  --color-danger-500: #B42318;
+  --color-danger-600: #912018;
 
-  /* === DANGER (kept for cart/error states) === */
-  --color-danger-500: #DC2626;
-  --color-danger-600: #B91C1C;
+  /* --- Input borders: >= 3:1 against the ground (WCAG 1.4.11) --- */
+  --color-field: #8F897D;
+  --color-ink: #1B2230;
+  --color-announce: #1B2230;
 
-  /* === FONT FAMILIES === */
-  --font-display: 'Fraunces', 'Noto Serif JP', Georgia, serif;
-  --font-heading: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
-  --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
-  --font-tech: 'Orbitron', 'Inter', system-ui, sans-serif;
+  --font-display: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-tech: 'JetBrains Mono', ui-monospace, monospace;
 
-  /* === ANIMATIONS (subtler, no glowing for white theme) === */
-  --animate-fade-up: fade-up 0.6s ease-out;
-  --animate-slide-in-right: slide-in-right 0.3s ease-out;
-  --animate-spin-slow: spin 4s linear infinite;
-  --animate-shimmer: shimmer 3s linear infinite;
-  --animate-vault-open: vault-open 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-
-  @keyframes vault-open {
-    0% { transform: scale(0.98) translateY(12px); opacity: 0; }
-    100% { transform: scale(1) translateY(0); opacity: 1; }
-  }
-
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-
-  @keyframes fade-up {
-    0% { transform: translateY(16px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-  }
-
-  @keyframes slide-in-right {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(0); }
-  }
+  --radius-card: 4px;
 }
 
-/* === CUSTOM UTILITY CLASSES === */
-
-@utility text-gold-metallic {
-  background: linear-gradient(180deg, #C9A961 0%, #A07F2B 60%, #806529 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* --- Legacy utility names, now plain (no gradients / glow) --- */
+@utility holo-chip {
+  background: #7A5C10;
+  color: #FFFFFF;
 }
-
+@utility text-holo {
+  color: #7A5C10;
+}
+@utility holo-edge {
+  background: #FFFFFF;
+  border: 1px solid #E3E0D8;
+}
+@utility text-silver-metallic {
+  color: #1B2230;
+}
 @utility text-chrome-metallic {
-  /* Subtle metallic sumi gradient for headers on white */
-  background: linear-gradient(180deg, #2D2D2D 0%, #4A4A4A 60%, #2D2D2D 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #1B2230;
 }
-
-/* Light paper-like surface (replaces dark glassmorphism) */
 @utility surface-vault {
   background: #FFFFFF;
-  border: 1px solid #E8E2D5;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border: 1px solid #E3E0D8;
 }
-
 @utility surface-paper {
   background: #FFFFFF;
-  border: 1px solid #E8E2D5;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border: 1px solid #E3E0D8;
 }
-
 @utility surface-paper-elevated {
   background: #FFFFFF;
-  border: 1px solid #E8E2D5;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+  border: 1px solid #E3E0D8;
 }
-
-@utility border-gold-glow {
-  border: 1px solid #C9A961;
-  box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.12);
+@utility glow-silver-sm {
+  box-shadow: none;
 }
-
-/* "Glow" utilities re-purposed as soft elevation shadows */
-@utility glow-gold-sm {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(201, 169, 97, 0.18);
+@utility glow-silver-md {
+  box-shadow: none;
 }
-
-@utility glow-gold-md {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(201, 169, 97, 0.22);
+@utility glow-silver-lg {
+  box-shadow: none;
 }
-
-@utility glow-gold-lg {
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10), 0 0 0 1px rgba(201, 169, 97, 0.28);
-}
-
-/* Brand wordmark gradient (Fraunces serif treatment) */
 @utility wordmark {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  background: linear-gradient(180deg, #1A1A1A 0%, #4A4A4A 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: 700;
+  color: #1B2230;
 }
-
-/* Primary CTA — vermillion 朱色 */
 @utility btn-primary {
-  background: #B23A48;
+  background: #7A5C10;
   color: #FFFFFF;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  border-radius: 9999px;
-  transition: all 0.2s ease;
+  border-radius: 4px;
 }
 @utility btn-primary-hover {
-  background: #962B38;
-  box-shadow: 0 4px 12px rgba(178, 58, 72, 0.25);
+  background: #5E460B;
 }
-
-/* Subtle paper grain (optional decorative) */
 @utility paper-grain {
-  background-image:
-    radial-gradient(circle at 25% 25%, rgba(201, 169, 97, 0.04) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(178, 58, 72, 0.03) 0%, transparent 50%);
+  background-image: none;
 }
-
-/* === BASE STYLES === */
 
 @layer base {
   html {
-    scroll-behavior: smooth;
-    background: #FAF7F2;
+    background: #FBFAF7;
+    color-scheme: light;
   }
 
   body {
-    background: #FAF7F2;
-    color: #1A1A1A;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    background: #FBFAF7;
+    color: #3A4252;
     font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: #1A1A1A;
-    line-height: 1.2;
+    color: #1B2230;
+    line-height: 1.25;
   }
 
-  ::selection {
-    background-color: rgba(178, 58, 72, 0.18);
-    color: #1A1A1A;
-  }
-
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #F5F1EA;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #D5CFBE;
-    border-radius: 4px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #B8B0A0;
-  }
-
-  :focus-visible {
-    outline: 2px solid #B23A48;
-    outline-offset: 2px;
-  }
-
-  /* Default link styling for non-component contexts */
   a {
     color: inherit;
     text-decoration: none;
   }
+
+  ::selection {
+    background-color: #EFE4C8;
+    color: #1B2230;
+  }
+
+  :focus-visible {
+    outline: 2px solid #7A5C10;
+    outline-offset: 2px;
+  }
+
+  input,
+  select,
+  textarea {
+    border-color: #8F897D;
+  }
 }
 
-/* === LEGACY LAYOUT VARS === */
+/* Short fades only (0.15–0.2s). Nothing moves when reduced motion is set. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
 
 :root {
   --aside-width: 400px;
   --cart-aside-summary-height-with-discount: 300px;
   --cart-aside-summary-height: 250px;
   --header-height: 72px;
-
-  /* Semantic aliases for the new theme (used by future components) */
-  --color-paper: #FAF7F2;
-  --color-paper-elevated: #FFFFFF;
-  --color-paper-soft: #F5F1EA;
-  --color-ink: #1A1A1A;
-  --color-ink-soft: #4A4A4A;
-  --color-ink-muted: #6B6B6B;
-  --color-divider: #E8E2D5;
-  --color-accent-gold: #C9A961;
-  --color-accent-vermillion: #B23A48;
 }

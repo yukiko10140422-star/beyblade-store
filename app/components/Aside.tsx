@@ -97,7 +97,7 @@ export function Aside({
     >
       {/* Overlay backdrop */}
       <button
-        className="absolute inset-0 bg-vault-50/30 backdrop-blur-sm cursor-default"
+        className="absolute inset-0 bg-[#1B2230]/40 cursor-default"
         onClick={close}
         aria-label="Close"
       />
@@ -123,7 +123,7 @@ export function Aside({
             {heading}
           </h3>
           <button
-            className="flex items-center justify-center w-8 h-8 rounded-lg text-chrome-400 hover:text-vermillion-500 hover:bg-vault-800 transition-colors"
+            className="flex items-center justify-center w-8 h-8 rounded-[4px] text-chrome-400 hover:text-holo-500 hover:bg-vault-800 transition-colors"
             onClick={close}
             aria-label="Close"
           >

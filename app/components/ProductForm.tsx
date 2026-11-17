@@ -15,15 +15,19 @@ export function ProductForm({
   selectedVariant,
   isPreOrder = false,
   expectedShipDate,
+  maxQuantity = 99,
 }: {
   productOptions: MappedProductOptions[];
   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
   isPreOrder?: boolean;
   expectedShipDate?: string;
+  /** Known stock (one-of-a-kind singles = 1 → quantity picker is hidden). */
+  maxQuantity?: number;
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
   const [quantity, setQuantity] = useState(1);
+  const max = Math.max(1, Math.min(99, maxQuantity));
   return (
     <div className="space-y-6">
       {productOptions.map((option) => {
@@ -31,7 +35,7 @@ export function ProductForm({
 
         return (
           <div key={option.name}>
-            <h5 className="font-heading text-xs uppercase tracking-[0.15em] text-vault-50 mb-3 font-semibold">
+            <h5 className="font-heading text-xs text-vault-50 mb-3 font-semibold">
               {option.name}
             </h5>
             <div className="flex flex-wrap gap-2">
@@ -48,10 +52,10 @@ export function ProductForm({
                 } = value;
 
                 const optionClasses = clsx(
-                  'px-4 py-2 rounded-lg border text-sm font-heading uppercase tracking-wider transition-all duration-200',
+                  'px-4 py-2 rounded-[4px] border text-sm font-heading transition-all duration-200',
                   selected
-                    ? 'border-vermillion-500 bg-vermillion-50 text-vermillion-600 font-semibold'
-                    : 'border-vault-700 bg-white text-vault-50 hover:border-vermillion-300 hover:bg-vault-800',
+                    ? 'border-holo-500 bg-holo-50 text-holo-600 font-semibold'
+                    : 'border-vault-700 bg-vault-900 text-vault-50 hover:border-holo-300 hover:bg-vault-800',
                   !available && 'opacity-30 cursor-not-allowed',
                   !exists && 'hidden',
                 );
@@ -94,55 +98,57 @@ export function ProductForm({
           </div>
         );
       })}
-      {/* Quantity selector */}
-      <div>
-        <label
-          htmlFor="product-quantity"
-          className="block font-heading text-xs uppercase tracking-[0.15em] text-vault-50 mb-3 font-semibold"
-        >
-          Quantity
-        </label>
-        <div className="inline-flex items-center bg-white border border-vault-700 rounded-full overflow-hidden">
-          <button
-            type="button"
-            aria-label="Decrease quantity"
-            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            disabled={quantity <= 1}
-            className="px-4 py-2 text-vault-50 hover:text-vermillion-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-lg"
+      {/* Quantity selector (hidden when only one can be bought) */}
+      {max > 1 && (
+        <div>
+          <label
+            htmlFor="product-quantity"
+            className="block font-heading text-xs text-vault-50 mb-3 font-semibold"
           >
-            −
-          </button>
-          <input
-            id="product-quantity"
-            type="number"
-            min="1"
-            max="99"
-            value={quantity}
-            onChange={(e) => {
-              const n = parseInt(e.target.value, 10);
-              if (!isNaN(n) && n >= 1 && n <= 99) setQuantity(n);
-            }}
-            className="w-12 py-2 text-center bg-transparent border-x border-vault-700 text-vault-50 font-heading text-sm font-semibold focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-          <button
-            type="button"
-            aria-label="Increase quantity"
-            onClick={() => setQuantity((q) => Math.min(99, q + 1))}
-            disabled={quantity >= 99}
-            className="px-4 py-2 text-vault-50 hover:text-vermillion-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-lg"
-          >
-            +
-          </button>
+            Quantity
+          </label>
+          <div className="inline-flex items-center bg-vault-900 border border-vault-700 rounded-full overflow-hidden">
+            <button
+              type="button"
+              aria-label="Decrease quantity"
+              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+              disabled={quantity <= 1}
+              className="px-4 py-2 text-vault-50 hover:text-holo-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-lg"
+            >
+              −
+            </button>
+            <input
+              id="product-quantity"
+              type="number"
+              min="1"
+              max={max}
+              value={quantity}
+              onChange={(e) => {
+                const n = parseInt(e.target.value, 10);
+                if (!isNaN(n) && n >= 1 && n <= max) setQuantity(n);
+              }}
+              className="w-12 py-2 text-center bg-transparent border-x border-vault-700 text-vault-50 font-heading text-sm font-semibold focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <button
+              type="button"
+              aria-label="Increase quantity"
+              onClick={() => setQuantity((q) => Math.min(max, q + 1))}
+              disabled={quantity >= max}
+              className="px-4 py-2 text-vault-50 hover:text-holo-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-lg"
+            >
+              +
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {isPreOrder && (
-        <div className="rounded-xl overflow-hidden border border-vermillion-200 bg-vermillion-50">
-          <div className="px-4 py-2 bg-vermillion-100 border-b border-vermillion-200 flex items-center gap-2">
+        <div className="rounded-[4px] overflow-hidden border border-holo-200 bg-holo-50">
+          <div className="px-4 py-2 bg-holo-100 border-b border-holo-200 flex items-center gap-2">
             <svg
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="w-4 h-4 text-vermillion-600"
+              className="w-4 h-4 text-holo-600"
             >
               <path
                 fillRule="evenodd"
@@ -150,7 +156,7 @@ export function ProductForm({
                 clipRule="evenodd"
               />
             </svg>
-            <span className="font-heading text-xs uppercase tracking-[0.2em] text-vermillion-600 font-semibold">
+            <span className="font-heading text-xs text-holo-600 font-semibold">
               Pre-Order
             </span>
           </div>
@@ -165,8 +171,8 @@ export function ProductForm({
                 const year = d.getFullYear();
                 return (
                   <div className="flex items-center gap-3">
-                    <div className="w-14 h-14 rounded-lg bg-white border border-vermillion-200 flex flex-col items-center justify-center shrink-0">
-                      <span className="text-vermillion-500 text-[10px] font-heading uppercase leading-none font-semibold">
+                    <div className="w-14 h-14 rounded-[4px] bg-vault-900 border border-holo-200 flex flex-col items-center justify-center shrink-0">
+                      <span className="text-holo-500 text-[10px] font-heading leading-none font-semibold">
                         {month}
                       </span>
                       <span className="text-vault-50 text-xl font-display font-bold leading-tight">
@@ -181,7 +187,7 @@ export function ProductForm({
                         Japan Release Date
                       </p>
                       <p className="text-chrome-400 text-xs mt-0.5">
-                        Ships within 3-5 days after release
+                        Ships after the Japanese release date
                       </p>
                     </div>
                   </div>
@@ -216,9 +222,9 @@ export function ProductForm({
         }
       >
         {isPreOrder
-          ? 'Pre-Order Now'
+          ? 'Pre-order now'
           : selectedVariant?.availableForSale
-            ? 'Add to Vault'
+            ? 'Add to cart'
             : 'Sold Out'}
       </AddToCartButton>
     </div>

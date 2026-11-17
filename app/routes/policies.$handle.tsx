@@ -49,15 +49,15 @@ export default function Policy() {
     <div className="max-w-4xl mx-auto px-4 py-8 md:py-16">
       <Link
         to="/policies"
-        className="text-gold-500 hover:text-gold-400 font-heading text-xs uppercase tracking-wider transition-colors mb-8 inline-block"
+        className="text-silver-500 hover:text-silver-400 font-heading text-xs transition-colors mb-8 inline-block"
       >
         &larr; Back to Policies
       </Link>
-      <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider mb-8">
+      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-8">
         {policy.title}
       </h1>
       <div
-        className="text-chrome-400 text-sm leading-relaxed [&>p]:mb-4 [&>h2]:font-heading [&>h2]:text-lg [&>h2]:text-chrome-200 [&>h2]:uppercase [&>h2]:tracking-wider [&>h2]:mt-8 [&>h2]:mb-4 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-4 [&_a]:text-gold-400 [&_a]:underline"
+        className="text-chrome-400 text-sm leading-relaxed [&>p]:mb-4 [&>h2]:font-heading [&>h2]:text-lg [&>h2]:text-chrome-200 [&>h2]: [&>h2]: [&>h2]:mt-8 [&>h2]:mb-4 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-4 [&_a]:text-silver-400 [&_a]:underline"
         dangerouslySetInnerHTML={{__html: policy.body}}
       />
     </div>

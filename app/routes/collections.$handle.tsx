@@ -10,17 +10,18 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductCard} from '~/components/ProductCard';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
-import {BEY_TYPES, TYPE_CONFIG, isBeyType} from '~/lib/beyblade-types';
+import {BEY_TYPES, isBeyType} from '~/lib/beyblade-types';
 import {SITE_URL} from '~/lib/constants';
+import {SHELVES, SITE, isOwnProduct} from '~/lib/site';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import clsx from 'clsx';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  const title = `${data?.collection.title ?? ''} | Tokyo Spin Vault`;
+  const title = `${data?.collection.title ?? ''} | ${SITE.name}`;
   const description =
     data?.collection.description ||
-    `Browse ${data?.collection.title} at Tokyo Spin Vault. Authentic Beyblades from Japan.`;
+    `Browse ${data?.collection.title} at ${SITE.name}. Japanese Beyblade X, shipped from Japan.`;
   const collectionUrl = `${SITE_URL}/collections/${data?.collection.handle ?? ''}`;
   return [
     {title},
@@ -35,7 +36,7 @@ export const meta: Route.MetaFunction = ({data}) => {
     },
     {property: 'og:image:width', content: '1200'},
     {property: 'og:image:height', content: '630'},
-    {property: 'og:site_name', content: 'Tokyo Spin Vault'},
+    {property: 'og:site_name', content: SITE.name},
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},
     {name: 'twitter:description', content: description},
@@ -70,11 +71,11 @@ export const meta: Route.MetaFunction = ({data}) => {
             name: data?.collection.title,
             description:
               data?.collection.description ||
-              `Browse ${data?.collection.title} at Tokyo Spin Vault.`,
+              `Browse ${data?.collection.title} at ${SITE.name}.`,
             url: collectionUrl,
             isPartOf: {
               '@type': 'WebSite',
-              name: 'Tokyo Spin Vault',
+              name: SITE.name,
               url: SITE_URL,
             },
             mainEntity: {
@@ -173,32 +174,36 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
 
   redirectIfHandleIsLocalized(request, {handle, data: collection});
 
-  return {collection};
+  // Shared Shopify store: never list a sister-store product here.
+  return {
+    collection: {
+      ...collection,
+      products: {
+        ...collection.products,
+        nodes: collection.products.nodes.filter(isOwnProduct),
+      },
+    },
+  };
 }
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
+  const shelfInfo = SHELVES.find((sh) => sh.handle === collection.handle);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
-      {/* Breadcrumbs */}
+    <div className="mx-auto max-w-[1200px] px-4 pb-10 pt-[18px] md:px-10">
       <Breadcrumbs
-        className="mb-6"
-        items={[
-          {label: 'Home', href: '/'},
-          {label: 'Collections', href: '/collections'},
-          {label: collection.title},
-        ]}
+        className="mb-4 md:mb-6"
+        items={[{label: 'Home', href: '/'}, {label: collection.title}]}
       />
 
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider">
+      <div className="mb-4 md:mb-6">
+        <h1 className="m-0 text-[22px] font-bold text-chrome-200 md:text-[28px]">
           {collection.title}
         </h1>
-        {collection.description && (
-          <p className="text-chrome-400 text-sm mt-3 max-w-2xl">
-            {collection.description}
+        {(collection.description || shelfInfo?.description) && (
+          <p className="mb-0 mt-2 max-w-2xl text-sm">
+            {collection.description || shelfInfo?.description}
           </p>
         )}
       </div>
@@ -209,7 +214,7 @@ export default function Collection() {
       {/* Product Grid */}
       <PaginatedResourceSection<ProductItemFragment>
         connection={collection.products}
-        resourcesClassName="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+        resourcesClassName="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4"
       >
         {({node: product, index}) => (
           <ProductCard
@@ -247,7 +252,7 @@ function FilterBar() {
     }
     params.delete('cursor');
     params.delete('direction');
-    navigate(`?${params.toString()}`, {preventScrollReset: true});
+    void navigate(`?${params.toString()}`, {preventScrollReset: true});
   }
 
   return (
@@ -258,16 +263,16 @@ function FilterBar() {
         role="group"
         aria-label="Filter by type"
       >
-        <span className="text-chrome-500 text-xs font-heading uppercase tracking-wider mr-1">
+        <span className="text-chrome-500 text-xs font-heading mr-1">
           Type
         </span>
         <button
           aria-pressed={!activeType}
           onClick={() => setParam('type', null)}
           className={clsx(
-            'text-[10px] font-heading uppercase tracking-wider px-3 py-1.5 rounded-full border transition-all',
+            'text-[10px] font-heading px-3 py-1.5 rounded-[4px] border transition-all',
             !activeType
-              ? 'border-gold-400/40 bg-gold-400/10 text-gold-400'
+              ? 'border-silver-400/40 bg-silver-400/10 text-silver-400'
               : 'border-vault-600 text-chrome-500 hover:border-vault-500 hover:text-chrome-300',
           )}
         >
@@ -275,16 +280,15 @@ function FilterBar() {
         </button>
         {BEY_TYPES.map((type) => {
           const isActive = activeType === type;
-          const cfg = TYPE_CONFIG[type];
           return (
             <button
               key={type}
               aria-pressed={isActive}
               onClick={() => setParam('type', isActive ? null : type)}
               className={clsx(
-                'text-[10px] font-heading uppercase tracking-wider px-3 py-1.5 rounded-full border transition-all',
+                'text-[10px] font-heading px-3 py-1.5 rounded-[4px] border transition-all',
                 isActive
-                  ? `${cfg.border} ${cfg.bg} ${cfg.text}`
+                  ? 'border-holo-500 bg-holo-50 text-holo-600'
                   : 'border-vault-600 text-chrome-500 hover:border-vault-500 hover:text-chrome-300',
               )}
             >
@@ -298,7 +302,7 @@ function FilterBar() {
       <div className="flex items-center gap-2">
         <label
           htmlFor="collection-sort"
-          className="text-chrome-500 text-xs font-heading uppercase tracking-wider"
+          className="text-chrome-500 text-xs font-heading"
         >
           Sort
         </label>
@@ -309,7 +313,7 @@ function FilterBar() {
             const val = e.target.value;
             setParam('sort', val === sortToParam(SORT_OPTIONS[0]) ? null : val);
           }}
-          className="bg-vault-800 border border-vault-600 rounded-lg px-3 py-1.5 text-xs text-chrome-300 font-heading uppercase tracking-wider focus:outline-none focus:border-gold-400/50 transition-colors cursor-pointer"
+          className="bg-vault-800 border border-vault-600 rounded-[4px] px-3 py-1.5 text-xs text-chrome-300 font-heading focus:outline-none focus:border-silver-400/50 transition-colors cursor-pointer"
         >
           {SORT_OPTIONS.map((option) => (
             <option key={sortToParam(option)} value={sortToParam(option)}>

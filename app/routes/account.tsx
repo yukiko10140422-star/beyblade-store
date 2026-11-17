@@ -61,7 +61,7 @@ export default function AccountLayout() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider mb-8">
+      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-8">
         {heading}
       </h1>
       <AccountMenu />
@@ -94,10 +94,10 @@ function AccountMenu() {
       <NavLink
         to="/account/orders"
         className={({isActive}) =>
-          `font-heading text-xs uppercase tracking-wider px-4 py-2 rounded-lg transition-colors ${
+          `font-heading text-xs px-4 py-2 rounded-[4px] transition-colors ${
             isActive
-              ? 'text-gold-400 bg-gold-400/5'
-              : 'text-chrome-400 hover:text-gold-400 hover:bg-vault-800'
+              ? 'text-silver-400 bg-silver-400/5'
+              : 'text-chrome-400 hover:text-silver-400 hover:bg-vault-800'
           }`
         }
       >
@@ -106,10 +106,10 @@ function AccountMenu() {
       <NavLink
         to="/account/profile"
         className={({isActive}) =>
-          `font-heading text-xs uppercase tracking-wider px-4 py-2 rounded-lg transition-colors ${
+          `font-heading text-xs px-4 py-2 rounded-[4px] transition-colors ${
             isActive
-              ? 'text-gold-400 bg-gold-400/5'
-              : 'text-chrome-400 hover:text-gold-400 hover:bg-vault-800'
+              ? 'text-silver-400 bg-silver-400/5'
+              : 'text-chrome-400 hover:text-silver-400 hover:bg-vault-800'
           }`
         }
       >
@@ -118,10 +118,10 @@ function AccountMenu() {
       <NavLink
         to="/account/addresses"
         className={({isActive}) =>
-          `font-heading text-xs uppercase tracking-wider px-4 py-2 rounded-lg transition-colors ${
+          `font-heading text-xs px-4 py-2 rounded-[4px] transition-colors ${
             isActive
-              ? 'text-gold-400 bg-gold-400/5'
-              : 'text-chrome-400 hover:text-gold-400 hover:bg-vault-800'
+              ? 'text-silver-400 bg-silver-400/5'
+              : 'text-chrome-400 hover:text-silver-400 hover:bg-vault-800'
           }`
         }
       >
@@ -137,7 +137,7 @@ function Logout() {
     <Form method="POST" action="/account/logout" className="ml-auto">
       <button
         type="submit"
-        className="font-heading text-xs uppercase tracking-wider px-4 py-2 rounded-lg text-chrome-600 hover:text-danger-500 hover:bg-vault-800 transition-colors"
+        className="font-heading text-xs px-4 py-2 rounded-[4px] text-chrome-600 hover:text-danger-500 hover:bg-vault-800 transition-colors"
       >
         Sign out
       </button>

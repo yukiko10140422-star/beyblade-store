@@ -106,7 +106,7 @@ export default function Cart() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider mb-8">
+      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-8">
         Your Vault
       </h1>
       <CartMain layout="page" cart={cart} />

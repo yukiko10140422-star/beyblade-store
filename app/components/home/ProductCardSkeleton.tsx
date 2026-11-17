@@ -1,6 +1,6 @@
 export function ProductCardSkeleton() {
   return (
-    <div className="surface-vault rounded-xl overflow-hidden animate-pulse">
+    <div className="surface-vault rounded-[4px] overflow-hidden animate-pulse">
       <div className="aspect-square bg-vault-700" />
       <div className="p-4 space-y-3">
         <div className="h-2 w-16 bg-vault-700 rounded" />

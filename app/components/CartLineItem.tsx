@@ -40,7 +40,7 @@ export function CartLineItem({
               height={80}
               loading="lazy"
               width={80}
-              className="rounded-lg border border-vault-700 bg-vault-800"
+              className="rounded-[4px] border border-vault-700 bg-vault-800"
             />
           </Link>
         )}
@@ -50,18 +50,23 @@ export function CartLineItem({
             prefetch="intent"
             to={lineItemUrl}
             onClick={() => layout === 'aside' && close()}
-            className="text-sm text-vault-50 hover:text-vermillion-500 transition-colors font-medium line-clamp-2"
+            className="text-sm text-vault-50 hover:text-holo-500 transition-colors font-medium line-clamp-2"
           >
             {product.title}
           </Link>
 
-          {selectedOptions.length > 0 && (
+          {selectedOptions.some((o) => o.value !== 'Default Title') && (
             <div className="flex flex-wrap gap-1 mt-1">
-              {selectedOptions.map((option) => (
-                <span key={option.name} className="text-[10px] text-chrome-500">
-                  {option.name}: {option.value}
-                </span>
-              ))}
+              {selectedOptions
+                .filter((o) => o.value !== 'Default Title')
+                .map((option) => (
+                  <span
+                    key={option.name}
+                    className="text-[10px] text-chrome-500"
+                  >
+                    {option.name}: {option.value}
+                  </span>
+                ))}
             </div>
           )}
 
@@ -97,14 +102,14 @@ function CartLineQuantity({line}: {line: CartLine}) {
 
   return (
     <div className="flex items-center gap-3 mt-2">
-      <div className="flex items-center border border-vault-600 rounded-lg">
+      <div className="flex items-center border border-vault-600 rounded-[4px]">
         <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
           <button
             aria-label="Decrease quantity"
             disabled={quantity <= 1 || !!isOptimistic}
             name="decrease-quantity"
             value={prevQuantity}
-            className="w-8 h-8 flex items-center justify-center text-vault-50 hover:text-vermillion-500 disabled:opacity-30 transition-colors"
+            className="w-8 h-8 flex items-center justify-center text-vault-50 hover:text-holo-500 disabled:opacity-30 transition-colors"
           >
             &#8722;
           </button>
@@ -118,7 +123,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
             name="increase-quantity"
             value={nextQuantity}
             disabled={!!isOptimistic}
-            className="w-8 h-8 flex items-center justify-center text-vault-50 hover:text-vermillion-500 disabled:opacity-30 transition-colors"
+            className="w-8 h-8 flex items-center justify-center text-vault-50 hover:text-holo-500 disabled:opacity-30 transition-colors"
           >
             &#43;
           </button>
@@ -146,7 +151,7 @@ function CartLineRemoveButton({
       <button
         disabled={disabled}
         type="submit"
-        className="text-[10px] text-chrome-600 hover:text-danger-500 uppercase tracking-wider transition-colors disabled:opacity-30"
+        className="text-[10px] text-chrome-600 hover:text-danger-500 transition-colors disabled:opacity-30"
       >
         Remove
       </button>

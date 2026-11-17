@@ -41,7 +41,7 @@ function SearchResultsArticles({
 
   return (
     <div className="mb-8">
-      <h2 className="font-heading text-lg text-gold-metallic uppercase tracking-wider mb-4">
+      <h2 className="font-heading text-lg text-silver-metallic mb-4">
         Articles
       </h2>
       <div className="space-y-2">
@@ -54,13 +54,13 @@ function SearchResultsArticles({
 
           return (
             <div
-              className="bg-vault-800 border border-vault-700 rounded-lg p-4 transition-all duration-200 hover:border-gold-400/30"
+              className="bg-vault-800 border border-vault-700 rounded-[4px] p-4 transition-all duration-200 hover:border-silver-400/30"
               key={article.id}
             >
               <Link
                 prefetch="intent"
                 to={articleUrl}
-                className="text-gold-500 hover:text-gold-400 transition-colors font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50 rounded"
+                className="text-silver-500 hover:text-silver-400 transition-colors font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-silver-400/50 rounded-[3px]"
               >
                 {article.title}
               </Link>
@@ -79,9 +79,7 @@ function SearchResultsPages({term, pages}: PartialSearchResult<'pages'>) {
 
   return (
     <div className="mb-8">
-      <h2 className="font-heading text-lg text-gold-metallic uppercase tracking-wider mb-4">
-        Pages
-      </h2>
+      <h2 className="font-heading text-lg text-silver-metallic mb-4">Pages</h2>
       <div className="space-y-2">
         {pages?.nodes?.map((page) => {
           const pageUrl = urlWithTrackingParams({
@@ -92,13 +90,13 @@ function SearchResultsPages({term, pages}: PartialSearchResult<'pages'>) {
 
           return (
             <div
-              className="bg-vault-800 border border-vault-700 rounded-lg p-4 transition-all duration-200 hover:border-gold-400/30"
+              className="bg-vault-800 border border-vault-700 rounded-[4px] p-4 transition-all duration-200 hover:border-silver-400/30"
               key={page.id}
             >
               <Link
                 prefetch="intent"
                 to={pageUrl}
-                className="text-gold-500 hover:text-gold-400 transition-colors font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50 rounded"
+                className="text-silver-500 hover:text-silver-400 transition-colors font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-silver-400/50 rounded-[3px]"
               >
                 {page.title}
               </Link>
@@ -120,7 +118,7 @@ function SearchResultsProducts({
 
   return (
     <div className="mb-8">
-      <h2 className="font-heading text-lg text-gold-metallic uppercase tracking-wider mb-4">
+      <h2 className="font-heading text-lg text-silver-metallic mb-4">
         Products
       </h2>
       <Pagination connection={products}>
@@ -137,13 +135,13 @@ function SearchResultsProducts({
 
             return (
               <div
-                className="group bg-vault-800 border border-vault-700 rounded-lg overflow-hidden transition-all duration-200 hover:border-gold-400/30"
+                className="group bg-vault-800 border border-vault-700 rounded-[4px] overflow-hidden transition-all duration-200 hover:border-silver-400/30"
                 key={product.id}
               >
                 <Link
                   prefetch="intent"
                   to={productUrl}
-                  className="flex items-center gap-4 p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/50 rounded-lg"
+                  className="flex items-center gap-4 p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-silver-400/50 rounded-[4px]"
                 >
                   {image && (
                     <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-vault-900">
@@ -157,10 +155,10 @@ function SearchResultsProducts({
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="text-chrome-200 text-sm font-medium truncate group-hover:text-gold-400 transition-colors">
+                    <p className="text-chrome-200 text-sm font-medium truncate group-hover:text-silver-400 transition-colors">
                       {product.title}
                     </p>
-                    <small className="text-gold-400 font-heading text-xs">
+                    <small className="text-silver-400 font-heading text-xs">
                       {price && <Money data={price} />}
                     </small>
                   </div>
@@ -172,7 +170,7 @@ function SearchResultsProducts({
           return (
             <div className="space-y-4">
               <div>
-                <PreviousLink className="inline-flex items-center gap-2 px-4 py-2 bg-vault-800 border border-vault-700 rounded-lg text-chrome-300 text-sm font-heading uppercase tracking-wider hover:border-gold-400/30 hover:text-gold-400 transition-all">
+                <PreviousLink className="inline-flex items-center gap-2 px-4 py-2 bg-vault-800 border border-vault-700 rounded-[4px] text-chrome-300 text-sm font-heading hover:border-silver-400/30 hover:text-silver-400 transition-all">
                   {isLoading ? (
                     <span className="text-chrome-500">Loading...</span>
                   ) : (
@@ -182,7 +180,7 @@ function SearchResultsProducts({
               </div>
               <div className="grid gap-2">{ItemsMarkup}</div>
               <div>
-                <NextLink className="inline-flex items-center gap-2 px-4 py-2 bg-vault-800 border border-vault-700 rounded-lg text-chrome-300 text-sm font-heading uppercase tracking-wider hover:border-gold-400/30 hover:text-gold-400 transition-all">
+                <NextLink className="inline-flex items-center gap-2 px-4 py-2 bg-vault-800 border border-vault-700 rounded-[4px] text-chrome-300 text-sm font-heading hover:border-silver-400/30 hover:text-silver-400 transition-all">
                   {isLoading ? (
                     <span className="text-chrome-500">Loading...</span>
                   ) : (

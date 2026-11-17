@@ -1,22 +1,20 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/_index';
-import {SplitHero} from '~/components/home/SplitHero';
-import {NewArrivals} from '~/components/home/NewArrivals';
-import {TypeCategories} from '~/components/home/TypeCategories';
-import {FounderStory} from '~/components/home/FounderStory';
-import {TrustSignals} from '~/components/home/TrustSignals';
-import {ShippingBanner} from '~/components/home/ShippingBanner';
-import {Newsletter} from '~/components/home/Newsletter';
+import {
+  CategoryTiles,
+  EbayRecord,
+  FactsBand,
+  HomeHero,
+  ProductGridSection,
+} from '~/components/home/HomeSections';
 import {SITE_URL} from '~/lib/constants';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
-
-const FEATURED_HERO_HANDLE =
-  'beyblade-x-ux-00-aero-pegasus-3-70a-red-version-japan-exclusive';
+import {EXCLUDE_QUERY, SITE, isOwnProduct} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => {
-  const title = 'Tokyo Spin Vault | Authentic Beyblades from Japan';
+  const title = `${SITE.name} | Japanese Beyblade X shipped from Japan`;
   const description =
-    'Premium authentic Beyblades sourced direct from Japan. Rare finds, exclusive drops, collector grade. Ships worldwide from Tokyo.';
+    'Japanese Takara Tomy Beyblade X releases: starters, boosters, stadiums and event-limited items. Every product page shows the model number and when it ships. Ships from Japan with tracking.';
   return [
     {title},
     {name: 'description', content: description},
@@ -27,7 +25,7 @@ export const meta: Route.MetaFunction = () => {
     {property: 'og:image', content: `${SITE_URL}/images/og-home.png`},
     {property: 'og:image:width', content: '1200'},
     {property: 'og:image:height', content: '630'},
-    {property: 'og:site_name', content: 'Tokyo Spin Vault'},
+    {property: 'og:site_name', content: SITE.name},
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},
     {name: 'twitter:description', content: description},
@@ -36,7 +34,7 @@ export const meta: Route.MetaFunction = () => {
       'script:ld+json': {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        name: 'Tokyo Spin Vault',
+        name: SITE.name,
         url: SITE_URL,
         potentialAction: {
           '@type': 'SearchAction',
@@ -45,137 +43,52 @@ export const meta: Route.MetaFunction = () => {
         },
       },
     },
-    {
-      'script:ld+json': {
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        name: 'Tokyo Spin Vault',
-        description,
-        url: SITE_URL,
-        logo: `${SITE_URL}/images/logo.png`,
-        sameAs: [
-          'https://www.instagram.com/tsv_2026',
-          'https://www.tiktok.com/@tokyo.spin.vault',
-        ],
-        contactPoint: {
-          '@type': 'ContactPoint',
-          email: 'support@tokyospinvault.com',
-          contactType: 'customer service',
-        },
-      },
-    },
   ];
 };
 
-export async function loader(args: Route.LoaderArgs) {
-  const deferredData = loadDeferredData(args);
-  const criticalData = await loadCriticalData(args);
-  return {...deferredData, ...criticalData};
-}
-
-async function loadCriticalData({context}: Route.LoaderArgs) {
-  const [{product: featuredProduct}] = await Promise.all([
-    context.storefront
-      .query(FEATURED_HERO_QUERY, {
-        variables: {handle: FEATURED_HERO_HANDLE},
-        cache: context.storefront.CacheShort(),
-      })
-      .catch((error: Error) => {
-        console.error(error);
-        return {product: null};
-      }),
-  ]);
-
-  return {
-    isShopLinked: Boolean(context.env.PUBLIC_STORE_DOMAIN),
-    featuredProduct,
-  };
-}
-
-function loadDeferredData({context}: Route.LoaderArgs) {
-  const recommendedProducts = context.storefront
-    .query(RECOMMENDED_PRODUCTS_QUERY, {
-      cache: context.storefront.CacheShort(),
+export function loader({context}: Route.LoaderArgs) {
+  const {storefront} = context;
+  // Shared Shopify store: sister-store products are excluded in the query
+  // and again after it.
+  const bestSellers = storefront
+    .query(BEST_SELLERS_QUERY, {
+      variables: {query: EXCLUDE_QUERY},
+      cache: storefront.CacheShort(),
     })
+    .then((res) => res.products.nodes.filter(isOwnProduct).slice(0, 8))
     .catch((error: Error) => {
       console.error(error);
       return null;
     });
-
-  const allProducts = context.storefront
-    .query(ALL_PRODUCTS_QUERY, {
-      cache: context.storefront.CacheShort(),
-    })
-    .catch((error: Error) => {
-      console.error(error);
-      return null;
-    });
-
-  return {recommendedProducts, allProducts};
+  return {bestSellers};
 }
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div>
-      <SplitHero product={data.featuredProduct} />
-      <NewArrivals products={data.recommendedProducts} />
-      <TypeCategories />
-      <FounderStory />
-      <TrustSignals />
-      <ShippingBanner />
-      <Newsletter />
+      <HomeHero />
+      <ProductGridSection
+        title="Best sellers"
+        products={data.bestSellers}
+        viewAllHref="/collections/all-beyblades"
+      />
+      <CategoryTiles />
+      <EbayRecord />
+      <FactsBand />
     </div>
   );
 }
 
-/* --- GraphQL --- */
-const RECOMMENDED_PRODUCTS_QUERY = `#graphql
+const BEST_SELLERS_QUERY = `#graphql
   ${MONEY_FRAGMENT}
   ${PRODUCT_ITEM_FRAGMENT}
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...ProductItem
-      }
-    }
-  }
-` as const;
-
-const FEATURED_HERO_QUERY = `#graphql
-  ${MONEY_FRAGMENT}
-  query FeaturedHeroProduct(
+  query BestSellers(
+    $query: String
     $country: CountryCode
-    $handle: String!
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      id
-      handle
-      title
-      featuredImage {
-        id
-        altText
-        url
-        width
-        height
-      }
-      priceRange {
-        minVariantPrice {
-          ...Money
-        }
-      }
-    }
-  }
-` as const;
-
-const ALL_PRODUCTS_QUERY = `#graphql
-  ${MONEY_FRAGMENT}
-  ${PRODUCT_ITEM_FRAGMENT}
-  query AllProducts ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 24, sortKey: BEST_SELLING) {
+    products(first: 12, sortKey: BEST_SELLING, query: $query) {
       nodes {
         ...ProductItem
       }

@@ -55,7 +55,7 @@ export default function Blog() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-gold-metallic uppercase tracking-wider mb-8">
+      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-8">
         {blog.title}
       </h1>
       <PaginatedResourceSection<ArticleItemFragment>
@@ -90,7 +90,7 @@ function ArticleItem({
     <Link
       key={article.id}
       to={`/blogs/${article.blog.handle}/${article.handle}`}
-      className="group surface-vault rounded-xl overflow-hidden transition-all duration-300 hover:border-gold-400/30 hover:glow-gold-sm"
+      className="group surface-vault rounded-[4px] overflow-hidden transition-all duration-300 hover:border-silver-400/30 hover:"
     >
       {article.image && (
         <div className="aspect-[3/2] overflow-hidden bg-vault-800">
@@ -105,7 +105,7 @@ function ArticleItem({
         </div>
       )}
       <div className="p-5">
-        <h3 className="font-heading text-sm uppercase tracking-wider text-chrome-200 group-hover:text-gold-400 transition-colors">
+        <h3 className="font-heading text-sm text-chrome-200 group-hover:text-silver-400 transition-colors">
           {article.title}
         </h3>
         <p className="text-chrome-600 text-xs mt-2">{publishedAt}</p>
