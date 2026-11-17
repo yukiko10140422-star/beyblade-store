@@ -22,7 +22,7 @@ export default function Faq() {
   const items: Array<[string, React.ReactNode]> = [
     [
       'Where do orders ship from?',
-      `From ${COMPANY.city}, by Japan Post with tracking: ${SHIPPING_METHODS.epacket.label} (standard) or ${SHIPPING_METHODS.ems.label} (express).`,
+      `From Kanagawa, Japan, by Japan Post with tracking: ${SHIPPING_METHODS.epacket.label} (standard) or ${SHIPPING_METHODS.ems.label} (express).`,
     ],
     ['Will I pay duties or import taxes on delivery?', `No. ${DUTIES.line}.`],
     [

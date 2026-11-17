@@ -15,7 +15,7 @@ export default function About() {
   return (
     <InfoPage
       title="About us"
-      intro={`${SITE.name} sells Japanese Beyblade X products and ships them from Yokohama, Japan.`}
+      intro={`${SITE.name} sells Japanese Beyblade X products and ships them from Japan.`}
     >
       <section>
         <h2>What we sell</h2>

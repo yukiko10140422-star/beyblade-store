@@ -29,7 +29,7 @@ export default function Shipping() {
   return (
     <InfoPage
       title="Shipping"
-      intro="Orders ship from Yokohama, Japan, by Japan Post, with tracking."
+      intro="Orders ship from Kanagawa, Japan, by Japan Post, with tracking."
     >
       <section>
         <h2>Methods</h2>
