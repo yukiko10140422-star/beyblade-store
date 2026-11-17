@@ -188,11 +188,12 @@ export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
     countries: ['ES', 'GB', 'IE', 'IT', 'PT', 'AT', 'BE', 'CH', 'DK', 'FI', 'NL', 'NO', 'PL', 'SE', 'DE', 'FR'],
   },
   {
-    region: 'East and Southeast Asia, Australia, New Zealand',
+    region: 'East and Southeast Asia (9 countries/territories)',
     carrier: 'ems',
-    fromUsd: 13,
-    countries: ['AU', 'HK', 'ID', 'KR', 'MY', 'NZ', 'PH', 'TH', 'SG', 'TW', 'VN'],
+    fromUsd: 7,
+    countries: ['HK', 'ID', 'KR', 'MY', 'PH', 'TH', 'SG', 'TW', 'VN'],
   },
+  {region: 'Australia and New Zealand', carrier: 'ems', fromUsd: 13, countries: ['AU', 'NZ']},
   {
     region: 'South Asia, Mongolia, Cambodia, Laos, Brunei',
     carrier: 'ems',
