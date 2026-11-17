@@ -86,7 +86,7 @@ function SearchAside() {
                 ref={inputRef}
                 type="search"
                 list={queriesDatalistId}
-                className="flex-1 bg-vault-900 border border-[#8F897D] rounded-[4px] px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-silver-400/50 focus:ring-1 focus:ring-silver-400/20 transition-all"
+                className="flex-1 bg-vault-900 border border-[#8F897D] rounded-[4px] px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:border-holo-500 focus:outline-none focus:ring-2 focus:ring-holo-500/30 transition-all"
               />
               <button
                 type="button"

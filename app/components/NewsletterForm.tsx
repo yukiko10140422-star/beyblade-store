@@ -77,7 +77,7 @@ export function NewsletterForm({
           placeholder="your@email.com"
           aria-label="Email address for newsletter"
           className={clsx(
-            'flex-1 bg-vault-800 border border-[#8F897D] rounded-[4px] text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-silver-400/50 focus:ring-1 focus:ring-silver-400/20 transition-all',
+            'flex-1 bg-vault-800 border border-[#8F897D] rounded-[4px] text-chrome-200 placeholder:text-chrome-600 focus:border-holo-500 focus:outline-none focus:ring-2 focus:ring-holo-500/30 transition-all',
             isLarge ? 'px-4 py-3 text-sm' : 'px-3 py-2 text-sm',
           )}
         />

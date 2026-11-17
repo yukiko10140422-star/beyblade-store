@@ -18,9 +18,16 @@ export const EXCLUDED_TAGS = ['card-vault', 'character-vault'] as const;
 /** Storefront search query suffix that removes sister-store products. */
 export const EXCLUDE_QUERY = EXCLUDED_TAGS.map((t) => `-tag:${t}`).join(' ');
 
+/**
+ * True unless the product carries a sister-store tag. Tags are compared
+ * case-insensitively and trimmed so "Card-Vault " is caught too.
+ * NOTE: this is a block-list (Spin predates the shared store). A sister
+ * product that is published to the Spin channel WITHOUT its tag would still
+ * show — the import must always tag sister products (docs).
+ */
 export function isOwnProduct(p: {tags?: readonly string[] | null}): boolean {
   return !(p.tags ?? []).some((t) =>
-    (EXCLUDED_TAGS as readonly string[]).includes(t),
+    (EXCLUDED_TAGS as readonly string[]).includes(t.trim().toLowerCase()),
   );
 }
 

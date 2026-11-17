@@ -45,8 +45,9 @@ export default function Shipping() {
       <section>
         <h2>When your order ships</h2>
         <p>
-          Product pages show when the item ships (for example, “Ships within 3
-          business days”). Business days are Monday to Friday, Japan time.
+          Product pages show when the item ships if this is set for the item
+          (for example, “Ships within 3 business days”). Business days are
+          Monday to Friday, Japan time.
         </p>
         {EXPRESS_OPTIONS.length > 0 && (
           <p>Faster dispatch is available as a paid option at checkout.</p>

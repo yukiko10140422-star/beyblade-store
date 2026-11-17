@@ -156,6 +156,13 @@ export const EXPRESS_UPGRADE = {
  */
 export const LINK_STORE_POLICIES = false;
 
+/**
+ * RETURNS are the store's actual refund rules (one Shopify store, one refund
+ * policy, applied at checkout to all three Vault sites; read 2026-11-17).
+ * The policy PAGE is not linked/served only because its wording names
+ * another store and states free shipping / duties (see LINK_STORE_POLICIES);
+ * the return conditions themselves apply to this site's orders.
+ */
 export const RETURNS = {
   windowDays: 14,
   summary:

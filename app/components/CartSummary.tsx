@@ -66,7 +66,7 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
 }
 
 const inputClass =
-  'flex-1 bg-vault-900 border border-[#8F897D] rounded-[4px] px-3 py-2 text-xs text-vault-50 placeholder:text-chrome-500 focus:outline-none focus:border-holo-300 focus:ring-1 focus:ring-holo-300/30 transition-all';
+  'flex-1 bg-vault-900 border border-[#8F897D] rounded-[4px] px-3 py-2 text-xs text-vault-50 placeholder:text-chrome-500 focus:border-holo-500 focus:outline-none focus:ring-2 focus:ring-holo-500/30 transition-all';
 const applyBtnClass =
   'text-[10px] font-heading font-semibold text-holo-500 hover:text-holo-600 px-3 py-2 border border-vault-700 hover:border-holo-300 rounded-[4px] transition-all';
 const removeBtnClass =

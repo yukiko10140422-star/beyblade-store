@@ -183,7 +183,7 @@ export function FactsBand() {
   const facts = [
     {
       title: 'Japanese versions',
-      body: 'Takara Tomy releases sold in Japan, with model numbers.',
+      body: 'Japanese releases, with the model number on the product page when it has one.',
     },
     {
       title: 'Ships from Japan',
