@@ -1,4 +1,4 @@
-import {EXPRESS_PROMO_LIVE, EXPRESS_UPGRADE} from '~/lib/shipping';
+import {DUTIES, EXPRESS_PROMO_LIVE, EXPRESS_UPGRADE} from '~/lib/shipping';
 
 /**
  * One static line of facts that hold for every product (no rotation).
@@ -9,13 +9,12 @@ export function AnnouncementBar() {
     EXPRESS_UPGRADE;
   return (
     <div className="bg-[#1B2230] px-4 py-2 text-center text-[13px] text-white">
-      Ships from Japan with tracking (Japan Post)
+      Ships from Japan with tracking{DUTIES.included && ' · Duties included'}
       {EXPRESS_PROMO_LIVE && (
         <span className="hidden md:inline">
           {' '}
-          · Free Express upgrade on orders of US${subtotalThreshold}+ or{' '}
-          {quantityThreshold}+ items (up to US${maxShippingValue} shipping
-          value)
+          · Free Express upgrade on US${subtotalThreshold}+ or{' '}
+          {quantityThreshold}+ items (up to US${maxShippingValue})
         </span>
       )}
     </div>

@@ -127,3 +127,6 @@ export const SISTER_STORES = [
     url: 'https://tokyocharactervault.com',
   },
 ] as const;
+
+/** Contact for all three Vault stores (owner decision 2026-11-17). */
+export const CONTACT_EMAIL = 'info@xon-corp.com';

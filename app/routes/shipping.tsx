@@ -1,18 +1,21 @@
 import type {Route} from './+types/shipping';
 import {FactTable, InfoPage} from '~/components/InfoPage';
 import {
+  DUTIES,
   EXPRESS_OPTIONS,
+  EXPRESS_PROMO_LIVE,
+  EXPRESS_UPGRADE,
   JAPAN_POST_DAYS,
   SHIPPING_METHODS,
 } from '~/lib/shipping';
-import {SITE} from '~/lib/site';
+import {CONTACT_EMAIL, SITE} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => [
   {title: `Shipping | ${SITE.name}`},
   {
     name: 'description',
     content:
-      'Orders ship from Japan by Japan Post ePacket or EMS, with tracking.',
+      'Orders ship from Japan by Japan Post ePacket or EMS, with tracking. Duties included — no extra charges on delivery.',
   },
 ];
 
@@ -38,8 +41,43 @@ export default function Shipping() {
               'Cost',
               'Shipping options and costs for your country are shown at checkout, before you pay.',
             ],
+            ['Duties', DUTIES.line],
           ]}
         />
+      </section>
+
+      <section>
+        <h2>Express options</h2>
+        <FactTable
+          rows={EXPRESS_OPTIONS.map(
+            (o) =>
+              [
+                o.label,
+                `${SHIPPING_METHODS[o.method].label}, ${o.surcharge} on top of standard shipping. ${
+                  o.handling === 'item'
+                    ? 'Ships within the dispatch time shown on the product page.'
+                    : `Your order ships within ${o.handling} business days.`
+                }`,
+              ] as const,
+          )}
+        />
+        {EXPRESS_PROMO_LIVE && (
+          <p className="mt-3">
+            Free Express upgrade on orders of US$
+            {EXPRESS_UPGRADE.subtotalThreshold}+ or{' '}
+            {EXPRESS_UPGRADE.quantityThreshold}+ items (up to US$
+            {EXPRESS_UPGRADE.maxShippingValue} shipping value), applied at
+            checkout.
+          </p>
+        )}
+      </section>
+
+      <section>
+        <h2>Duties and taxes</h2>
+        <p>
+          {DUTIES.line}. Import duties for your order are paid by us, so the
+          carrier does not collect them from you on delivery.
+        </p>
       </section>
 
       <section>
@@ -49,9 +87,6 @@ export default function Shipping() {
           (for example, “Ships within 3 business days”). Business days are
           Monday to Friday, Japan time.
         </p>
-        {EXPRESS_OPTIONS.length > 0 && (
-          <p>Faster dispatch is available as a paid option at checkout.</p>
-        )}
       </section>
 
       <section>
@@ -111,7 +146,13 @@ export default function Shipping() {
         <h2>Tracking</h2>
         <p>
           Both methods are tracked. You receive a shipping confirmation e-mail
-          with the tracking number when your order ships.
+          with the tracking number when your order ships. Questions:{' '}
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="text-holo-500 hover:underline"
+          >
+            {CONTACT_EMAIL}
+          </a>
         </p>
       </section>
     </InfoPage>

@@ -21,11 +21,17 @@
  * Returns: the store's published refund policy (shared Shopify store),
  * read 2026-11-17.
  *
- * Deliberately NOT stated (not decided): free shipping, duties included /
- * DDP, insurance, DHL / FedEx, and the free Express upgrade wording (the
- * store has an automatic discount — US$300+ or 3+ items, up to US$55
- * shipping value, confirmed in Admin 2026-11-17 — but the Express offer is
- * being redesigned, so EXPRESS_PROMO_LIVE is false).
+ * Owner decisions, 2026-11-17 evening (docs/HANDOFF-2026-11-17.md §8b):
+ *   - Duties are paid by the shop (DDP) and stated on the site:
+ *     "Duties included — no extra charges on delivery".
+ *   - Paid options, same as eBay: Express (Japan Post EMS) +US$25 /
+ *     Express + priority handling +US$45; priority-handling orders ship
+ *     within 5 business days.
+ *   - Free Express upgrade stays: US$300+ or 3+ items, up to US$55 shipping
+ *     value (automatic discounts confirmed ACTIVE in Admin 2026-11-17).
+ *   - Contact: info@xon-corp.com (site.ts CONTACT_EMAIL).
+ *
+ * Still NOT stated: free standard shipping, insurance, DHL / FedEx.
  */
 
 export type ShippingMethodId = 'epacket' | 'ems';
@@ -125,23 +131,45 @@ export function handlingLabel(days: number): string {
     : `Ships within ${days} business days`;
 }
 
+/** Duties are prepaid by the shop (owner decision 2026-11-17). */
+export const DUTIES = {
+  included: true,
+  line: 'Duties included — no extra charges on delivery',
+} as const;
+
 /**
- * Paid faster options (Express = EMS, Express + priority handling).
- * Prices and dispatch times are not decided yet → empty = the rows are not
- * rendered. Fill in from the agreed plan (same conditions as eBay).
+ * Paid faster options (owner decision 2026-11-17, same as eBay).
+ * `handling`: 'item' = the item's own dispatch time (shipping.handling_days);
+ * a number = ship within that many business days at most.
  */
 export interface ExpressOption {
   label: string;
   method: ShippingMethodId;
-  /** e.g. "US$25.00" — shown as written. */
-  price: string;
-  /** Business days to dispatch with this option. */
-  handlingDays: number;
+  /** Added to the standard shipping price, shown as written. */
+  surcharge: string;
+  handling: 'item' | number;
 }
-export const EXPRESS_OPTIONS: readonly ExpressOption[] = [];
+export const EXPRESS_OPTIONS: readonly ExpressOption[] = [
+  {label: 'Express', method: 'ems', surcharge: '+US$25', handling: 'item'},
+  {
+    label: 'Express + priority handling',
+    method: 'ems',
+    surcharge: '+US$45',
+    handling: 5,
+  },
+];
 
-/** Free Express upgrade discount (store-wide). Hidden until re-decided. */
-export const EXPRESS_PROMO_LIVE = false;
+/** Business days to dispatch for an option, given the item's own days. */
+export function optionHandlingDays(
+  o: ExpressOption,
+  itemDays: number | null,
+): number | null {
+  if (o.handling === 'item') return itemDays;
+  return itemDays == null ? o.handling : Math.min(itemDays, o.handling);
+}
+
+/** Free Express upgrade discount (store-wide, kept by the owner). */
+export const EXPRESS_PROMO_LIVE = true;
 export const EXPRESS_UPGRADE = {
   subtotalThreshold: 300,
   quantityThreshold: 3,

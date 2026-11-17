@@ -1,7 +1,15 @@
 import {Suspense} from 'react';
 import {Await, Link} from 'react-router';
 import {arrivalAround, type DeliveryEstimate} from '~/lib/delivery-estimate';
-import {EXPRESS_OPTIONS, RETURNS, SHIPPING_METHODS} from '~/lib/shipping';
+import {
+  DUTIES,
+  EXPRESS_OPTIONS,
+  EXPRESS_PROMO_LIVE,
+  EXPRESS_UPGRADE,
+  RETURNS,
+  SHIPPING_METHODS,
+  optionHandlingDays,
+} from '~/lib/shipping';
 
 /**
  * Stock line next to the price.
@@ -48,7 +56,6 @@ export function StockNote({
  */
 export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
   const s = estimate.standard;
-  const ems = estimate.emsTransitDays;
   return (
     <div className="flex flex-col gap-2 border-t border-vault-700 pt-3.5 text-sm">
       {estimate.handlingLabel && (
@@ -84,18 +91,35 @@ export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
       {EXPRESS_OPTIONS.length > 0 && (
         <ul className="m-0 flex list-none flex-col gap-1 p-0 pl-[30px]">
           {EXPRESS_OPTIONS.map((o) => {
-            const transit = o.method === 'ems' ? ems : (s?.transitDays ?? null);
-            const around = arrivalAround(o.handlingDays, transit);
+            const days = optionHandlingDays(o, estimate.handlingDays);
+            const transit =
+              o.method === 'ems'
+                ? estimate.emsTransitDays
+                : (s?.transitDays ?? null);
+            const around = arrivalAround(days, transit);
             return (
               <li key={o.label}>
-                <b className="font-semibold text-chrome-200">{o.label}</b>:{' '}
-                {SHIPPING_METHODS[o.method].label}, {o.price}, ships within{' '}
-                {o.handlingDays} business days
+                <b className="font-semibold text-chrome-200">{o.label}</b> (
+                {SHIPPING_METHODS[o.method].label}): {o.surcharge}
+                {days != null && `, ships within ${days} business days`}
                 {around ? `, estimated delivery ${around}` : ''}.
               </li>
             );
           })}
+          {EXPRESS_PROMO_LIVE && (
+            <li className="text-chrome-400">
+              Free Express upgrade on orders of US$
+              {EXPRESS_UPGRADE.subtotalThreshold}+ or{' '}
+              {EXPRESS_UPGRADE.quantityThreshold}+ items (up to US$
+              {EXPRESS_UPGRADE.maxShippingValue} shipping value).
+            </li>
+          )}
         </ul>
+      )}
+      {DUTIES.included && (
+        <Row icon={<ReturnIcon />}>
+          <b className="font-semibold text-chrome-200">{DUTIES.line}.</b>
+        </Row>
       )}
       <Row icon={<ReturnIcon />}>
         <span>

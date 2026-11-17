@@ -1,3 +1,4 @@
+import {DUTIES} from '~/lib/shipping';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
@@ -35,6 +36,10 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
       <div className="flex items-center justify-between text-xs">
         <span className="text-chrome-400">Shipping</span>
         <span className="text-chrome-300">Calculated at checkout</span>
+      </div>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-chrome-400">Duties</span>
+        <span className="text-chrome-300">{DUTIES.line}</span>
       </div>
 
       <CartDiscounts

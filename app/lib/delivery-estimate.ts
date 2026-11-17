@@ -19,6 +19,8 @@ export interface DeliveryEstimate {
   destination: string;
   /** "Ships within 3 business days" — null when the product has no value. */
   handlingLabel: string | null;
+  /** The item's own dispatch time (shipping.handling_days). */
+  handlingDays: number | null;
   /** The product's own method (from `shipping.service`); null when unknown. */
   standard: MethodEstimate | null;
   /** EMS transit for the destination (used by paid Express rows). */
@@ -88,6 +90,7 @@ export function getDeliveryEstimate(
   return {
     destination: destinationName(country),
     handlingLabel: handlingDays != null ? handlingLabel(handlingDays) : null,
+    handlingDays,
     standard: methodId
       ? {
           methodLabel: SHIPPING_METHODS[methodId].label,

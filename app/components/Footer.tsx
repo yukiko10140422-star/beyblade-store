@@ -2,7 +2,13 @@ import {NavLink} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {PaymentMethods} from '~/components/PaymentMethods';
 import {CountryPicker} from '~/components/CountryPicker';
-import {COMPANY, EBAY_RECORD, SISTER_STORES, SITE} from '~/lib/site';
+import {
+  COMPANY,
+  EBAY_RECORD,
+  SISTER_STORES,
+  SITE,
+  CONTACT_EMAIL,
+} from '~/lib/site';
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
@@ -31,6 +37,15 @@ export function Footer({header}: FooterProps) {
         <FooterColumn title="Help">
           <FooterLink to="/shipping">Shipping</FooterLink>
           <FooterLink to="/returns">Returns</FooterLink>
+          <FooterLink to="/faq">FAQ</FooterLink>
+          <li>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="text-chrome-300 hover:text-holo-500"
+            >
+              Contact: {CONTACT_EMAIL}
+            </a>
+          </li>
         </FooterColumn>
         <FooterColumn title="Company">
           <FooterLink to="/about">About us</FooterLink>
