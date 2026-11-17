@@ -320,3 +320,67 @@ Shopify の在庫を人が手で増やしても、次の連動で eBay 基準に
    - `shipping.express_handling_days`: 未決
    - 文の形: 「Ships within {handling_days} business days. Standard: Japan Post Air Packet (tracked). Express: Japan Post EMS (tracked), +${express_price_usd}.」
 6. **速達の 2 出品は商品一覧に出しません**: 取込の対象外です (`SERVICE_RE` で除外済み)。
+
+## 13. 価格の決まり (2026-11-17 オーナー決定) と下限の安全装置
+
+**価格** = eBay の売値から約 −16% (案 B: 手数料差。式は §6)。ただし下限を下回る時は下限の価格にします (eBay の売値より高くなることもある)。
+**原価が分からない商品は作りません** (一覧の「原価不明 (作らない)」)。
+
+**下限** (USD。P = Shopify の価格、関税は店が払う DDP):
+
+```
+P × (1 − Shopify 決済率 − 関税率 − Zonos 率) − Shopify 固定 − Zonos 固定 ≥ (原価 + 送料 + 最低利益) ÷ 為替
+P_min = ((原価 + 送料 + 最低利益) ÷ 為替 + 0.30 + 1.69) ÷ (1 − 0.039 − 関税率 − 0.0126)   … .99 に切り上げ
+```
+
+| 項目 | 値 | 出どころ |
+|---|---|---|
+| 為替 | 直近 200 注文の `orders.exchange_rate` の中央値 −2% (11-17: 155.12 円) | Nexsus orders |
+| 原価 | 仕入れ実績 (procurement_purchases、同じ eBay 商品番号の直近 5 件) の中央値と、出品台帳の仕入値 (`source_price_jpy`) の**高い方** | 無ければ作らない |
+| 送料 | ① 商品ごとの見込み表 (`nexsus/data/item-shipping-estimates.json`) → ② 同じ商品の発送実績 (shipment_records、1 個の注文) の中央値 → ③ 重さ (台帳の `ship_weight_g` → eBay の荷物の重さ) から日本郵便の公式料金 → ④ 目安 = 同じ店の候補の送料の中央値 → ⑤ 目安 ¥3,090 | 補正: エアパケットの Zonos 額に特定記録 +370 円。額が空なら重さから計算 |
+| 日本郵便の公式料金 (第 4 地帯 米国) | エアパケット 100g ¥1,200 + 100g ごとに ¥210 (2kg まで、特定記録込み) / EMS 0.5kg ¥3,900・1kg ¥5,300・1.5kg ¥6,600・2kg ¥7,900 | post.japanpost.jp (§12) |
+| 関税率 | 同じ商品の実績 (`customs_duty_usd ÷ sale_price_usd`、1 個の注文) の 75% 点。ただし 10% を下回らせない。実績が無ければ 15% | トイ (9503) の実績は約 12.5% |
+| Shopify 決済 | 3.9% + $0.30 | 海外カード想定の保守値 |
+| Zonos | 1.26% + $1.69 | 11 月の `customs_fee_usd` の実測を直線で近似 |
+| 最低利益 | ¥300 | 既存の値下げの規則と同じ |
+
+- 作る時は、作る直前の eBay の価格で計算し直します。
+- 下限の計算は**全件をまとめて**行います。④ の「同じ店の候補の中央値」は候補全体から作るので、`--only` で数件だけ作ると値が変わることがあります。
+- 率は `scripts/ebay-shopify/lib/price-floor.mjs` の `RATES` にあります。直したら、この表も直します。
+
+## 14. 配送の表示 (オーナー決定: 日本郵便で統一)
+
+- メタフィールド `shipping.service` には **eBay の実値** (SpeedPAK 等) を、そのまま残します。在庫連動で eBay と比べるためです。
+- サイトの表示は**全商品共通の文言**とし、商品ごとのメタフィールドではなく、サイト側 (テーマ / Hydrogen) の定数で出す案です。
+  - Standard: Japan Post ePacket (tracked)
+  - Express: Japan Post EMS (tracked) +$25
+  - Express + priority handling: ships within 5 business days +$45
+- 発送までの日数 (`shipping.handling_days`) は、商品ごとに eBay の値を出します。
+- site 担当と揃える事項: 表示用のメタフィールドを作らず、サイトの定数で持つこと。
+
+## 15. 商品の重さ (2026-11-17 オーナー決定)
+
+重さは `lib/weight.mjs` と `fix-weights.mjs` で決め、どれを使ったかを `shipping.weight_source` に書きます。上から順に使います。
+
+1. **実績**: Nexsus の発送記録 `shipment_records.weight_g` (Zonos / Ship&co が実際に送った時の重さ、梱包込み)。同じ eBay 商品番号の、1 個だけの注文の中央値を使います。
+   - `orders.actual_weight` は課金重量 (容積重量を含む) なので使いません。
+2. **推定**: eBay の出品の荷物の重さ + 100g (梱包分)。
+3. **推定**: eBay の重さが未入力 (0) なら、出品台帳の発送重量 `autolist_listings.ship_weight_g` + 100g。
+   - これはオーナー決定の 2 段に足した段です。eBay の重さは未入力が多いためです。
+4. **不明**: どれも無い時は重さを付けません (推測しない)。
+
+**11-17 の内訳**:
+
+| 店 | 実績 | 推定 (eBay + 100g) | 推定 (台帳 + 100g) | 不明 |
+|---|---|---|---|---|
+| Spin | 15 | 0 | 15 | 34 |
+| Card | 3 | 2 | 19 | 0 |
+| Character | 28 | 7 | 85 | 2 |
+
+- 作る時にも同じ規則で重さを付けます (`import-from-ebay.mjs` の create)。
+
+## 16. 製品識別子
+
+- EU 27 か国を配送先から外したので、識別子の確認は止めました (オーナー、11-17)。
+- 途中まで写した barcode / `product.mpn` は残っています。対象は Spin・Card の一部です。
+- `lib/identifiers.mjs` と `fix-identifiers.mjs` は残してありますが、取込からは呼びません。
