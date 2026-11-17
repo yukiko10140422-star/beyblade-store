@@ -9,7 +9,7 @@ import {
 } from '~/components/home/HomeSections';
 import {SITE_URL} from '~/lib/constants';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
-import {EXCLUDE_QUERY, SITE, isOwnProduct} from '~/lib/site';
+import {SCOPE_QUERY, SITE, isOwnProduct} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => {
   const title = `${SITE.name} | Japanese Beyblade X shipped from Japan`;
@@ -48,11 +48,11 @@ export const meta: Route.MetaFunction = () => {
 
 export function loader({context}: Route.LoaderArgs) {
   const {storefront} = context;
-  // Shared Shopify store: sister-store products are excluded in the query
+  // Shared Shopify store: only Spin-tagged products are queried
   // and again after it.
   const bestSellers = storefront
     .query(BEST_SELLERS_QUERY, {
-      variables: {query: EXCLUDE_QUERY},
+      variables: {query: SCOPE_QUERY},
       cache: storefront.CacheShort(),
     })
     .then((res) => res.products.nodes.filter(isOwnProduct).slice(0, 8))

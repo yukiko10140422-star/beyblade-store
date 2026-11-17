@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/pages.$handle';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {isSisterHandle} from '~/lib/site';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [{title: `${data?.page.title ?? ''} | Tokyo Spin Vault`}];
@@ -32,7 +33,8 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  if (!page) {
+  // Shared store: pages of the sister Vault sites are not served here.
+  if (!page || isSisterHandle(params.handle)) {
     throw new Response('Not Found', {status: 404});
   }
 

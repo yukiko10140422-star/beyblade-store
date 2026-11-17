@@ -4,7 +4,7 @@
  * source, so it can be reviewed in one place.
  *
  * The Shopify store is shared with Tokyo Card Vault and Tokyo Character
- * Vault. Their products carry the tags below and must never appear here.
+ * Vault. Only products with SCOPE_TAG are shown here (allowlist).
  */
 
 export const SITE = {
@@ -12,22 +12,44 @@ export const SITE = {
   shortName: 'Spin Vault',
 } as const;
 
-/** Tags of the sister stores' products (shared Shopify store). */
-export const EXCLUDED_TAGS = ['card-vault', 'character-vault'] as const;
+/**
+ * Store scope (allowlist). Since 2026-11-17 the three Vault sites run as ONE
+ * Hydrogen app on this storefront, and the Card / Character products are
+ * published to this storefront too. So a product is shown here only if it
+ * carries Spin's own tag. `store:tokyo-spin-vault` is set on every Spin
+ * product by the eBay import tool (beyblade-store/scripts/ebay-shopify).
+ * Products without it (the old pre-import catalog) are not shown.
+ */
+export const SCOPE_TAG = 'store:tokyo-spin-vault';
 
-/** Storefront search query suffix that removes sister-store products. */
-export const EXCLUDE_QUERY = EXCLUDED_TAGS.map((t) => `-tag:${t}`).join(' ');
+/** Storefront `products(query:)` string that keeps only Spin products. */
+export const SCOPE_QUERY = `tag:"${SCOPE_TAG}"`;
+
+/** Tags of the sister stores' products (shared Shopify store). */
+export const EXCLUDED_TAGS = [
+  'card-vault',
+  'character-vault',
+  'store:tokyo-card-vault',
+  'store:tokyo-character-vault',
+] as const;
+
+/** Handle prefixes of the sister stores' pages / blogs / menus. */
+export const SISTER_HANDLE_PREFIXES = ['card-vault-', 'character-vault-'] as const;
+
+export function isSisterHandle(handle: string | null | undefined): boolean {
+  const h = (handle ?? '').toLowerCase();
+  return SISTER_HANDLE_PREFIXES.some((p) => h.startsWith(p));
+}
 
 /**
- * True unless the product carries a sister-store tag. Tags are compared
- * case-insensitively and trimmed so "Card-Vault " is caught too.
- * NOTE: this is a block-list (Spin predates the shared store). A sister
- * product that is published to the Spin channel WITHOUT its tag would still
- * show — the import must always tag sister products (docs).
+ * True only if the product carries SCOPE_TAG and no sister-store tag. Tags
+ * are compared case-insensitively and trimmed.
  */
 export function isOwnProduct(p: {tags?: readonly string[] | null}): boolean {
-  return !(p.tags ?? []).some((t) =>
-    (EXCLUDED_TAGS as readonly string[]).includes(t.trim().toLowerCase()),
+  const tags = (p.tags ?? []).map((t) => t.trim().toLowerCase());
+  return (
+    tags.includes(SCOPE_TAG) &&
+    !tags.some((t) => (EXCLUDED_TAGS as readonly string[]).includes(t))
   );
 }
 

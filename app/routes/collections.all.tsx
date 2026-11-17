@@ -5,7 +5,7 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductCard} from '~/components/ProductCard';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import type {ProductItemFragment} from 'storefrontapi.generated';
-import {EXCLUDE_QUERY, SITE, isOwnProduct} from '~/lib/site';
+import {SCOPE_QUERY, SITE, isOwnProduct} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: `All products | ${SITE.name}`}];
@@ -22,11 +22,11 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
 
   const [{products}] = await Promise.all([
     storefront.query(CATALOG_QUERY, {
-      variables: {...paginationVariables, query: EXCLUDE_QUERY},
+      variables: {...paginationVariables, query: SCOPE_QUERY},
       cache: storefront.CacheShort(),
     }),
   ]);
-  // Shared Shopify store: sister-store products are excluded in the query
+  // Shared Shopify store: only Spin-tagged products are queried
   // and again here.
   return {
     products: {...products, nodes: products.nodes.filter(isOwnProduct)},

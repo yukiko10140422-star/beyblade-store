@@ -12,7 +12,7 @@ import type {
   RegularSearchQuery,
   PredictiveSearchQuery,
 } from 'storefrontapi.generated';
-import {SITE, isOwnProduct} from '~/lib/site';
+import {SHELVES, SITE, isOwnProduct, isSisterHandle} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: `Search | ${SITE.name}`}];
@@ -160,6 +160,9 @@ const SEARCH_ARTICLE_FRAGMENT = `#graphql
   fragment SearchArticle on Article {
     __typename
     handle
+    blog {
+      handle
+    }
     id
     title
     trackingParameters
@@ -258,13 +261,24 @@ async function regularSearch({
       variables: {...variables, term},
     });
 
-  // Shared Shopify store: drop sister-store products (Card / Character).
+  // Shared Shopify store: drop sister-store products (Card / Character),
+  // and their pages / blog articles.
   const items = rawItems?.products
     ? {
         ...rawItems,
         products: {
           ...rawItems.products,
           nodes: rawItems.products.nodes.filter(isOwnProduct),
+        },
+        pages: {
+          ...rawItems.pages,
+          nodes: rawItems.pages.nodes.filter((p) => !isSisterHandle(p.handle)),
+        },
+        articles: {
+          ...rawItems.articles,
+          nodes: rawItems.articles.nodes.filter(
+            (a) => !isSisterHandle(a.blog.handle),
+          ),
         },
       }
     : rawItems;
@@ -455,6 +469,13 @@ async function predictiveSearch({
     ? {
         ...rawPredictive,
         products: rawPredictive.products.filter(isOwnProduct),
+        collections: rawPredictive.collections.filter((c) =>
+          SHELVES.some((s) => s.handle === c.handle),
+        ),
+        pages: rawPredictive.pages.filter((p) => !isSisterHandle(p.handle)),
+        articles: rawPredictive.articles.filter(
+          (a) => !isSisterHandle(a.blog.handle),
+        ),
         queries: [],
       }
     : rawPredictive;

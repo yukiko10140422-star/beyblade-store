@@ -308,12 +308,12 @@ export const EXPRESS_UPGRADE_LINE = `Free Express upgrade on orders of US$${EXPR
 export const LINK_STORE_POLICIES = true;
 
 /**
- * The privacy policy is still managed automatically by Shopify and names
- * only Tokyo Spin Vault as the operator; the API cannot change it until
- * automatic management is turned off in the admin. Keep it hidden until the
- * shared text (docs/data/policies-applied-20261117/PRIVACY_POLICY.html) is in.
+ * Privacy policy: the owner decided (2026-11-17 late) to KEEP Shopify's
+ * automatic management. The page shows the store's privacyPolicy exactly as
+ * Shopify generates it (the replacement text in docs/policy-final is NOT
+ * used). Linked from the footer.
  */
-export const PRIVACY_POLICY_READY = false;
+export const PRIVACY_POLICY_READY = true;
 
 /**
  * RETURNS are the store's actual refund rules (one Shopify store, one refund

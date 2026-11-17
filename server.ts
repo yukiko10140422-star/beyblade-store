@@ -48,7 +48,7 @@ Disallow: /
 Sitemap: ${origin}/sitemap.xml
 Sitemap: ${origin}/sitemap/products/1.xml
 Sitemap: ${origin}/sitemap/collections/1.xml
-Sitemap: ${origin}/sitemap/pages/1.xml`;
+`;
         return new Response(body, {
           status: 200,
           headers: {

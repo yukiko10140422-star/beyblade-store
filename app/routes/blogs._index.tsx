@@ -3,6 +3,7 @@ import type {Route} from './+types/blogs._index';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import type {BlogsQuery} from 'storefrontapi.generated';
+import {isSisterHandle} from '~/lib/site';
 
 type BlogNode = BlogsQuery['blogs']['nodes'][0];
 
@@ -36,7 +37,13 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  return {blogs};
+  // Shared store: hide the sister Vault sites' blogs.
+  return {
+    blogs: {
+      ...blogs,
+      nodes: blogs.nodes.filter((b) => !isSisterHandle(b.handle)),
+    },
+  };
 }
 
 export default function Blogs() {

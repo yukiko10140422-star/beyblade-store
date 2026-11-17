@@ -138,6 +138,11 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     throw redirect('/collections');
   }
 
+  // Shared storefront (3 Vault sites): only Spin's own shelves are served.
+  if (!SHELVES.some((s) => s.handle === handle)) {
+    throw new Response(`Collection ${handle} not found`, {status: 404});
+  }
+
   const url = new URL(request.url);
   const sortParam = url.searchParams.get('sort');
   const typeParam = url.searchParams.get('type');

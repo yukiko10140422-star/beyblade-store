@@ -2,6 +2,7 @@ import {useLoaderData} from 'react-router';
 import type {Route} from './+types/blogs.$blogHandle.$articleHandle';
 import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {isSisterHandle} from '~/lib/site';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
@@ -21,7 +22,7 @@ export async function loader(args: Route.LoaderArgs) {
 async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
   const {blogHandle, articleHandle} = params;
 
-  if (!articleHandle || !blogHandle) {
+  if (!articleHandle || !blogHandle || isSisterHandle(blogHandle)) {
     throw new Response('Not found', {status: 404});
   }
 

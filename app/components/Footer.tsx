@@ -49,6 +49,7 @@ export function Footer({header}: FooterProps) {
         </FooterColumn>
         <FooterColumn title="Company">
           <FooterLink to="/about">About us</FooterLink>
+          <FooterLink to="/policies/privacy-policy">Privacy policy</FooterLink>
           <li>
             <a
               href={EBAY_RECORD.url}

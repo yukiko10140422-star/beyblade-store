@@ -3,6 +3,7 @@ import type {Route} from './+types/collections._index';
 import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {SHELVES} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: 'Collections | Tokyo Spin Vault'}];
@@ -21,7 +22,15 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
       cache: context.storefront.CacheShort(),
     }),
   ]);
-  return {collections};
+  // Shared storefront (3 Vault sites): list only Spin's own shelves.
+  return {
+    collections: {
+      ...collections,
+      nodes: collections.nodes.filter((c) =>
+        SHELVES.some((s) => s.handle === c.handle),
+      ),
+    },
+  };
 }
 
 export default function Collections() {
