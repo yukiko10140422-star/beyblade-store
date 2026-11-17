@@ -1,4 +1,5 @@
 import {
+  NO_STANDARD_COUNTRIES,
   SHIPPING_METHODS,
   destinationName,
   expressCarrierLabel,
@@ -91,7 +92,12 @@ export function getDeliveryEstimate(
   now: Date = new Date(),
 ): DeliveryEstimate {
   // Unknown method: show nothing about method, transit or arrival (fail closed).
-  const methodId: ShippingMethodId | undefined = findMethod(serviceValue)?.id;
+  // No standard method where Japan Post has suspended service (DHL only).
+  const methodId: ShippingMethodId | undefined = NO_STANDARD_COUNTRIES.has(
+    (country ?? '').toUpperCase(),
+  )
+    ? undefined
+    : findMethod(serviceValue)?.id;
   const transit = methodId ? transitDays(country, methodId) : null;
   const region = expressRegionFor(country);
   return {

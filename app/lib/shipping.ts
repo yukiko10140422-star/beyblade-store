@@ -37,7 +37,8 @@
  * lowest Express price per destination ("from"); checkout shows the exact
  * price. Express + priority handling = Express + US$20.
  * Where Japan Post EMS is not available (owner decision 2026-11-17),
- * Express is DHL Express Worldwide.
+ * Express is DHL Express Worldwide, priced at the Ship&co quote x 1.2 +
+ * US$6 (box sizes are assumed, so volumetric weight may be higher).
  *   - Contact: info@xon-corp.com (site.ts CONTACT_EMAIL).
  *
  * Still NOT stated: free standard shipping, insurance, FedEx.
@@ -202,35 +203,46 @@ export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
     region: 'Other European countries and Turkey',
     carrier: 'ems',
     fromUsd: 27,
-    countries: ['RO', 'TR', 'AD', 'BG', 'CY', 'CZ', 'EE', 'GR', 'HR', 'HU', 'IS', 'LI', 'LT', 'LU', 'LV', 'MC', 'MK', 'MT', 'SI', 'SK', 'SM'],
+    countries: ['RO', 'TR', 'AD', 'BG', 'CY', 'CZ', 'EE', 'GR', 'HR', 'HU', 'LI', 'LT', 'LU', 'LV', 'MC', 'MK', 'MT', 'SI', 'SK', 'SM'],
   },
-  {region: 'Fiji, New Caledonia, Papua New Guinea', carrier: 'ems', fromUsd: 27, countries: ['FJ', 'NC', 'PG']},
+  {region: 'Papua New Guinea', carrier: 'ems', fromUsd: 27, countries: ['PG']},
   {
     region: 'Middle East and Africa',
     carrier: 'ems',
     fromUsd: 30,
-    countries: ['AE', 'EG', 'KW', 'ZA', 'BH', 'BW', 'DZ', 'GH', 'IL', 'JO', 'KE', 'MA', 'MU', 'OM', 'QA', 'SA', 'SN', 'TN', 'TZ', 'UG'],
+    countries: ['AE', 'EG', 'KW', 'ZA', 'BH', 'DZ', 'GH', 'IL', 'JO', 'KE', 'MA', 'MU', 'OM', 'QA', 'SA', 'SN', 'TN', 'TZ', 'UG'],
   },
   {
     region: 'Latin America and the Caribbean',
     carrier: 'ems',
     fromUsd: 30,
-    countries: ['AR', 'BR', 'CL', 'CO', 'CR', 'PA', 'PE', 'SV', 'UY', 'EC', 'HN', 'JM', 'PY', 'TT'],
+    countries: ['AR', 'BR', 'CL', 'CO', 'CR', 'PA', 'PE', 'SV', 'UY', 'EC', 'HN', 'JM', 'TT'],
   },
+  // DHL markets (owner 2026-11-17: Ship&co quote x 1.2 + US$6). No Japan Post
+  // standard to MD, BO, NA, BW, FJ (suspended by Japan Post, 2026-10-23).
+  {region: 'Fiji', carrier: 'dhl', fromUsd: 34, countries: ['FJ']},
   {
-    region: 'Albania, Bosnia and Herzegovina, Montenegro, Serbia, Vatican City',
+    region: 'Albania, Bosnia and Herzegovina, Iceland, Montenegro, Serbia, Vatican City',
     carrier: 'dhl',
-    fromUsd: 47,
-    countries: ['AL', 'BA', 'ME', 'RS', 'VA'],
+    fromUsd: 55,
+    countries: ['AL', 'BA', 'ME', 'RS', 'VA', 'IS'],
   },
-  {region: 'Bolivia, Namibia', carrier: 'dhl', fromUsd: 51, countries: ['BO', 'NA']},
+  {region: 'Bolivia, Botswana, Namibia', carrier: 'dhl', fromUsd: 60, countries: ['BO', 'NA', 'BW']},
+  {region: 'New Caledonia', carrier: 'dhl', fromUsd: 60, countries: ['NC']},
   {
-    region: 'Moldova, Guatemala, Nicaragua, the Bahamas, Dominican Republic',
+    region: 'Guatemala, Nicaragua, Paraguay, the Bahamas, Dominican Republic',
     carrier: 'dhl',
-    fromUsd: 52,
-    countries: ['MD', 'GT', 'NI', 'BS', 'DO'],
+    fromUsd: 61,
+    countries: ['GT', 'NI', 'BS', 'DO', 'PY'],
   },
+  {region: 'Moldova', carrier: 'dhl', fromUsd: 61, countries: ['MD']},
 ];
+
+/**
+ * Japan Post has suspended small packets to these countries (差出可否早見表,
+ * 2026-10-23), so checkout offers DHL Express only — no standard method.
+ */
+export const NO_STANDARD_COUNTRIES: ReadonlySet<string> = new Set(['MD', 'BO', 'NA', 'BW', 'FJ']);
 
 /** Lowest Express price anywhere (for pages that don't know the country). */
 export const EXPRESS_FROM_MIN_USD = Math.min(
