@@ -234,3 +234,89 @@ Shopify の在庫を人が手で増やしても、次の連動で eBay 基準に
 - M-6: ninjapon の判定が JSON の部分一致。
 - M-7: DRAFT の作成がひとまとまりでない。
 - 比較つきの書き込みは、まだ実際の変更で動かしていない。
+
+## 10. 写真の NINJAPON ロゴを外す (2026-11-17 ユーザー指示)
+
+- 対象: Shopify に取り込む写真の全部 (1 枚目も 2 枚目以降も、3 店すべて)。eBay の写真は触りません。手元の写しを加工します。処理はサブ機 (`logo-remove.py`、OpenCV) で行います。
+- 検出:
+  - Nexsus `brand-logo.mjs` と同じ位置 (右下、幅 × 0.12) を、同じ規則 (平均差 24 以下) で見ます。
+  - その位置に無ければ、右下 45% を大きさを変えて探します (テンプレート照合)。探した時は平均差 45 以下で「ある」と判定します。
+    - 正方でない写真ではロゴの位置がずれ、画面の外にはみ出していることがあります (BX-52 で実際にあった)。
+- 外し方 (写真ごとに記録):
+  - `fill`: 周りが単色なので、その色で塗った
+  - `inpaint`: 周りの模様から埋めた
+  - `crop-bottom` / `crop-right`: ロゴが商品にかかっているので塗らず、ロゴの帯を切り落とした
+  - `drop`: 切り落とすと商品が欠けるので、その写真を使わない。1 枚目が drop なら次の写真を繰り上げる
+- 見本と一覧: `data/relist-preview/logo-removal/<eBay商品番号>/` と `summary.json`。
+- 写真に写っている実物の「NinJapon」の札 (BX-52 / BX-53 の撮影小物) は、焼き込みではないので外せません。撮り直しか、別の写真への差し替えが要ります。
+- `inpaint` は、周りが複雑だと薄い汚れが残ります (Celebi の木目の縁など)。公開前に見本を目で見てください。
+
+## 11. 配送の速さ (eBay と同じ — 2026-11-17 ユーザー指示)
+
+- Shopify のメタフィールドに書くもの (eBay の値を写すだけ):
+  - `shipping.handling_days` (整数、営業日) = eBay の DispatchTimeMax
+  - `shipping.service` = 米国向けの便 (eBay の ShippingServiceOptions の 1 つ目)。表にある便は人が読む名前を付ける (例 `SpeedPAK Economy (US_EconomySppedPAK)`)。表に無い便はコードのまま
+  - `ebay.shipping_profile` = eBay の配送ポリシー名
+- 定義 (`shipping.handling_days` / `shipping.service`) は Storefront から読める公開設定です。依頼時点で既に作られていました。
+- 在庫連動 `sync-stock.mjs` は、eBay との差を (c) として表示するだけで、書き込みはまだしません。
+- **食い違いがあります**: 配送ポリシー名の日数と DispatchTimeMax が合わない出品があります。例: UX-21 はポリシー名が「5日」なのに DispatchTimeMax は 20。道具は DispatchTimeMax を正とします。
+  また、eBay の便は SpeedPAK (Orange Connex) です。ユーザーの前提 (日本郵便の eパケット / EMS) とどう対応させるかは未決です。
+
+## 12. 速達 (eBay と同じに) — 調査と案 (設定は変えていない)
+
+### 調べたこと (2026-11-17、読み取りのみ)
+
+**eBay の配送ポリシー**: ninjapon には 26 本あります。米国の買い手が追加料金を払って速くする選択肢は、どのポリシーにもありません。
+- 米国あては無料の SpeedPAK Economy / Expedited で、国外の Expedited は $23〜25 です。
+- 名前に「Expedited」と付いていても、米国あての中身が Economy のポリシーが 6 本あります。
+
+**eBay の速達は別出品で売っています**:
+
+| 商品番号 | タイトル | 価格 | 売れた数 (直近 180 日) | 1 注文の個数 |
+|---|---|---|---|---|
+| 227511524398 | Additional cost for Expedited Shipping | $25 のみ | 283 件 | ほぼ 1 個 (2 個の注文が 1 件) |
+| 226501134932 | 〃 and priority preparing | 主に $20 | 128 件 (改名前の分が別に 15 件) | 1 個 |
+
+- 後者は 09-14 を最後に売れていません。
+- **どちらの説明文も、発送までの日数や配送方法 (EMS) を約束していません。**
+- 付け先の決まり (memory): 未発送が 1 件ならそれに付ける。予約品と通常品なら通常品を先にする。お客様の指定に従う。
+- 速達を使ったかは、本体の追跡番号が EN (EMS) かで判断します。
+- 料金は重さ・地域で変わらず、$25 一本です。
+
+**日本郵便の公式料金** (米国 = 第 4 地帯):
+
+| 重さ | EMS | 国際エアパケット |
+|---|---|---|
+| 0.5kg | ¥3,900 | ¥2,040 |
+| 1kg | ¥5,300 | ¥3,090 |
+| 2kg | ¥7,900 | ¥5,190 |
+
+- 国際eパケットライトは、2026-06 に「国際エアパケット」へ名前が変わりました。
+- 米国あての EMS 実費 (367 個) は中央値 ¥5,300、重さの中央値 999g でした。
+- 米国あての公式のお届け日数は取れていません (要確認)。
+
+**Shopify の今の設定**:
+- 8 ゾーンすべてで、速い便を「DHL/FedEx」と書いています。標準は「ePacket Light」という旧名のままです。
+- 米国の Express は $22 で、EMS の実費 (0.5kg でも ¥3,900 ≒ $24.4) より安くなっています。
+- $300 以上か 3 点以上で Express が無料になります (上限 $55)。eBay の速達には無料の条件がありません。
+- 料金は全部定額で、重さの条件はありません。
+
+### 案
+
+1. **便の名前を変える**: 「Standard: Japan Post International Air Packet (tracked) — 旧 ePacket Light」と「Express: Japan Post EMS (tracked)」にします。DHL/FedEx の表記をやめ、自動割引 2 件の名前と文言も EMS に合わせます。
+2. **料金**: eBay の $25 は、EMS とエアパケットの差額 (0.5〜2kg で ¥1,860〜2,710) を賄っています。そこで Shopify の Express も「上乗せ $25」を基本にします。
+   - 重さで差を付けるなら、配送プロファイルに重さの条件を付けた料金表 (0〜1kg / 1〜2kg / 2kg〜) を作ります。この時は商品の重さの登録が前提で、今の DRAFT は重さが空です。
+   - ゾーンは日本郵便の地帯 (第 1〜第 5) に合わせて分け直します。今の North America には第 3 地帯の CA・MX と、第 4 地帯の US が混ざっています。
+3. **2 段の速達**:
+   - 「Express (Japan Post EMS)」と「Express + priority handling」を、チェックアウトの配送方法として作るのを推奨します。1 注文で完結し、付け先を決める手間が無く、ゾーン・重さで料金を変えられるためです。
+   - eBay と同じく、カートに入れる追加商品で作る案もあります。ただし重さ・地域で料金を変えられず、付け先を決める手間も残ります。
+   - **払った人の発送日数は、eBay に約束の記載が無いので未決です (ユーザーが決める)。**
+4. **無料の条件** ($300 以上 / 3 点以上で Express 無料) は eBay に無いので、外すか上限を見直す案です。米国 2kg なら EMS の約 ¥7,900 がまるごと店の負担になります。
+5. **商品ページに出すメタフィールド案** (道具から eBay の値で書ける):
+   - `shipping.handling_days` / `shipping.service`: 作成済み
+   - `shipping.standard_label` = "Japan Post International Air Packet (tracked)"
+   - `shipping.express_label` = "Japan Post EMS (tracked)"
+   - `shipping.express_price_usd` = 25 (eBay の速達出品の価格)
+   - `shipping.express_handling_days`: 未決
+   - 文の形: 「Ships within {handling_days} business days. Standard: Japan Post Air Packet (tracked). Express: Japan Post EMS (tracked), +${express_price_usd}.」
+6. **速達の 2 出品は商品一覧に出しません**: 取込の対象外です (`SERVICE_RE` で除外済み)。
