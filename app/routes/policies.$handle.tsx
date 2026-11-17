@@ -1,4 +1,4 @@
-import {LINK_STORE_POLICIES} from '~/lib/shipping';
+import {LINK_STORE_POLICIES, PRIVACY_POLICY_READY} from '~/lib/shipping';
 import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/policies.$handle';
 import {type Shop} from '@shopify/hydrogen/storefront-api-types';
@@ -13,8 +13,10 @@ export const meta: Route.MetaFunction = ({data}) => {
 };
 
 export async function loader({params, context}: Route.LoaderArgs) {
-  // The store-wide policies still carry another store's text (shipping.ts).
   if (!LINK_STORE_POLICIES) throw new Response('Not found', {status: 404});
+  if (params.handle === 'privacy-policy' && !PRIVACY_POLICY_READY) {
+    throw new Response('Not found', {status: 404});
+  }
   if (!params.handle) {
     throw new Response('No handle was passed in', {status: 404});
   }

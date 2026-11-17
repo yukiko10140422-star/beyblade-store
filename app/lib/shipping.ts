@@ -301,11 +301,19 @@ export const EXPRESS_UPGRADE = {
 export const EXPRESS_UPGRADE_LINE = `Free Express upgrade on orders of US$${EXPRESS_UPGRADE.subtotalThreshold}+ or ${EXPRESS_UPGRADE.quantityThreshold}+ items, when the shipping rate is US$${EXPRESS_UPGRADE.maxShippingValue} or less.`;
 
 /**
- * The Shopify policies (/policies/*) are store-wide and currently carry Spin
- * Vault's text. Do not link them until the shared wording is applied
- * (docs/policy-draft.md).
+ * The Shopify policies (/policies/*) are store-wide. The shared wording for
+ * all three stores (tokyo-card-vault docs/policy-final-2026-11-17.md) was
+ * applied 2026-11-17 (owner OK) to refund, shipping, terms and contact.
  */
-export const LINK_STORE_POLICIES = false;
+export const LINK_STORE_POLICIES = true;
+
+/**
+ * The privacy policy is still managed automatically by Shopify and names
+ * only Tokyo Spin Vault as the operator; the API cannot change it until
+ * automatic management is turned off in the admin. Keep it hidden until the
+ * shared text (docs/data/policies-applied-20261117/PRIVACY_POLICY.html) is in.
+ */
+export const PRIVACY_POLICY_READY = false;
 
 /**
  * RETURNS are the store's actual refund rules (one Shopify store, one refund

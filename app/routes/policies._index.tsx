@@ -1,10 +1,9 @@
-import {LINK_STORE_POLICIES} from '~/lib/shipping';
+import {LINK_STORE_POLICIES, PRIVACY_POLICY_READY} from '~/lib/shipping';
 import {useLoaderData, Link} from 'react-router';
 import type {Route} from './+types/policies._index';
 import type {PoliciesQuery, PolicyItemFragment} from 'storefrontapi.generated';
 
 export async function loader({context}: Route.LoaderArgs) {
-  // The store-wide policies still carry another store's text (shipping.ts).
   if (!LINK_STORE_POLICIES) throw new Response('Not found', {status: 404});
   const data: PoliciesQuery = await context.storefront.query(POLICIES_QUERY, {
     cache: context.storefront.CacheLong(),
@@ -12,7 +11,7 @@ export async function loader({context}: Route.LoaderArgs) {
 
   const shopPolicies = data.shop;
   const policies: PolicyItemFragment[] = [
-    shopPolicies?.privacyPolicy,
+    PRIVACY_POLICY_READY ? shopPolicies?.privacyPolicy : null,
     shopPolicies?.shippingPolicy,
     shopPolicies?.termsOfService,
     shopPolicies?.refundPolicy,
