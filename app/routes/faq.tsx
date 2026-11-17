@@ -5,6 +5,7 @@ import {
   DHL_EXPRESS_LABEL,
   EXPRESS_OPTIONS,
   EXPRESS_UPGRADE_LINE,
+  NO_EU_LINE,
   PRICE_AT_CHECKOUT,
   RETURNS,
   SHIPPING_METHODS,
@@ -27,6 +28,7 @@ export default function Faq() {
       'Where do orders ship from?',
       `From Kanagawa, Japan, with tracking: ${SHIPPING_METHODS.epacket.label} (standard; over 2 kg by EMS) or ${SHIPPING_METHODS.ems.label} (express). Where EMS does not reach, Express goes by ${DHL_EXPRESS_LABEL}.`,
     ],
+    ['Do you ship to the EU?', NO_EU_LINE],
     ['Will I pay duties or import taxes on delivery?', `No. ${DUTIES.line}.`],
     [
       'When will my order ship?',

@@ -8,6 +8,7 @@ import {
   EXPRESS_REGIONS,
   EXPRESS_UPGRADE_LINE,
   JAPAN_POST_DAYS,
+  NO_EU_LINE,
   PRICE_AT_CHECKOUT,
   SHIPPING_METHODS,
   expressCarrierLabel,
@@ -49,6 +50,7 @@ export default function Shipping() {
               `${SHIPPING_METHODS.ems.label}; ${DHL_EXPRESS_LABEL} to the few countries Japan Post EMS does not serve (listed below).`,
             ],
             ['Cost', PRICE_AT_CHECKOUT],
+            ['Where we ship', NO_EU_LINE],
             ['Duties', DUTIES.line],
           ]}
         />

@@ -181,12 +181,7 @@ export interface ExpressRegion {
 export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
   {region: 'United States', carrier: 'ems', fromUsd: 25, countries: ['US']},
   {region: 'Canada and Mexico', carrier: 'ems', fromUsd: 25, countries: ['CA', 'MX']},
-  {
-    region: 'UK and Western Europe (16 countries)',
-    carrier: 'ems',
-    fromUsd: 13,
-    countries: ['ES', 'GB', 'IE', 'IT', 'PT', 'AT', 'BE', 'CH', 'DK', 'FI', 'NL', 'NO', 'PL', 'SE', 'DE', 'FR'],
-  },
+  {region: 'UK, Switzerland, Norway', carrier: 'ems', fromUsd: 13, countries: ['GB', 'CH', 'NO']},
   {
     region: 'East and Southeast Asia (9 countries/territories)',
     carrier: 'ems',
@@ -201,10 +196,10 @@ export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
     countries: ['IN', 'BN', 'KH', 'LA', 'LK', 'MN', 'MV', 'NP'],
   },
   {
-    region: 'Other European countries and Turkey',
+    region: 'Turkey, Andorra, Liechtenstein, Monaco, North Macedonia, San Marino',
     carrier: 'ems',
     fromUsd: 27,
-    countries: ['RO', 'TR', 'AD', 'BG', 'CY', 'CZ', 'EE', 'GR', 'HR', 'HU', 'LI', 'LT', 'LU', 'LV', 'MC', 'MK', 'MT', 'SI', 'SK', 'SM'],
+    countries: ['TR', 'AD', 'LI', 'MC', 'MK', 'SM'],
   },
   {region: 'Papua New Guinea', carrier: 'ems', fromUsd: 27, countries: ['PG']},
   {
@@ -238,6 +233,17 @@ export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
   },
   {region: 'Moldova', carrier: 'dhl', fromUsd: 61, countries: ['MD']},
 ];
+
+/**
+ * Owner decision 2026-11-17: no shipping to the 27 EU member states (removed
+ * from every Shopify market, so checkout offers no delivery there).
+ */
+export const EU_COUNTRIES: ReadonlySet<string> = new Set([
+  'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE',
+  'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
+]);
+export const NO_EU_LINE =
+  'We do not ship to European Union countries. We do ship to the UK, Switzerland, Norway and other European countries outside the EU.';
 
 /**
  * Japan Post has suspended small packets to these countries (差出可否早見表,

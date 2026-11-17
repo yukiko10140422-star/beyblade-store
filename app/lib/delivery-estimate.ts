@@ -1,4 +1,5 @@
 import {
+  EU_COUNTRIES,
   NO_STANDARD_COUNTRIES,
   SHIPPING_METHODS,
   destinationName,
@@ -30,6 +31,8 @@ export interface DeliveryEstimate {
   standard: MethodEstimate | null;
   /** EMS transit for the destination (used by paid Express rows). */
   emsTransitDays: number | null;
+  /** false for destinations the shop does not ship to (EU). */
+  shipsHere: boolean;
   /** Express at checkout for this destination; null when the country is unknown. */
   express: {carrierLabel: string; fromUsd: number; isDhl: boolean} | null;
 }
@@ -93,9 +96,9 @@ export function getDeliveryEstimate(
 ): DeliveryEstimate {
   // Unknown method: show nothing about method, transit or arrival (fail closed).
   // No standard method where Japan Post has suspended service (DHL only).
-  const methodId: ShippingMethodId | undefined = NO_STANDARD_COUNTRIES.has(
-    (country ?? '').toUpperCase(),
-  )
+  const cc = (country ?? '').toUpperCase();
+  const methodId: ShippingMethodId | undefined =
+    NO_STANDARD_COUNTRIES.has(cc) || EU_COUNTRIES.has(cc)
     ? undefined
     : findMethod(serviceValue)?.id;
   const transit = methodId ? transitDays(country, methodId) : null;
@@ -103,6 +106,7 @@ export function getDeliveryEstimate(
   return {
     destination: destinationName(country),
     countryCode: country ? country.toUpperCase() : null,
+    shipsHere: !EU_COUNTRIES.has((country ?? '').toUpperCase()),
     handlingLabel: handlingDays != null ? handlingLabel(handlingDays) : null,
     handlingDays,
     standard: methodId

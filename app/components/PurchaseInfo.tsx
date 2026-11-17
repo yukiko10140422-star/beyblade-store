@@ -6,6 +6,7 @@ import {
   EXPRESS_OPTIONS,
   EXPRESS_PROMO_LIVE,
   EXPRESS_UPGRADE_LINE,
+  NO_EU_LINE,
   RETURNS,
   SHIPPING_METHODS,
   expressFromText,
@@ -57,6 +58,15 @@ export function StockNote({
  */
 export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
   const s = estimate.standard;
+  if (!estimate.shipsHere) {
+    return (
+      <div className="flex flex-col gap-2 border-t border-vault-700 pt-3.5 text-sm">
+        <Row icon={<TruckIcon />}>
+          <b className="font-semibold text-chrome-200">{NO_EU_LINE}</b>
+        </Row>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col gap-2 border-t border-vault-700 pt-3.5 text-sm">
       {estimate.handlingLabel && (
