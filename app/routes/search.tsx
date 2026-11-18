@@ -12,7 +12,14 @@ import type {
   RegularSearchQuery,
   PredictiveSearchQuery,
 } from 'storefrontapi.generated';
-import {SHELVES, SITE, isOwnProduct, isSisterHandle} from '~/lib/site';
+import {
+  SHELVES,
+  SITE,
+  isOwnBlog,
+  isOwnPage,
+  isOwnProduct,
+  scopedSearchQuery,
+} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: `Search | ${SITE.name}`}];
@@ -187,6 +194,7 @@ export const SEARCH_QUERY = `#graphql
     $language: LanguageCode
     $last: Int
     $term: String!
+    $productQuery: String!
     $startCursor: String
   ) @inContext(country: $country, language: $language) {
     articles: search(
@@ -211,15 +219,13 @@ export const SEARCH_QUERY = `#graphql
         }
       }
     }
-    products: search(
+    products: products(
       after: $endCursor,
       before: $startCursor,
       first: $first,
       last: $last,
-      query: $term,
+      query: $productQuery,
       sortKey: RELEVANCE,
-      types: [PRODUCT],
-      unavailableProducts: HIDE,
     ) {
       nodes {
         ...on Product {
@@ -258,7 +264,9 @@ async function regularSearch({
     ...rawItems
   }: {errors?: Array<{message: string}>} & RegularSearchQuery =
     await storefront.query(SEARCH_QUERY, {
-      variables: {...variables, term},
+      // Products: Spin's scope is part of the query (not filtered afterwards),
+      // so paging and counts are Spin-only.
+      variables: {...variables, term, productQuery: `${scopedSearchQuery(term)} available_for_sale:true`},
     });
 
   // Shared Shopify store: drop sister-store products (Card / Character),
@@ -272,13 +280,11 @@ async function regularSearch({
         },
         pages: {
           ...rawItems.pages,
-          nodes: rawItems.pages.nodes.filter((p) => !isSisterHandle(p.handle)),
+          nodes: rawItems.pages.nodes.filter((p) => isOwnPage(p.handle)),
         },
         articles: {
           ...rawItems.articles,
-          nodes: rawItems.articles.nodes.filter(
-            (a) => !isSisterHandle(a.blog.handle),
-          ),
+          nodes: rawItems.articles.nodes.filter((a) => isOwnBlog(a.blog.handle)),
         },
       }
     : rawItems;
@@ -393,6 +399,7 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
     $limit: Int!
     $limitScope: PredictiveSearchLimitScope!
     $term: String!
+    $productQuery: String!
     $types: [PredictiveSearchType!]
   ) @inContext(country: $country, language: $language) {
     predictiveSearch(
@@ -415,6 +422,11 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
       }
       queries {
         ...PredictiveQuery
+      }
+    }
+    scopedProducts: products(first: $limit, query: $productQuery, sortKey: RELEVANCE) {
+      nodes {
+        ...PredictiveProduct
       }
     }
   }
@@ -446,6 +458,7 @@ async function predictiveSearch({
   // Predictively search articles, collections, pages, products, and queries (suggestions)
   const {
     predictiveSearch: rawPredictive,
+    scopedProducts,
     errors,
   }: PredictiveSearchQuery & {errors?: Array<{message: string}>} =
     await storefront.query(PREDICTIVE_SEARCH_QUERY, {
@@ -454,6 +467,7 @@ async function predictiveSearch({
         limit,
         limitScope: 'EACH',
         term,
+        productQuery: scopedSearchQuery(term, true),
       },
     });
 
@@ -468,14 +482,13 @@ async function predictiveSearch({
   const items = rawPredictive
     ? {
         ...rawPredictive,
-        products: rawPredictive.products.filter(isOwnProduct),
+        // Products come from the Spin-scoped products() query above.
+        products: scopedProducts.nodes.filter(isOwnProduct),
         collections: rawPredictive.collections.filter((c) =>
           SHELVES.some((s) => s.handle === c.handle),
         ),
-        pages: rawPredictive.pages.filter((p) => !isSisterHandle(p.handle)),
-        articles: rawPredictive.articles.filter(
-          (a) => !isSisterHandle(a.blog.handle),
-        ),
+        pages: rawPredictive.pages.filter((p) => isOwnPage(p.handle)),
+        articles: rawPredictive.articles.filter((a) => isOwnBlog(a.blog.handle)),
         queries: [],
       }
     : rawPredictive;

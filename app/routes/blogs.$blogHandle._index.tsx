@@ -4,7 +4,7 @@ import {Image, getPaginationVariables} from '@shopify/hydrogen';
 import type {ArticleItemFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {isSisterHandle} from '~/lib/site';
+import {isOwnBlog} from '~/lib/site';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [{title: `${data?.blog.title ?? ''} Blog | Tokyo Spin Vault`}];
@@ -41,7 +41,7 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  if (!blog?.articles || isSisterHandle(params.blogHandle)) {
+  if (!blog?.articles || !isOwnBlog(params.blogHandle)) {
     throw new Response('Not found', {status: 404});
   }
 

@@ -160,18 +160,33 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     });
   }
 
-  const [{collection}] = await Promise.all([
-    storefront.query(COLLECTION_QUERY, {
-      variables: {
-        handle,
-        sortKey: sortOption.key,
-        reverse: sortOption.reverse,
-        filters: filters.length > 0 ? filters : undefined,
-        ...paginationVariables,
-      },
-      cache: storefront.CacheShort(),
-    }),
-  ]);
+  // Shared storefront: the shelf collection can also hold products of the
+  // other Vault sites, and Shopify ignores product filters here (Search &
+  // Discovery filters are off). So the shelf is read in full on the server,
+  // narrowed to Spin products, and paged here — page size and "more" are
+  // counted on Spin products only (not 12 mixed products filtered down).
+  const all: ProductItemFragment[] = [];
+  let collection: ShelfCollection | null = null;
+  let after: string | null = null;
+  for (let i = 0; i < MAX_SHELF_PAGES; i++) {
+    const res: {collection: ShelfQueryCollection | null} =
+      await storefront.query(COLLECTION_QUERY, {
+        variables: {
+          handle,
+          sortKey: sortOption.key,
+          reverse: sortOption.reverse,
+          filters: filters.length > 0 ? filters : undefined,
+          first: 250,
+          endCursor: after,
+        },
+        cache: storefront.CacheShort(),
+      });
+    if (!res.collection) break;
+    collection ??= res.collection;
+    all.push(...res.collection.products.nodes.filter(isOwnProduct));
+    if (!res.collection.products.pageInfo.hasNextPage) break;
+    after = res.collection.products.pageInfo.endCursor ?? null;
+  }
 
   if (!collection) {
     throw new Response(`Collection ${handle} not found`, {status: 404});
@@ -179,14 +194,56 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
 
   redirectIfHandleIsLocalized(request, {handle, data: collection});
 
-  // Shared Shopify store: never list a sister-store product here.
   return {
     collection: {
       ...collection,
-      products: {
-        ...collection.products,
-        nodes: collection.products.nodes.filter(isOwnProduct),
-      },
+      products: pageOf(all, paginationVariables),
+    },
+  };
+}
+
+const MAX_SHELF_PAGES = 8; // 2,000 products per shelf, far above the catalog
+const PAGE_BY = 12;
+
+type ShelfQueryCollection = {
+  id: string;
+  handle: string;
+  title: string;
+  description: string;
+  products: {
+    nodes: ProductItemFragment[];
+    pageInfo: {hasNextPage: boolean; endCursor?: string | null};
+  };
+};
+type ShelfCollection = Omit<ShelfQueryCollection, 'products'>;
+
+/**
+ * One page of the Spin-only list, in the connection shape Hydrogen's
+ * <Pagination> expects. Cursors are offsets ("o24").
+ */
+function pageOf(
+  list: ProductItemFragment[],
+  vars: ReturnType<typeof getPaginationVariables>,
+) {
+  const offset = (c: unknown) => {
+    const m = /^o(\d+)$/.exec(typeof c === 'string' ? c : '');
+    return m ? Number(m[1]) : null;
+  };
+  let start = 0;
+  if ('endCursor' in vars && offset(vars.endCursor) !== null) {
+    start = offset(vars.endCursor)!;
+  } else if ('startCursor' in vars && offset(vars.startCursor) !== null) {
+    start = Math.max(0, offset(vars.startCursor)! - PAGE_BY);
+  }
+  start = Math.min(start, list.length);
+  const end = Math.min(start + PAGE_BY, list.length);
+  return {
+    nodes: list.slice(start, end),
+    pageInfo: {
+      hasPreviousPage: start > 0,
+      hasNextPage: end < list.length,
+      startCursor: `o${start}`,
+      endCursor: `o${end}`,
     },
   };
 }

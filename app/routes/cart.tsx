@@ -3,6 +3,7 @@ import type {Route} from './+types/cart';
 import type {CartQueryDataReturn} from '@shopify/hydrogen';
 import {CartForm} from '@shopify/hydrogen';
 import {CartMain} from '~/components/CartMain';
+import {keepOwnLines} from '~/lib/own-lines';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: 'Your Vault | Tokyo Spin Vault'}];
@@ -26,7 +27,10 @@ export async function action({request, context}: Route.ActionArgs) {
 
   switch (action) {
     case CartForm.ACTIONS.LinesAdd:
-      result = await cart.addLines(inputs.lines);
+      // Only this site's products (shared storefront).
+      result = await cart.addLines(
+        await keepOwnLines(context.storefront, inputs.lines),
+      );
       break;
     case CartForm.ACTIONS.LinesUpdate:
       result = await cart.updateLines(inputs.lines);

@@ -33,12 +33,56 @@ export const EXCLUDED_TAGS = [
   'store:tokyo-character-vault',
 ] as const;
 
-/** Handle prefixes of the sister stores' pages / blogs / menus. */
-export const SISTER_HANDLE_PREFIXES = ['card-vault-', 'character-vault-'] as const;
+/**
+ * Pages and blogs are store-wide in Shopify (not per sales channel), so the
+ * other Vault sites' pages are visible to this storefront too. Spin shows
+ * ONLY the pages / blogs listed here (allowlist, same idea as products).
+ * Source: Storefront API pages / blogs, read 2026-11-18 — these are the
+ * Tokyo Spin Vault pages that existed before the other two sites.
+ * Add a handle here when Spin gets a new page.
+ */
+export const SPIN_PAGE_HANDLES: readonly string[] = [
+  'contact',
+  'about',
+  'shipping-info',
+  'faq',
+  'data-sharing-opt-out',
+  'legal-notice-特定商取引法に基づく表記',
+];
+export const SPIN_BLOG_HANDLES: readonly string[] = ['ニュース'];
 
-export function isSisterHandle(handle: string | null | undefined): boolean {
-  const h = (handle ?? '').toLowerCase();
-  return SISTER_HANDLE_PREFIXES.some((p) => h.startsWith(p));
+const norm = (h: string | null | undefined) => {
+  try {
+    return decodeURIComponent(h ?? '').normalize('NFC');
+  } catch {
+    return (h ?? '').normalize('NFC');
+  }
+};
+
+export function isOwnPage(handle: string | null | undefined): boolean {
+  return SPIN_PAGE_HANDLES.includes(norm(handle));
+}
+
+export function isOwnBlog(handle: string | null | undefined): boolean {
+  return SPIN_BLOG_HANDLES.includes(norm(handle));
+}
+
+/**
+ * Storefront `products(query:)` string for a shopper's search term, limited
+ * to Spin products. Search & Discovery filters are off, so `productFilters`
+ * on `search()` is ignored by Shopify (checked 2026-11-18: a tag filter on
+ * search returned other stores' products) — the product search query is
+ * used instead. Quotes / backslashes / colons in the term are dropped so the
+ * term cannot change the scope. `prefix` adds `*` to the last word
+ * (predictive search).
+ */
+export function scopedSearchQuery(term: string, prefix = false): string {
+  const words = term
+    .replace(/["\\:()]/g, ' ')
+    .split(/\s+/)
+    .filter((w) => w && !/^(AND|OR|NOT)$/i.test(w) && !w.startsWith('-'));
+  if (prefix && words.length) words[words.length - 1] += '*';
+  return [...words, SCOPE_QUERY].join(' ');
 }
 
 /**
