@@ -21,19 +21,27 @@ export function Breadcrumbs({
     <nav
       aria-label="Breadcrumb"
       className={clsx(
-        'flex min-w-0 items-center gap-1.5 text-[13px] text-chrome-400',
+        'flex min-w-0 max-w-full items-center gap-1.5 overflow-hidden text-[13px] text-chrome-400',
         className,
       )}
     >
       {items.map((item, i) => {
         const isLast = i === items.length - 1;
         return (
-          <span key={i} className="flex items-center gap-2">
+          <span
+            key={i}
+            className={clsx(
+              'flex items-center gap-2',
+              // Earlier crumbs keep their width (no 1-letter wrapping at
+              // 320px); the last one takes what is left and truncates.
+              isLast && truncateLast ? 'min-w-0 flex-1' : 'shrink-0',
+            )}
+          >
             {item.href && !isLast ? (
               <Link
                 to={item.href}
                 prefetch="intent"
-                className="text-chrome-400 underline-offset-2 hover:underline"
+                className="whitespace-nowrap text-chrome-400 underline-offset-2 hover:underline"
               >
                 {item.label}
               </Link>
@@ -41,7 +49,7 @@ export function Breadcrumbs({
               <span
                 className={clsx(
                   'text-chrome-400',
-                  truncateLast && isLast && 'truncate max-w-[200px]',
+                  truncateLast && isLast && 'min-w-0 truncate',
                 )}
                 aria-current={isLast ? 'page' : undefined}
               >

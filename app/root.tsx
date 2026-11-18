@@ -1,3 +1,6 @@
+import {loadShelfCounts} from '~/lib/shelf-counts';
+import {detectedCountry} from '~/lib/buyer-country';
+import {CHECKOUT_DOMAIN_FALLBACK} from '~/lib/shipping';
 import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
 import {
   Outlet,
@@ -93,8 +96,10 @@ export async function loader(args: Route.LoaderArgs) {
       storefront,
       publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
     }),
+    // The buyer's country only when actually known (cookie / Oxygen geo).
+    buyerCountry: detectedCountry(args.request),
     consent: {
-      checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
+      checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN || CHECKOUT_DOMAIN_FALLBACK,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
       withPrivacyBanner: true,
       // localize the privacy banner
@@ -111,17 +116,18 @@ export async function loader(args: Route.LoaderArgs) {
 async function loadCriticalData({context}: Route.LoaderArgs) {
   const {storefront} = context;
 
-  const [header] = await Promise.all([
+  const [header, shelfCounts] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {
         headerMenuHandle: 'main-menu', // Adjust to your header menu handle
       },
     }),
-    // Add other queries here, so that they are loaded in parallel
+    // Spin products per shelf: entry points hide empty shelves.
+    loadShelfCounts(storefront),
   ]);
 
-  return {header};
+  return {header, shelfCounts};
 }
 
 /**
@@ -264,6 +270,7 @@ export function ErrorBoundary() {
         <h1 className="mb-2 text-4xl font-bold text-chrome-200">
           {errorStatus}
         </h1>
+        <title>{`${errorStatus === 404 ? 'Page not found' : 'Something went wrong'} | Tokyo Spin Vault`}</title>
         <h2 className="font-heading text-xl text-chrome-200 mb-6">
           {errorStatus === 404 ? 'Page not found' : 'Something went wrong'}
         </h2>

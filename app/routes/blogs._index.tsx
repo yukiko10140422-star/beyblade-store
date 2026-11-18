@@ -37,7 +37,10 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  // Shared store: only Spin's own blogs (allowlist).
+  // Shared store: only Spin's own blogs (allowlist). None is served now.
+  if (!blogs.nodes.some((b) => isOwnBlog(b.handle))) {
+    throw new Response('Not found', {status: 404});
+  }
   return {
     blogs: {
       ...blogs,

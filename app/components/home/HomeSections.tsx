@@ -1,9 +1,11 @@
+import {useRouteLoaderData} from 'react-router';
+import {type ShelfCounts, visibleShelves} from '~/lib/shelf-counts';
 import {Await, Link} from 'react-router';
 import {Suspense} from 'react';
 import clsx from 'clsx';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {ProductCard} from '~/components/ProductCard';
-import {COMPANY, EBAY_RECORD, SHELVES} from '~/lib/site';
+import {COMPANY, EBAY_RECORD} from '~/lib/site';
 
 const WRAP = 'mx-auto max-w-[1200px] px-4 md:px-10';
 
@@ -55,14 +57,24 @@ export function HomeHero() {
 }
 
 /** Category tiles (text only). */
-export function CategoryTiles({title = 'Shop by category'}: {title?: string}) {
+export function CategoryTiles({
+  title = 'Shop by category',
+  as: Heading = 'h2',
+}: {
+  title?: string;
+  as?: 'h1' | 'h2';
+}) {
+  const root = useRouteLoaderData('root') as
+    | {shelfCounts?: ShelfCounts | null}
+    | undefined;
+  const shelves = visibleShelves(root?.shelfCounts);
   return (
     <section className={clsx(WRAP, 'pb-10 pt-2')}>
-      <h2 className="mb-4 mt-0 text-base font-bold text-chrome-200 md:text-[22px]">
+      <Heading className="mb-4 mt-0 text-base font-bold text-chrome-200 md:text-[22px]">
         {title}
-      </h2>
+      </Heading>
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4">
-        {SHELVES.map((s) => (
+        {shelves.map((s) => (
           <Link
             key={s.handle}
             to={`/collections/${s.handle}`}

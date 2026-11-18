@@ -33,6 +33,8 @@ export interface DeliveryEstimate {
   emsTransitDays: number | null;
   /** false for destinations the shop does not ship to (EU). */
   shipsHere: boolean;
+  /** "the United Kingdom" when standard shipping there is free (country known). */
+  freeStandardTo?: string | null;
   /** Express at checkout for this destination; null when the country is unknown. */
   express: {carrierLabel: string; fromUsd: number; isDhl: boolean} | null;
 }
@@ -100,7 +102,11 @@ export function getDeliveryEstimate(
   const methodId: ShippingMethodId | undefined =
     NO_STANDARD_COUNTRIES.has(cc) || EU_COUNTRIES.has(cc)
     ? undefined
-    : findMethod(serviceValue)?.id;
+    : // `shipping.service` holds the eBay listing's service (SpeedPAK …),
+      // which never names the store's own method. The store ships every
+      // product by Japan Post ePacket as standard (shipping settings), so
+      // that is the standard method unless the value names a Japan Post one.
+      (findMethod(serviceValue)?.id ?? 'epacket');
   const transit = methodId ? transitDays(country, methodId) : null;
   const region = expressRegionFor(country);
   return {

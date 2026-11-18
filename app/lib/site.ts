@@ -49,7 +49,21 @@ export const SPIN_PAGE_HANDLES: readonly string[] = [
   'data-sharing-opt-out',
   'legal-notice-特定商取引法に基づく表記',
 ];
-export const SPIN_BLOG_HANDLES: readonly string[] = ['ニュース'];
+// The old blog 'ニュース' (2026-04 articles) is not linked from the site and its
+// cards did not render (QA 2026-11-18): no blog is served for now.
+export const SPIN_BLOG_HANDLES: readonly string[] = [];
+
+/**
+ * Old Shopify pages whose text predates the site (e.g. contact page with
+ * support@tokyospinvault.com and "24 hours"): sent to the site's own pages,
+ * which hold the current facts (contact = info@xon-corp.com on the FAQ).
+ */
+export const SPIN_PAGE_REDIRECTS: Readonly<Record<string, string>> = {
+  contact: '/faq',
+  about: '/about',
+  'shipping-info': '/shipping',
+  faq: '/faq',
+};
 
 const norm = (h: string | null | undefined) => {
   try {
@@ -81,8 +95,19 @@ export function scopedSearchQuery(term: string, prefix = false): string {
     .replace(/["\\:()]/g, ' ')
     .split(/\s+/)
     .filter((w) => w && !/^(AND|OR|NOT)$/i.test(w) && !w.startsWith('-'));
-  if (prefix && words.length) words[words.length - 1] += '*';
-  return [...words, SCOPE_QUERY].join(' ');
+  // Model numbers: "bx5" / "BX 5" / "bx-5" all mean BX-5… (Takara Tomy's
+  // BX / UX / CX numbering), the form product titles use.
+  const merged: string[] = [];
+  for (const w of words) {
+    const prev = merged[merged.length - 1];
+    if (prev && /^(bx|ux|cx)$/i.test(prev) && /^\d{1,3}$/.test(w)) {
+      merged[merged.length - 1] = `${prev}-${w}`;
+    } else {
+      merged.push(w.replace(/^(bx|ux|cx)(\d{1,3})$/i, '$1-$2'));
+    }
+  }
+  if (prefix && merged.length) merged[merged.length - 1] += '*';
+  return [...merged, SCOPE_QUERY].join(' ');
 }
 
 /**
@@ -103,12 +128,16 @@ export interface Shelf {
   short: string;
   description: string;
   wide?: boolean;
+  /** Shown in the header menu (others only on home / /collections). */
+  nav?: boolean;
 }
 
 /**
- * Shelves = the collections that exist in Shopify today (2026-11-17).
- * The design mock's Starters / Boosters / Stadiums shelves do not exist
- * yet; creating them is a Shopify change that needs the owner's approval.
+ * Shelves = the Shopify smart collections defined in
+ * tokyo-vaults/docs/spin-taxonomy.md (2026-11-18, all tag rules). The
+ * entry points (header, home, empty cart, /collections) show only the
+ * shelves that have Spin products (~/lib/shelf-counts).
+ * `nav`: shown in the header menu.
  */
 export const SHELVES: readonly Shelf[] = [
   {
@@ -117,6 +146,7 @@ export const SHELVES: readonly Shelf[] = [
     short: 'Beyblade X',
     description: 'Japanese Takara Tomy Beyblade X releases.',
     wide: true,
+    nav: true,
   },
   {
     handle: 'pre-order',
@@ -124,30 +154,74 @@ export const SHELVES: readonly Shelf[] = [
     short: 'Pre-order',
     description: 'Upcoming releases. Each page shows the release date.',
     wide: true,
+    nav: true,
+  },
+  {
+    handle: 'starters',
+    title: 'Starters',
+    short: 'Starters',
+    description: 'A Beyblade with a launcher, ready to battle.',
+    nav: true,
+  },
+  {
+    handle: 'boosters',
+    title: 'Boosters',
+    short: 'Boosters',
+    description: 'A Beyblade on its own, without a launcher.',
+    nav: true,
+  },
+  {
+    handle: 'random-boosters',
+    title: 'Random Boosters',
+    short: 'Random Boosters',
+    description: 'Sealed boxes with a random Beyblade inside.',
+  },
+  {
+    handle: 'single-beys',
+    title: 'Single Beyblades',
+    short: 'Singles',
+    description: 'One Beyblade sold on its own.',
   },
   {
     handle: 'beyblade-sets-bundles',
     title: 'Sets & Bundles',
-    short: 'Sets & Bundles',
+    short: 'Sets',
     description: 'Sets and multi-item bundles.',
+    nav: true,
   },
   {
     handle: 'launchers-accessories',
-    title: 'Launchers & Accessories',
+    title: 'Launchers',
     short: 'Launchers',
-    description: 'Launchers, grips and other parts.',
+    description: 'Launchers, grips and winders.',
+    nav: true,
+  },
+  {
+    handle: 'stadiums',
+    title: 'Stadiums',
+    short: 'Stadiums',
+    description: 'Battle stadiums.',
+    nav: true,
+  },
+  {
+    handle: 'parts-accessories',
+    title: 'Parts & Accessories',
+    short: 'Parts',
+    description: 'Parts and other accessories.',
   },
   {
     handle: 'rare-exclusive',
     title: 'Limited',
     short: 'Limited',
     description: 'Event and campaign items with limited release.',
+    nav: true,
   },
   {
     handle: 'all-beyblades',
     title: 'All products',
     short: 'All',
     description: 'Everything in the store.',
+    nav: true,
   },
 ] as const;
 

@@ -16,15 +16,30 @@ export default async function handleRequest(
 ) {
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
-      checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
+      checkoutDomain:
+        context.env.PUBLIC_CHECKOUT_DOMAIN || 'tokyo-spin-vault.myshopify.com',
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
+    // Google Tag Manager (components/GoogleTagManager.tsx) and the Google
+    // Analytics endpoints it sends to; without these the CSP blocked GTM.
+    scriptSrc: ["'self'", 'https://cdn.shopify.com', 'https://www.googletagmanager.com'],
+    connectSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
+      'https://monorail-edge.shopifysvc.com',
+      'https://www.google-analytics.com',
+      'https://*.google-analytics.com',
+      'https://*.analytics.google.com',
+      'https://www.googletagmanager.com',
+    ],
     styleSrc: ["'self'", 'https://fonts.googleapis.com'],
     fontSrc: ["'self'", 'https://fonts.gstatic.com'],
     imgSrc: [
       "'self'",
       'https://cdn.shopify.com',
       'https://i.ebayimg.com',
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
       'data:',
     ],
   });

@@ -77,6 +77,14 @@ export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
           from Japan, with tracking.
         </Row>
       )}
+      {estimate.freeStandardTo && (
+        <Row icon={<TruckIcon />}>
+          <b className="font-semibold text-chrome-200">
+            Free tracked shipping to {estimate.freeStandardTo}
+          </b>{' '}
+          (Japan Post ePacket).
+        </Row>
+      )}
       {s && (
         <Row icon={<CalendarIcon />}>
           <span>
@@ -111,7 +119,9 @@ export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
                 <b className="font-semibold text-chrome-200">{o.label}</b> (
                 {carrier}):{' '}
                 {expressFromText(o, estimate.express ? estimate.countryCode : null)}
-                {estimate.express ? ` to ${estimate.destination}` : ''}
+                {estimate.express
+                  ? ` to ${estimate.destination}`
+                  : ', depending on destination'}
                 {days != null && `, ships within ${days} business days`}
                 {around ? `, estimated delivery ${around}` : ''}.
               </li>
@@ -141,6 +151,19 @@ export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
         </span>
       </Row>
     </div>
+  );
+}
+
+/**
+ * Random-assortment disclosure, shown above Add to cart (tag
+ * `random-assortment`): the buyer cannot choose which design they get.
+ */
+export function RandomNote() {
+  return (
+    <p className="m-0 rounded-[4px] border border-vault-700 bg-white px-3 py-2 text-[13px] text-chrome-300">
+      <b className="font-semibold text-chrome-200">Random assortment.</b> You
+      cannot choose which design you receive.
+    </p>
   );
 }
 

@@ -190,3 +190,12 @@ docs/                      # 運用・開発ドキュメント（8ファイル�
 - **Obsidian**: `~/iCloudDrive/iCloud~md~obsidian/Obsidian Vault/`
   - `02-Projects/eBay-NinJapon/` — ビジネス戦略、セットアップガイド
   - `03-Research/越境EC/` — 市場分析、配送戦略、SNS マーケティング
+
+## 2026-11-18 の決定と今の正 (上の古い記述より優先)
+
+- 3 店は 1 つの Oxygen で出し分けている (`tokyo-vaults/CLAUDE.md`)。照会は `app/lib/site.ts` の SCOPE (タグ `store:tokyo-spin-vault`) を必ず通す。
+- 棚は `tokyo-vaults/docs/spin-taxonomy.md` のスマートコレクション (タグ規則)。入口 (ヘッダー・トップ・空のカート・/collections) は Spin の商品がある棚だけ (`app/lib/shelf-counts.ts`)。
+- 配送は日本郵便: Standard = ePacket (tracked) / Express = EMS (tracked)。**DHL (オーナー決定 2026-11-17)**: DHL は DHL の国 (EMS が届かない国) の速達としてだけ書く。FedEx は書かない。
+- **送料無料の書き方 (オーナー決定 2026-11-18)**: 国が分かっていて、その国の標準便 (Japan Post ePacket) がストアの設定で無料の時だけ、商品ページの配送欄と上の帯に「Free tracked shipping to <国>」を出す。有料の国・国が分からない時は出さない。判定は `app/lib/shipping.ts` の `FREE_STANDARD_COUNTRIES` / `freeStandardTo()` (決済の料金を `tokyo-vaults/scripts/check-country-shipping.mjs` で読んだ値。マーケットの料金を変えたら読み直す)。国は `app/lib/buyer-country.ts` (cookie か Oxygen の国。US の既定値は「分かっている」に数えない)。
+- 上の「配送設定」「Express アップグレード: DHL/FedEx」の表は 2026-05 の古い設定。今の料金はマーケットごとの設定 (`tokyo-card-vault/docs/store-settings-2026-11-17.md`)。
+- 古い Shopify のページ (contact / about / shipping-info / faq) はサイトの自前のページへ 301。ブログは出さない (`site.ts` の `SPIN_PAGE_REDIRECTS` / `SPIN_BLOG_HANDLES`)。問い合わせ先は info@xon-corp.com。

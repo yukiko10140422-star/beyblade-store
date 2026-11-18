@@ -81,7 +81,7 @@ function SearchAside() {
                 name="q"
                 onChange={fetchResults}
                 onFocus={fetchResults}
-                placeholder="Search card name, set or number..."
+                placeholder="Search name or model number..."
                 aria-label="Search products"
                 ref={inputRef}
                 type="search"

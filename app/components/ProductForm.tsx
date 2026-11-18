@@ -16,6 +16,7 @@ export function ProductForm({
   isPreOrder = false,
   expectedShipDate,
   maxQuantity = 99,
+  blockedReason,
 }: {
   productOptions: MappedProductOptions[];
   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
@@ -23,6 +24,8 @@ export function ProductForm({
   expectedShipDate?: string;
   /** Known stock (one-of-a-kind singles = 1 → quantity picker is hidden). */
   maxQuantity?: number;
+  /** Set when the buyer's country is one the shop does not ship to. */
+  blockedReason?: string;
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
@@ -139,6 +142,11 @@ export function ProductForm({
               +
             </button>
           </div>
+          {quantity >= max && (
+            <p className="mt-2 text-xs text-chrome-400">
+              Only {max} available — that is the most you can add.
+            </p>
+          )}
         </div>
       )}
 
@@ -202,9 +210,16 @@ export function ProductForm({
         </div>
       )}
 
+      {blockedReason && (
+        <p className="text-sm font-semibold text-chrome-200" role="status">
+          {blockedReason}
+        </p>
+      )}
       <AddToCartButton
         disabled={
-          !selectedVariant || (!selectedVariant.availableForSale && !isPreOrder)
+          Boolean(blockedReason) ||
+          !selectedVariant ||
+          (!selectedVariant.availableForSale && !isPreOrder)
         }
         onClick={() => {
           open('cart');

@@ -41,10 +41,14 @@ export function Aside({
 
     // Move focus into the panel
     const panel = panelRef.current;
-    const focusables = panel?.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    );
-    focusables?.[0]?.focus();
+    // The panel is still hidden for a frame while it opens; focusing right
+    // away silently fails (QA 2026-11-18), so focus after it is shown.
+    const focusTimer = window.setTimeout(() => {
+      const first = panel?.querySelector<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      (first ?? panel)?.focus();
+    }, 60);
 
     const abortController = new AbortController();
     document.addEventListener(
@@ -77,6 +81,7 @@ export function Aside({
     );
 
     return () => {
+      window.clearTimeout(focusTimer);
       abortController.abort();
       // Restore focus on close
       previouslyFocusedRef.current?.focus();
@@ -105,6 +110,7 @@ export function Aside({
       {/* Panel */}
       <aside
         ref={panelRef}
+        tabIndex={-1}
         className={clsx(
           'absolute right-0 top-0 h-full w-full max-w-[420px] flex flex-col',
           'bg-vault-950',

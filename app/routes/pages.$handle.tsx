@@ -1,7 +1,7 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/pages.$handle';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {isOwnPage} from '~/lib/site';
+import {SPIN_PAGE_REDIRECTS, isOwnPage} from '~/lib/site';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [{title: `${data?.page.title ?? ''} | Tokyo Spin Vault`}];
@@ -21,6 +21,10 @@ export async function loader(args: Route.LoaderArgs) {
 async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
   if (!params.handle) {
     throw new Error('Missing page handle');
+  }
+  const moved = SPIN_PAGE_REDIRECTS[params.handle];
+  if (moved) {
+    throw new Response(null, {status: 301, headers: {Location: moved}});
   }
 
   const [{page}] = await Promise.all([

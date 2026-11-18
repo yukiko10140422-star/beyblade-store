@@ -1,3 +1,5 @@
+import {useRouteLoaderData} from 'react-router';
+import {type ShelfCounts, visibleShelves} from '~/lib/shelf-counts';
 import {useOptimisticCart} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
@@ -5,7 +7,7 @@ import {useAside} from '~/components/Aside';
 import {CartLineItem, type CartLine} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 import {ExpressUpgradeBar} from './ExpressUpgradeBar';
-import {SHELVES} from '~/lib/site';
+
 import {LockIcon} from '~/components/icons';
 
 export type CartLayout = 'page' | 'aside';
@@ -83,6 +85,9 @@ function CartEmpty({
   layout?: CartMainProps['layout'];
 }) {
   const {close} = useAside();
+  const root = useRouteLoaderData('root') as
+    | {shelfCounts?: ShelfCounts | null}
+    | undefined;
   return (
     <div
       hidden={hidden}
@@ -93,7 +98,7 @@ function CartEmpty({
         Your vault is empty
       </p>
       <p className="text-chrome-400 text-sm mb-6">
-        Singles, sealed boxes and graded cards from Japan
+        Japanese Takara Tomy Beyblade X, shipped from Japan
       </p>
       <Link
         to="/collections/all"
@@ -107,7 +112,7 @@ function CartEmpty({
         className="mt-6 flex flex-wrap justify-center gap-2"
         aria-label="Shelves"
       >
-        {SHELVES.map((s) => (
+        {visibleShelves(root?.shelfCounts).map((s) => (
           <li key={s.handle}>
             <Link
               to={`/collections/${s.handle}`}

@@ -3,6 +3,8 @@ import {useLoaderData, Link} from 'react-router';
 import type {Route} from './+types/policies._index';
 import type {PoliciesQuery, PolicyItemFragment} from 'storefrontapi.generated';
 
+export const meta: Route.MetaFunction = () => [{title: 'Policies | Tokyo Spin Vault'}];
+
 export async function loader({context}: Route.LoaderArgs) {
   if (!LINK_STORE_POLICIES) throw new Response('Not found', {status: 404});
   const data: PoliciesQuery = await context.storefront.query(POLICIES_QUERY, {

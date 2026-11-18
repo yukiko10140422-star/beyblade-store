@@ -332,3 +332,32 @@ export const RETURNS = {
 } as const;
 
 export const SHIPPING_POLICY_PATH = '/policies/shipping-policy';
+
+/**
+ * Countries where the standard method (Japan Post ePacket) is FREE at
+ * checkout. Owner decision 2026-11-18: say "Free tracked shipping to <country>"
+ * only for these countries, and only when the buyer's country is known.
+ * SOURCE: the store's market shipping rates as quoted at checkout, read with
+ * Storefront API carts on 2026-11-18 (tokyo-vaults/scripts/check-country-shipping.mjs,
+ * result tokyo-vaults/.out/country-shipping.json). Re-read after any change
+ * to the market rates; verify.mjs compares this list with checkout.
+ */
+export const FREE_STANDARD_COUNTRIES: ReadonlySet<string> = new Set([
+  'US', 'CA', 'MX', 'GB', 'CH', 'NO', 'AU', 'NZ', 'SG', 'HK', 'TW', 'KR',
+  'TH', 'MY', 'ID', 'VN',
+]);
+
+/** Destination name when standard shipping there is free, else null. */
+export function freeStandardTo(country: string | null | undefined): string | null {
+  const cc = (country ?? '').toUpperCase();
+  if (!cc || !FREE_STANDARD_COUNTRIES.has(cc)) return null;
+  if (EU_COUNTRIES.has(cc) || NO_STANDARD_COUNTRIES.has(cc)) return null;
+  return destinationName(cc);
+}
+
+/** Checkout runs on the shared store's myshopify domain (one store, 3 sites). */
+export const CHECKOUT_DOMAIN_FALLBACK = 'tokyo-spin-vault.myshopify.com';
+
+/** Shown instead of Add to cart for destinations the shop does not ship to. */
+export const NO_SHIP_BUTTON_NOTE =
+  'We do not ship to your selected country (European Union). Change the country at the bottom of the page.';

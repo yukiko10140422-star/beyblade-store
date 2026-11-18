@@ -8,6 +8,10 @@ type SelectedVariant = NonNullable<
 >;
 
 interface StickyAtcBarProps {
+  /** Pre-order items say so on the button. */
+  isPreOrder?: boolean;
+  /** The buyer's country is not shipped to: the button is off. */
+  blocked?: boolean;
   selectedVariant: SelectedVariant | null | undefined;
   productTitle: string;
   productImage?: {
@@ -24,6 +28,8 @@ interface StickyAtcBarProps {
  * Hidden on desktop (lg+), where the primary button sits near the top.
  */
 export function StickyAtcBar({
+  isPreOrder = false,
+  blocked = false,
   selectedVariant,
   productTitle,
   productImage,
@@ -73,7 +79,7 @@ export function StickyAtcBar({
           />
         </div>
         <AddToCartButton
-          disabled={!selectedVariant.availableForSale}
+          disabled={blocked || (!selectedVariant.availableForSale && !isPreOrder)}
           lines={[
             {
               merchandiseId: selectedVariant.id,
@@ -83,7 +89,11 @@ export function StickyAtcBar({
           ]}
           className="bg-holo-500 hover:bg-holo-600 text-white font-heading font-semibold text-xs px-5 py-3 rounded-[4px] transition-colors whitespace-nowrap disabled:bg-vault-700 disabled:text-chrome-500 disabled:cursor-not-allowed"
         >
-          {selectedVariant.availableForSale ? 'Add to Cart' : 'Sold Out'}
+          {isPreOrder
+            ? 'Pre-order now'
+            : selectedVariant.availableForSale
+              ? 'Add to Cart'
+              : 'Sold Out'}
         </AddToCartButton>
       </div>
     </div>

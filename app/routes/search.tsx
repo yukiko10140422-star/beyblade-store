@@ -71,11 +71,11 @@ export default function SearchPage() {
               placeholder="Search blades, parts, series..."
               ref={inputRef}
               type="search"
-              className="flex-1 bg-vault-800 border border-vault-600 rounded-[4px] px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-silver-400/50 focus:ring-1 focus:ring-silver-400/20 transition-all"
+              className="min-w-0 flex-1 bg-vault-800 border border-vault-600 rounded-[4px] px-4 py-3 text-sm text-chrome-200 placeholder:text-chrome-600 focus:outline-none focus:border-silver-400/50 focus:ring-1 focus:ring-silver-400/20 transition-all"
             />
             <button
               type="submit"
-              className="bg-silver-500 hover:bg-silver-400 text-white font-heading text-xs px-6 py-3 rounded-[4px] transition-all"
+              className="shrink-0 bg-silver-500 hover:bg-silver-400 text-white font-heading text-xs px-4 sm:px-6 py-3 rounded-[4px] transition-all"
             >
               Search
             </button>

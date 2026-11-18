@@ -11,14 +11,12 @@ import {useEffect, useRef, useState} from 'react';
  *   3. 'US' フォールバック
  */
 
+// EU member states are not listed: the shop does not ship to the EU
+// (owner decision 2026-11-17).
 const COUNTRIES: ReadonlyArray<{code: string; name: string; flag: string}> = [
   {code: 'US', name: 'United States', flag: '🇺🇸'},
   {code: 'CA', name: 'Canada', flag: '🇨🇦'},
   {code: 'GB', name: 'United Kingdom', flag: '🇬🇧'},
-  {code: 'DE', name: 'Germany', flag: '🇩🇪'},
-  {code: 'FR', name: 'France', flag: '🇫🇷'},
-  {code: 'IT', name: 'Italy', flag: '🇮🇹'},
-  {code: 'ES', name: 'Spain', flag: '🇪🇸'},
   {code: 'AU', name: 'Australia', flag: '🇦🇺'},
   {code: 'NZ', name: 'New Zealand', flag: '🇳🇿'},
   {code: 'SG', name: 'Singapore', flag: '🇸🇬'},
@@ -26,17 +24,8 @@ const COUNTRIES: ReadonlyArray<{code: string; name: string; flag: string}> = [
   {code: 'HK', name: 'Hong Kong', flag: '🇭🇰'},
   {code: 'KR', name: 'South Korea', flag: '🇰🇷'},
   {code: 'PH', name: 'Philippines', flag: '🇵🇭'},
-  {code: 'IE', name: 'Ireland', flag: '🇮🇪'},
-  {code: 'NL', name: 'Netherlands', flag: '🇳🇱'},
-  {code: 'SE', name: 'Sweden', flag: '🇸🇪'},
   {code: 'CH', name: 'Switzerland', flag: '🇨🇭'},
   {code: 'NO', name: 'Norway', flag: '🇳🇴'},
-  {code: 'DK', name: 'Denmark', flag: '🇩🇰'},
-  {code: 'FI', name: 'Finland', flag: '🇫🇮'},
-  {code: 'BE', name: 'Belgium', flag: '🇧🇪'},
-  {code: 'AT', name: 'Austria', flag: '🇦🇹'},
-  {code: 'PT', name: 'Portugal', flag: '🇵🇹'},
-  {code: 'PL', name: 'Poland', flag: '🇵🇱'},
   {code: 'MX', name: 'Mexico', flag: '🇲🇽'},
   {code: 'BR', name: 'Brazil', flag: '🇧🇷'},
   {code: 'AE', name: 'UAE', flag: '🇦🇪'},
@@ -66,7 +55,8 @@ interface CountryPickerProps {
 
 export function CountryPicker({className = ''}: CountryPickerProps) {
   const [open, setOpen] = useState(false);
-  const [current, setCurrent] = useState<string>('US');
+  // null until the buyer picks a country (no cookie yet).
+  const [current, setCurrent] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -94,7 +84,9 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
   }, [open]);
 
   const handleSelect = (code: string) => {
-    if (code === current) {
+    // Always store the choice (also when it matches what is shown), so the
+    // server uses it for prices and delivery dates.
+    if (readCookie('customerCountry')?.toUpperCase() === code) {
       setOpen(false);
       return;
     }
@@ -103,7 +95,7 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
     window.location.reload();
   };
 
-  const currentMeta = COUNTRIES.find((c) => c.code === current) ?? COUNTRIES[0];
+  const currentMeta = COUNTRIES.find((c) => c.code === current) ?? null;
 
   return (
     <div ref={ref} className={`relative ${className}`}>
@@ -111,12 +103,20 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={`Ship to: ${currentMeta.name}`}
+        aria-label={
+          currentMeta ? `Ship to: ${currentMeta.name}` : 'Choose your country'
+        }
         onClick={() => setOpen((v) => !v)}
         className="inline-flex items-center gap-1.5 h-10 rounded-[4px] px-2 text-sm text-chrome-300 hover:text-holo-500 hover:bg-vault-800 focus:outline-none focus:ring-2 focus:ring-holo-500 transition-colors"
       >
-        <span aria-hidden="true">{currentMeta.flag}</span>
-        <span className="font-medium">{currentMeta.code}</span>
+        {currentMeta ? (
+          <>
+            <span aria-hidden="true">{currentMeta.flag}</span>
+            <span className="font-medium">{currentMeta.code}</span>
+          </>
+        ) : (
+          <span className="font-medium">Ship to</span>
+        )}
         <svg
           aria-hidden="true"
           width="12"

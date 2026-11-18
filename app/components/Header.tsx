@@ -1,3 +1,4 @@
+import {useRouteLoaderData} from 'react-router';
 import {Suspense} from 'react';
 import {Await, Form, NavLink, useAsyncValue} from 'react-router';
 import {
@@ -11,7 +12,8 @@ import {AnnouncementBar} from '~/components/AnnouncementBar';
 import {MenuIcon, SearchIcon, UserIcon, CartIcon} from '~/components/icons';
 import clsx from 'clsx';
 import {Wordmark} from '~/components/Wordmark';
-import {SHELVES} from '~/lib/site';
+import {type Shelf} from '~/lib/site';
+import {type ShelfCounts, visibleShelves} from '~/lib/shelf-counts';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -69,7 +71,7 @@ function DesktopSearch() {
       <input
         type="search"
         name="q"
-        placeholder="Search BX-, UX-, CX- numbers"
+        placeholder="Search e.g. BX-53"
         aria-label="Search"
         className="w-full border-0 bg-transparent p-0 text-sm text-chrome-200 outline-none placeholder:text-chrome-600"
       />
@@ -90,6 +92,11 @@ export function HeaderMenu({
 }) {
   const {close} = useAside();
   const isMobile = viewport === 'mobile';
+  // Only shelves that have Spin products (counts from the root loader).
+  const root = useRouteLoaderData('root') as
+    | {shelfCounts?: ShelfCounts | null}
+    | undefined;
+  const navMenu = shelfMenu(visibleShelves(root?.shelfCounts));
 
   return (
     <nav
@@ -109,7 +116,7 @@ export function HeaderMenu({
           Home
         </NavLink>
       )}
-      {FALLBACK_HEADER_MENU.items.map((item) => {
+      {navMenu.items.map((item) => {
         if (!item.url) return null;
         const url =
           item.url.includes('myshopify.com') ||
@@ -265,9 +272,10 @@ export function localizeMenuTitle(title: string): string {
  * Shelf navigation from ~/lib/site. The Shopify `main-menu` is not used:
  * it links to old pages whose text no longer matches the facts.
  */
-const FALLBACK_HEADER_MENU = {
+function shelfMenu(shelves: readonly Shelf[]) {
+  return {
   id: 'gid://shopify/Menu/fallback',
-  items: SHELVES.map((s) => ({
+  items: shelves.filter((s) => s.nav).map((s) => ({
     id: `nav-${s.handle}`,
     resourceId: null,
     tags: [],
@@ -276,4 +284,6 @@ const FALLBACK_HEADER_MENU = {
     url: `/collections/${s.handle}`,
     items: [],
   })),
-};
+  };
+}
+

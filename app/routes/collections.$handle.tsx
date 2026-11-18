@@ -1,3 +1,5 @@
+import {Link, useRouteLoaderData} from 'react-router';
+import {type ShelfCounts, visibleShelves} from '~/lib/shelf-counts';
 import {
   redirect,
   useLoaderData,
@@ -149,16 +151,10 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
 
   const sortOption = parseSortParam(sortParam);
 
+  // Search & Discovery filters are off, so `filters` on the collection query
+  // would be ignored: the type is matched here on the server instead.
   const filters: Array<Record<string, unknown>> = [];
-  if (typeParam && isBeyType(typeParam)) {
-    filters.push({
-      productMetafield: {
-        namespace: 'beyblade',
-        key: 'type',
-        value: typeParam,
-      },
-    });
-  }
+  const typeFilter = typeParam && isBeyType(typeParam) ? typeParam : null;
 
   // Shared storefront: the shelf collection can also hold products of the
   // other Vault sites, and Shopify ignores product filters here (Search &
@@ -183,7 +179,15 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
       });
     if (!res.collection) break;
     collection ??= res.collection;
-    all.push(...res.collection.products.nodes.filter(isOwnProduct));
+    all.push(
+      ...res.collection.products.nodes.filter(
+        (p) =>
+          isOwnProduct(p) &&
+          (!typeFilter ||
+            (p.beybladeType?.value ?? '').toLowerCase() ===
+              typeFilter.toLowerCase()),
+      ),
+    );
     if (!res.collection.products.pageInfo.hasNextPage) break;
     after = res.collection.products.pageInfo.endCursor ?? null;
   }
@@ -251,6 +255,8 @@ function pageOf(
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
   const shelfInfo = SHELVES.find((sh) => sh.handle === collection.handle);
+  const [searchParams] = useSearchParams();
+  const hasTypeFilter = Boolean(searchParams.get('type'));
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 pb-10 pt-[18px] md:px-10">
@@ -272,6 +278,10 @@ export default function Collection() {
 
       {/* Filter + Sort Bar */}
       <FilterBar />
+
+      {collection.products.nodes.length === 0 && (
+        <EmptyShelf current={collection.handle} filtered={hasTypeFilter} />
+      )}
 
       {/* Product Grid */}
       <PaginatedResourceSection<ProductItemFragment>
@@ -295,6 +305,47 @@ export default function Collection() {
           },
         }}
       />
+    </div>
+  );
+}
+
+/** Shown when a shelf (or a type filter on it) has no products. */
+function EmptyShelf({current, filtered}: {current: string; filtered: boolean}) {
+  const root = useRouteLoaderData('root') as
+    | {shelfCounts?: ShelfCounts | null}
+    | undefined;
+  const others = visibleShelves(root?.shelfCounts).filter(
+    (s) => s.handle !== current,
+  );
+  return (
+    <div className="rounded-[4px] border border-vault-700 bg-white px-5 py-8 text-center">
+      <p className="m-0 text-base font-semibold text-chrome-200">
+        {filtered
+          ? 'Nothing of this type on this shelf right now.'
+          : 'Nothing on this shelf right now.'}
+      </p>
+      <p className="mb-4 mt-1 text-sm text-chrome-400">
+        {filtered ? (
+          <Link to={`/collections/${current}`} className="text-holo-500 hover:underline">
+            Show all types
+          </Link>
+        ) : (
+          'New items are added often. Try another shelf:'
+        )}
+      </p>
+      <ul className="m-0 flex list-none flex-wrap justify-center gap-2 p-0">
+        {others.map((s) => (
+          <li key={s.handle}>
+            <Link
+              to={`/collections/${s.handle}`}
+              prefetch="intent"
+              className="inline-block rounded-[4px] border border-vault-700 px-3 py-1 text-sm text-chrome-300 hover:border-holo-500"
+            >
+              {s.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

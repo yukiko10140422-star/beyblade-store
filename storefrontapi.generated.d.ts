@@ -418,6 +418,54 @@ export type OwnLineVariantsQuery = {
   >;
 };
 
+export type ShelfCountProductsFragment = {
+  products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+};
+
+export type ShelfCountsQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type ShelfCountsQuery = {
+  beybladeX?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  preOrder?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  starters?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  boosters?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  randomBoosters?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  singleBeys?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  sets?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  launchers?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  stadiums?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  parts?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  limited?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+  all?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'tags'>>};
+  }>;
+};
+
 export type BestSellersQueryVariables = StorefrontAPI.Exact<{
   query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -664,47 +712,6 @@ export type CollectionQuery = {
       };
     }
   >;
-};
-
-export type CollectionFragment = Pick<
-  StorefrontAPI.Collection,
-  'id' | 'title' | 'handle'
-> & {
-  image?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
-  >;
-};
-
-export type StoreCollectionsQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  endCursor?: StorefrontAPI.InputMaybe<
-    StorefrontAPI.Scalars['String']['input']
-  >;
-  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  last?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
-  startCursor?: StorefrontAPI.InputMaybe<
-    StorefrontAPI.Scalars['String']['input']
-  >;
-}>;
-
-export type StoreCollectionsQuery = {
-  collections: {
-    nodes: Array<
-      Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
-        image?: StorefrontAPI.Maybe<
-          Pick<
-            StorefrontAPI.Image,
-            'id' | 'url' | 'altText' | 'width' | 'height'
-          >
-        >;
-      }
-    >;
-    pageInfo: Pick<
-      StorefrontAPI.PageInfo,
-      'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'
-    >;
-  };
 };
 
 export type CatalogQueryVariables = StorefrontAPI.Exact<{
@@ -1530,6 +1537,10 @@ interface GeneratedQueryTypes {
     return: OwnLineVariantsQuery;
     variables: OwnLineVariantsQueryVariables;
   };
+  '#graphql\n  fragment ShelfCountProducts on Collection {\n    products(first: 250) {\n      nodes {\n        tags\n      }\n    }\n  }\n  query ShelfCounts($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    beybladeX: collection(handle: "beyblade-x") {\n      ...ShelfCountProducts\n    }\n    preOrder: collection(handle: "pre-order") {\n      ...ShelfCountProducts\n    }\n    starters: collection(handle: "starters") {\n      ...ShelfCountProducts\n    }\n    boosters: collection(handle: "boosters") {\n      ...ShelfCountProducts\n    }\n    randomBoosters: collection(handle: "random-boosters") {\n      ...ShelfCountProducts\n    }\n    singleBeys: collection(handle: "single-beys") {\n      ...ShelfCountProducts\n    }\n    sets: collection(handle: "beyblade-sets-bundles") {\n      ...ShelfCountProducts\n    }\n    launchers: collection(handle: "launchers-accessories") {\n      ...ShelfCountProducts\n    }\n    stadiums: collection(handle: "stadiums") {\n      ...ShelfCountProducts\n    }\n    parts: collection(handle: "parts-accessories") {\n      ...ShelfCountProducts\n    }\n    limited: collection(handle: "rare-exclusive") {\n      ...ShelfCountProducts\n    }\n    all: collection(handle: "all-beyblades") {\n      ...ShelfCountProducts\n    }\n  }\n': {
+    return: ShelfCountsQuery;
+    variables: ShelfCountsQueryVariables;
+  };
   '#graphql\n  #graphql\n  fragment Money on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  #graphql\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    vendor\n    tags\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...Money\n      }\n      maxVariantPrice {\n        ...Money\n      }\n    }\n    beybladeType: metafield(namespace: "beyblade", key: "type") { value }\n    modelNumber: metafield(namespace: "beyblade", key: "model_number") { value }\n    series: metafield(namespace: "beyblade", key: "series") { value }\n    handlingDays: metafield(namespace: "shipping", key: "handling_days") { value }\n  }\n\n  query BestSellers(\n    $query: String\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: 12, sortKey: BEST_SELLING, query: $query) {\n      nodes {\n        ...ProductItem\n      }\n    }\n  }\n': {
     return: BestSellersQuery;
     variables: BestSellersQueryVariables;
@@ -1549,10 +1560,6 @@ interface GeneratedQueryTypes {
   '#graphql\n  #graphql\n  fragment Money on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  #graphql\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    vendor\n    tags\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...Money\n      }\n      maxVariantPrice {\n        ...Money\n      }\n    }\n    beybladeType: metafield(namespace: "beyblade", key: "type") { value }\n    modelNumber: metafield(namespace: "beyblade", key: "model_number") { value }\n    series: metafield(namespace: "beyblade", key: "series") { value }\n    handlingDays: metafield(namespace: "shipping", key: "handling_days") { value }\n  }\n\n  query Collection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $sortKey: ProductCollectionSortKeys\n    $reverse: Boolean\n    $filters: [ProductFilter!]\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        sortKey: $sortKey,\n        reverse: $reverse,\n        filters: $filters\n      ) {\n        nodes {\n          ...ProductItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
     return: CollectionQuery;
     variables: CollectionQueryVariables;
-  };
-  '#graphql\n  fragment Collection on Collection {\n    id\n    title\n    handle\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n  }\n  query StoreCollections(\n    $country: CountryCode\n    $endCursor: String\n    $first: Int\n    $language: LanguageCode\n    $last: Int\n    $startCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collections(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor\n    ) {\n      nodes {\n        ...Collection\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n': {
-    return: StoreCollectionsQuery;
-    variables: StoreCollectionsQueryVariables;
   };
   '#graphql\n  #graphql\n  fragment Money on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  #graphql\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    vendor\n    tags\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...Money\n      }\n      maxVariantPrice {\n        ...Money\n      }\n    }\n    beybladeType: metafield(namespace: "beyblade", key: "type") { value }\n    modelNumber: metafield(namespace: "beyblade", key: "model_number") { value }\n    series: metafield(namespace: "beyblade", key: "series") { value }\n    handlingDays: metafield(namespace: "shipping", key: "handling_days") { value }\n  }\n\n  query Catalog(\n    $query: String\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, last: $last, before: $startCursor, after: $endCursor, query: $query) {\n      nodes {\n        ...ProductItem\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n': {
     return: CatalogQuery;

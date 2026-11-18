@@ -1,3 +1,5 @@
+import {detectedCountry} from '~/lib/buyer-country';
+import {freeStandardTo, NO_SHIP_BUTTON_NOTE} from '~/lib/shipping';
 import {
   Await,
   Link,
@@ -27,7 +29,12 @@ import {StickyAtcBar} from '~/components/StickyAtcBar';
 import {ProductCard} from '~/components/ProductCard';
 import {ProductCardSkeleton} from '~/components/home/ProductCardSkeleton';
 import {PaymentMethods} from '~/components/PaymentMethods';
-import {DeliveryBox, ReturnsNote, StockNote} from '~/components/PurchaseInfo';
+import {
+  DeliveryBox,
+  RandomNote,
+  ReturnsNote,
+  StockNote,
+} from '~/components/PurchaseInfo';
 import {getDeliveryEstimate, parseHandlingDays} from '~/lib/delivery-estimate';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -221,7 +228,21 @@ function loadDeferredData({
         })
     : Promise.resolve(null);
 
-  return {relatedProducts, stockQuantity, shelfProducts};
+  // "You May Also Like" never repeats a product already in "More from".
+  const relatedDeduped = Promise.all([relatedProducts, shelfProducts]).then(
+    ([res, shelf]) => {
+      if (!res) return res;
+      const shown = new Set((shelf ?? []).map((p) => p.id));
+      return {
+        ...res,
+        productRecommendations: (res.productRecommendations ?? []).filter(
+          (p) => !shown.has(p.id),
+        ),
+      };
+    },
+  );
+
+  return {relatedProducts: relatedDeduped, stockQuantity, shelfProducts};
 }
 
 /**
@@ -262,11 +283,14 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     product,
     shelf,
     // Delivery dates for the buyer's country (Oxygen geo / country cookie).
-    deliveryEstimate: getDeliveryEstimate(
-      storefront.i18n.country,
-      parseHandlingDays(product.handlingDays?.value),
-      product.shippingService?.value,
-    ),
+    deliveryEstimate: {
+      ...getDeliveryEstimate(
+        storefront.i18n.country,
+        parseHandlingDays(product.handlingDays?.value),
+        product.shippingService?.value,
+      ),
+      freeStandardTo: freeStandardTo(detectedCountry(request)),
+    },
   };
 }
 
@@ -282,6 +306,12 @@ export default function Product() {
   const rootData = useRouteLoaderData<RootLoader>('root');
   const isPreOrder =
     product.tags?.some((t) => t.toLowerCase() === 'pre-order') ?? false;
+  const isRandom =
+    product.tags?.some((t) => t.toLowerCase() === 'random-assortment') ??
+    false;
+  const blockedReason = deliveryEstimate.shipsHere
+    ? undefined
+    : NO_SHIP_BUTTON_NOTE;
   // Quantity limit until stock is known.
   const defaultMax = 99;
 
@@ -377,6 +407,8 @@ export default function Product() {
           <KeyFacts product={product} />
 
           {/* Add to cart (observed by StickyAtcBar) */}
+          {isRandom && <RandomNote />}
+
           <div data-primary-atc>
             <Suspense
               fallback={
@@ -388,6 +420,7 @@ export default function Product() {
                     product.expectedShipDate?.value ?? undefined
                   }
                   maxQuantity={defaultMax}
+                  blockedReason={blockedReason}
                 />
               }
             >
@@ -401,6 +434,7 @@ export default function Product() {
                       product.expectedShipDate?.value ?? undefined
                     }
                     maxQuantity={q ?? defaultMax}
+                    blockedReason={blockedReason}
                   />
                 )}
               </Await>
@@ -457,6 +491,8 @@ export default function Product() {
 
       {/* Mobile sticky ATC — appears after scrolling past primary ATC */}
       <StickyAtcBar
+        isPreOrder={isPreOrder}
+        blocked={Boolean(blockedReason)}
         selectedVariant={selectedVariant}
         productTitle={title}
         productImage={selectedVariant?.image}
