@@ -56,10 +56,10 @@ export const SPIN_BLOG_HANDLES: readonly string[] = [];
 /**
  * Old Shopify pages whose text predates the site (e.g. contact page with
  * support@tokyospinvault.com and "24 hours"): sent to the site's own pages,
- * which hold the current facts (contact = info@xon-corp.com on the FAQ).
+ * which hold the current facts (contact = /contact, info@xon-corp.com).
  */
 export const SPIN_PAGE_REDIRECTS: Readonly<Record<string, string>> = {
-  contact: '/faq',
+  contact: '/contact',
   about: '/about',
   'shipping-info': '/shipping',
   faq: '/faq',
@@ -121,6 +121,13 @@ export function isOwnProduct(p: {tags?: readonly string[] | null}): boolean {
     !tags.some((t) => (EXCLUDED_TAGS as readonly string[]).includes(t))
   );
 }
+
+/**
+ * Google product taxonomy id 3466. Used by the product page JSON-LD and the
+ * Merchant Center feed (/feeds/products.xml).
+ */
+export const GOOGLE_PRODUCT_CATEGORY =
+  'Toys & Games > Toys > Activity Toys > Spinning Tops';
 
 export interface Shelf {
   handle: string;
@@ -238,6 +245,13 @@ export const COMPANY = {
   city: 'Yokohama, Japan',
   address:
     'Mutsumi Bldg. 3F, 2-10-48 Kitasaiwai, Nishi-ku, Yokohama, Kanagawa, Japan',
+  /**
+   * Address with the postal code, for the contact page. Postal code
+   * 220-0004 = 神奈川県横浜市西区北幸 (Japan Post postal code search,
+   * checked 2026-11-24).
+   */
+  postalAddress:
+    'Mutsumi Bldg. 3F, 2-10-48 Kitasaiwai, Nishi-ku, Yokohama, Kanagawa 220-0004, Japan',
 } as const;
 
 /**

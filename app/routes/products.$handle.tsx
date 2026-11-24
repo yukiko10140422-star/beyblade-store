@@ -40,17 +40,18 @@ import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import {SITE_URL} from '~/lib/constants';
-import {SHELVES, SITE, isOwnProduct} from '~/lib/site';
+import {
+  GOOGLE_PRODUCT_CATEGORY,
+  SHELVES,
+  SITE,
+  isOwnProduct,
+} from '~/lib/site';
 import {
   getBeyDetailRows,
   getItemCondition,
   metaValue,
   type BeyMetafields,
 } from '~/lib/bey-attributes';
-
-/** Google product taxonomy id 3466. */
-const GOOGLE_PRODUCT_CATEGORY =
-  'Toys & Games > Toys > Activity Toys > Spinning Tops';
 
 export const meta: Route.MetaFunction = ({data}) => {
   const product = data?.product;

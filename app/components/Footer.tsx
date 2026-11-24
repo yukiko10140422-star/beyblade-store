@@ -38,6 +38,7 @@ export function Footer({header}: FooterProps) {
           <FooterLink to="/shipping">Shipping</FooterLink>
           <FooterLink to="/returns">Returns</FooterLink>
           <FooterLink to="/faq">FAQ</FooterLink>
+          <FooterLink to="/contact">Contact</FooterLink>
           <li>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
