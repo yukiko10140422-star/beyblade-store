@@ -33,6 +33,15 @@ export const meta: Route.MetaFunction = () => {
     {
       'script:ld+json': {
         '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: SITE.name,
+        url: SITE_URL,
+        logo: `${SITE_URL}/images/logo.png`,
+      },
+    },
+    {
+      'script:ld+json': {
+        '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: SITE.name,
         url: SITE_URL,

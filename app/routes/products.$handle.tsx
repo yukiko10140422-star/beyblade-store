@@ -54,19 +54,20 @@ const GOOGLE_PRODUCT_CATEGORY =
 
 export const meta: Route.MetaFunction = ({data}) => {
   const product = data?.product;
+  const shelf = data?.shelf;
   const bey: BeyMetafields = product ?? {};
   const condition = getItemCondition(bey);
   const rawTitle = product?.title ?? '';
-  const title = buildMetaTitle(rawTitle);
-  // Build a clean meta description: title + price + key selling points.
-  // Keep under 160 chars for optimal Google display.
-  const description = buildProductMetaDescription({
-    title: rawTitle,
-    price: product?.selectedOrFirstAvailableVariant?.price?.amount,
-    currency: product?.selectedOrFirstAvailableVariant?.price?.currencyCode,
-    available: product?.selectedOrFirstAvailableVariant?.availableForSale,
-    bey,
-  });
+  const title = buildMetaTitle(rawTitle, product?.seo?.title?.trim());
+  const description =
+    product?.seo?.description?.trim() ||
+    buildProductMetaDescription({
+      title: rawTitle,
+      price: product?.selectedOrFirstAvailableVariant?.price?.amount,
+      currency: product?.selectedOrFirstAvailableVariant?.price?.currencyCode,
+      available: product?.selectedOrFirstAvailableVariant?.availableForSale,
+      bey,
+    });
   const variantImage = product?.selectedOrFirstAvailableVariant?.image;
   const rawImage = variantImage?.url ?? '';
   // Request a 1200x630 crop from Shopify CDN for OG / Twitter summary_large_image.
@@ -98,7 +99,11 @@ export const meta: Route.MetaFunction = ({data}) => {
     {property: 'product:price:currency', content: currency},
     {
       property: 'product:availability',
-      content: available ? 'in stock' : 'out of stock',
+      content: !available
+        ? 'out of stock'
+        : isPreOrderProduct(product)
+          ? 'preorder'
+          : 'in stock',
     },
     ...(condition
       ? [{property: 'product:condition', content: condition.og}]
@@ -120,6 +125,7 @@ export const meta: Route.MetaFunction = ({data}) => {
             productUrl,
             image,
             sku,
+            barcode: product?.selectedOrFirstAvailableVariant?.barcode,
             price,
             currency,
             available,
@@ -128,24 +134,21 @@ export const meta: Route.MetaFunction = ({data}) => {
           {
             '@type': 'BreadcrumbList',
             itemListElement: [
-              {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Home',
-                item: SITE_URL,
-              },
-              {
-                '@type': 'ListItem',
-                position: 2,
-                name: 'Collections',
-                item: `${SITE_URL}/collections`,
-              },
-              {
-                '@type': 'ListItem',
-                position: 3,
-                name: rawTitle,
-              },
-            ],
+              {name: 'Home', item: SITE_URL},
+              ...(shelf
+                ? [
+                    {
+                      name: shelf.title,
+                      item: `${SITE_URL}/collections/${shelf.handle}`,
+                    },
+                  ]
+                : []),
+              {name: rawTitle, item: productUrl},
+            ].map((crumb, index) => ({
+              '@type': 'ListItem',
+              position: index + 1,
+              ...crumb,
+            })),
           },
         ],
       },
@@ -304,8 +307,7 @@ export default function Product() {
     deliveryEstimate,
   } = useLoaderData<typeof loader>();
   const rootData = useRouteLoaderData<RootLoader>('root');
-  const isPreOrder =
-    product.tags?.some((t) => t.toLowerCase() === 'pre-order') ?? false;
+  const isPreOrder = isPreOrderProduct(product);
   const isRandom =
     product.tags?.some((t) => t.toLowerCase() === 'random-assortment') ??
     false;
@@ -626,6 +628,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       value
     }
     sku
+    barcode
     title
     unitPrice {
       amount
@@ -779,17 +782,24 @@ function buildProductJsonLd({
   productUrl,
   image,
   sku,
+  barcode,
   price,
   currency,
   available,
   siteUrl,
 }: {
   product:
-    | (BeyMetafields & {title?: string; description?: string; vendor?: string})
+    | (BeyMetafields & {
+        title?: string;
+        description?: string;
+        vendor?: string;
+        tags?: string[];
+      })
     | undefined;
   productUrl: string;
   image: string;
   sku: string | undefined;
+  barcode?: string | null;
   price: string;
   currency: string;
   available: boolean;
@@ -810,7 +820,10 @@ function buildProductJsonLd({
     description: product?.description,
     image,
     url: productUrl,
-    sku,
+    sku: sku?.toUpperCase().startsWith('EBAY-') ? undefined : sku,
+    ...(barcode && /^(?:\d{8}|\d{12,14})$/.test(barcode) && {
+      [`gtin${barcode.length}`]: barcode,
+    }),
     ...(product?.vendor && {
       brand: {'@type': 'Brand', name: product.vendor},
     }),
@@ -822,9 +835,11 @@ function buildProductJsonLd({
       price: parseFloat(price),
       priceCurrency: currency,
       ...(condition && {itemCondition: condition.schema}),
-      availability: available
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
+      availability: !available
+        ? 'https://schema.org/OutOfStock'
+        : isPreOrderProduct(product)
+          ? 'https://schema.org/PreOrder'
+          : 'https://schema.org/InStock',
       seller: {
         '@type': 'Organization',
         name: SITE.name,
@@ -853,7 +868,8 @@ function sanitizeSku(sku: string | null | undefined): string | undefined {
  * Truncates at word / punctuation boundaries — never cuts mid-word.
  * Falls back to full title + brand when short.
  */
-function buildMetaTitle(rawTitle: string): string {
+function buildMetaTitle(productTitle: string, seoTitle?: string): string {
+  const rawTitle = seoTitle || productTitle;
   const SUFFIX_FULL = ` | ${SITE.name}`;
   const SUFFIX_SHORT = ` | ${SITE.shortName}`;
   const MAX_TITLE_LEN = 60;
@@ -862,6 +878,10 @@ function buildMetaTitle(rawTitle: string): string {
 
   const withFullSuffix = rawTitle + SUFFIX_FULL;
   if (withFullSuffix.length <= MAX_TITLE_LEN) return withFullSuffix;
+
+  if (seoTitle && seoTitle.length + SUFFIX_SHORT.length <= MAX_TITLE_LEN) {
+    return seoTitle + SUFFIX_SHORT;
+  }
 
   const budget = MAX_TITLE_LEN - SUFFIX_SHORT.length - 1; // -1 for the ellipsis
 
@@ -964,4 +984,10 @@ function DetailsTable({product}: {product: BeyMetafields}) {
       </dl>
     </section>
   );
+}
+
+function isPreOrderProduct(
+  product: {tags?: string[] | null} | undefined | null,
+): boolean {
+  return product?.tags?.some((t) => t.toLowerCase() === 'pre-order') ?? false;
 }
