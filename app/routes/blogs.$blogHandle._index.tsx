@@ -1,116 +1,125 @@
 import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/blogs.$blogHandle._index';
-import {Image, getPaginationVariables} from '@shopify/hydrogen';
+import {getPaginationVariables} from '@shopify/hydrogen';
 import type {ArticleItemFragment} from 'storefrontapi.generated';
+import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {SITE_URL} from '~/lib/constants';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {isOwnBlog} from '~/lib/site';
+import {SITE, blogLabel, isOwnBlog, normalizeHandle} from '~/lib/site';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `${data?.blog.title ?? ''} Blog | Tokyo Spin Vault`}];
+  if (!data) return [{title: `Not found | ${SITE.name}`}];
+  const title = `${data.blogTitle} | ${SITE.name}`;
+  const description = `Articles about Beyblade X from ${SITE.name}.`;
+  return [
+    {title},
+    {name: 'description', content: description},
+    {property: 'og:title', content: title},
+    {property: 'og:description', content: description},
+    {property: 'og:type', content: 'website'},
+    {
+      property: 'og:url',
+      content: `${SITE_URL}/blogs/${encodeURIComponent(data.blog.handle)}`,
+    },
+    {property: 'og:image', content: `${SITE_URL}/images/og-home.png`},
+    {property: 'og:site_name', content: SITE.name},
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
-
-  return criticalData;
+  return loadCriticalData(args);
 }
 
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
 async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
-  const paginationVariables = getPaginationVariables(request, {
-    pageBy: 4,
-  });
-
-  if (!params.blogHandle) {
-    throw new Response(`blog not found`, {status: 404});
-  }
-
-  const [{blog}] = await Promise.all([
-    context.storefront.query(BLOGS_QUERY, {
-      variables: {
-        blogHandle: params.blogHandle,
-        ...paginationVariables,
-      },
-      cache: context.storefront.CacheShort(),
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
-
-  if (!blog?.articles || !isOwnBlog(params.blogHandle)) {
+  const blogHandle = normalizeHandle(params.blogHandle);
+  // Shared store: only Spin's own blogs (allowlist in site.ts).
+  if (!blogHandle || !isOwnBlog(blogHandle)) {
     throw new Response('Not found', {status: 404});
   }
 
-  redirectIfHandleIsLocalized(request, {handle: params.blogHandle, data: blog});
+  const paginationVariables = getPaginationVariables(request, {pageBy: 12});
+  const {blog} = await context.storefront.query(BLOGS_QUERY, {
+    variables: {blogHandle, ...paginationVariables},
+    cache: context.storefront.CacheShort(),
+  });
 
-  return {blog};
+  if (!blog?.articles) {
+    throw new Response('Not found', {status: 404});
+  }
+
+  redirectIfHandleIsLocalized(request, {
+    handle: blogHandle,
+    data: {handle: normalizeHandle(blog.handle)},
+  });
+
+  return {
+    blog: {...blog, handle: normalizeHandle(blog.handle)},
+    blogTitle: blogLabel(blogHandle, blog.title),
+  };
 }
 
 export default function Blog() {
-  const {blog} = useLoaderData<typeof loader>();
-  const {articles} = blog;
+  const {blog, blogTitle} = useLoaderData<typeof loader>();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-8">
-        {blog.title}
+    <div className="mx-auto max-w-[1120px] px-4 pb-14 pt-[18px] md:px-10">
+      <Breadcrumbs
+        className="mb-5"
+        items={[{label: 'Home', href: '/'}, {label: blogTitle}]}
+      />
+      <h1 className="m-0 text-[24px] font-bold text-chrome-200 md:text-[30px]">
+        {blogTitle}
       </h1>
-      <PaginatedResourceSection<ArticleItemFragment>
-        connection={articles}
-        resourcesClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
-        {({node: article, index}) => (
-          <ArticleItem
-            article={article}
-            key={article.id}
-            loading={index < 2 ? 'eager' : 'lazy'}
-          />
-        )}
-      </PaginatedResourceSection>
+      <div className="mt-8">
+        <PaginatedResourceSection<ArticleItemFragment>
+          connection={blog.articles}
+          resourcesClassName="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+        >
+          {({node: article}) => (
+            <ArticleItem
+              article={article}
+              blogHandle={blog.handle}
+              key={article.id}
+            />
+          )}
+        </PaginatedResourceSection>
+      </div>
     </div>
   );
 }
 
 function ArticleItem({
   article,
-  loading,
+  blogHandle,
 }: {
   article: ArticleItemFragment;
-  loading?: HTMLImageElement['loading'];
+  blogHandle: string;
 }) {
   const publishedAt = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
-    month: 'long',
+    month: 'short',
     day: 'numeric',
-  }).format(new Date(article.publishedAt!));
+    timeZone: 'UTC',
+  }).format(new Date(article.publishedAt));
+  const summary = article.seo?.description?.trim();
   return (
     <Link
-      key={article.id}
-      to={`/blogs/${article.blog.handle}/${article.handle}`}
-      className="group surface-vault rounded-[4px] overflow-hidden transition-all duration-300 hover:border-silver-400/30 hover:"
+      to={`/blogs/${encodeURIComponent(blogHandle)}/${encodeURIComponent(article.handle)}`}
+      prefetch="intent"
+      className="surface-vault group flex h-full flex-col rounded-[4px] p-5 transition-colors hover:border-chrome-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-holo-500"
     >
-      {article.image && (
-        <div className="aspect-[3/2] overflow-hidden bg-vault-800">
-          <Image
-            alt={article.image.altText || article.title}
-            aspectRatio="3/2"
-            data={article.image}
-            loading={loading}
-            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
+      <h2 className="m-0 text-base font-bold leading-snug text-chrome-200 group-hover:underline">
+        {article.title}
+      </h2>
+      {summary && (
+        <p className="mb-0 mt-2 text-sm leading-relaxed text-chrome-400">
+          {summary}
+        </p>
       )}
-      <div className="p-5">
-        <h3 className="font-heading text-sm text-chrome-200 group-hover:text-silver-400 transition-colors">
-          {article.title}
-        </h3>
-        <p className="text-chrome-600 text-xs mt-2">{publishedAt}</p>
-      </div>
+      <p className="mb-0 mt-auto pt-4 text-[13px] text-chrome-400">
+        <time dateTime={article.publishedAt}>{publishedAt}</time>
+      </p>
     </Link>
   );
 }
@@ -128,10 +137,6 @@ const BLOGS_QUERY = `#graphql
     blog(handle: $blogHandle) {
       title
       handle
-      seo {
-        title
-        description
-      }
       articles(
         first: $first,
         last: $last,
@@ -147,28 +152,16 @@ const BLOGS_QUERY = `#graphql
           endCursor
           startCursor
         }
-
       }
     }
   }
   fragment ArticleItem on Article {
-    author: authorV2 {
-      name
-    }
-    contentHtml
     handle
     id
-    image {
-      id
-      altText
-      url
-      width
-      height
-    }
     publishedAt
     title
-    blog {
-      handle
+    seo {
+      description
     }
   }
 ` as const;

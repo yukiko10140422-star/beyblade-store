@@ -49,9 +49,26 @@ export const SPIN_PAGE_HANDLES: readonly string[] = [
   'data-sharing-opt-out',
   'legal-notice-特定商取引法に基づく表記',
 ];
-// The old blog 'ニュース' (2026-04 articles) is not linked from the site and its
-// cards did not render (QA 2026-11-18): no blog is served for now.
-export const SPIN_BLOG_HANDLES: readonly string[] = [];
+/**
+ * Blog 'ニュース' holds the 2026-04 Beyblade articles. Google sends visitors
+ * to their URLs (/blogs/%E3%83%8B…/<article>), so they are served at the same
+ * URLs (owner decision 2026-11-25: keep the URLs, fix the pages). It was off
+ * from 2026-11-18 because its list cards collapsed (inline links, QA 11-18).
+ * Handles are compared after decodeURIComponent + NFC (see normalizeHandle).
+ */
+export const SPIN_BLOG_HANDLES: readonly string[] = ['ニュース'];
+
+/**
+ * Name shown for a blog. The Shopify title of 'ニュース' is Japanese; the site
+ * is in English, so the page shows this label (the Shopify data is unchanged).
+ */
+export const SPIN_BLOG_LABELS: Readonly<Record<string, string>> = {
+  ニュース: 'Beyblade Guides',
+};
+
+export function blogLabel(handle: string, fallback: string): string {
+  return SPIN_BLOG_LABELS[normalizeHandle(handle)] ?? fallback;
+}
 
 /**
  * Old Shopify pages whose text predates the site (e.g. contact page with
@@ -65,13 +82,15 @@ export const SPIN_PAGE_REDIRECTS: Readonly<Record<string, string>> = {
   faq: '/faq',
 };
 
-const norm = (h: string | null | undefined) => {
+/** URL-decoded, NFC-normalized handle (Japanese handles arrive either way). */
+export function normalizeHandle(h: string | null | undefined): string {
   try {
     return decodeURIComponent(h ?? '').normalize('NFC');
   } catch {
     return (h ?? '').normalize('NFC');
   }
-};
+}
+const norm = normalizeHandle;
 
 export function isOwnPage(handle: string | null | undefined): boolean {
   return SPIN_PAGE_HANDLES.includes(norm(handle));

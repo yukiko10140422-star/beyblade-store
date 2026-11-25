@@ -11,6 +11,8 @@ export function loader({request}: Route.LoaderArgs) {
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap><loc>${origin}/sitemap/products/1.xml</loc></sitemap>
   <sitemap><loc>${origin}/sitemap/collections/1.xml</loc></sitemap>
+  <sitemap><loc>${origin}/sitemap/pages/1.xml</loc></sitemap>
+  <sitemap><loc>${origin}/sitemap/blogs/1.xml</loc></sitemap>
 </sitemapindex>`;
 
   return new Response(body, {

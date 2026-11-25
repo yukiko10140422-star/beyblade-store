@@ -1,94 +1,142 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/blogs.$blogHandle.$articleHandle';
 import {Image} from '@shopify/hydrogen';
+import {Breadcrumbs} from '~/components/Breadcrumbs';
+import {SITE_URL} from '~/lib/constants';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {isOwnBlog} from '~/lib/site';
+import {SITE, blogLabel, isOwnBlog, normalizeHandle} from '~/lib/site';
+
+/** Same default share image as the home page (articles have no image). */
+const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-home.png`;
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
+  const article = data?.article;
+  if (!article) return [{title: `Not found | ${SITE.name}`}];
+  const title = `${article.seo?.title?.trim() || article.title} | ${SITE.name}`;
+  const description = article.seo?.description?.trim() || '';
+  const url = `${SITE_URL}/blogs/${encodeURIComponent(data.blogHandle)}/${encodeURIComponent(article.handle)}`;
+  const image = article.image?.url ?? DEFAULT_OG_IMAGE;
+  return [
+    {title},
+    ...(description ? [{name: 'description', content: description}] : []),
+    {property: 'og:title', content: title},
+    ...(description
+      ? [{property: 'og:description', content: description}]
+      : []),
+    {property: 'og:type', content: 'article'},
+    {property: 'og:url', content: url},
+    {property: 'og:image', content: image},
+    {property: 'og:site_name', content: SITE.name},
+    {property: 'article:published_time', content: article.publishedAt},
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:image', content: image},
+    {
+      'script:ld+json': {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: article.title,
+        datePublished: article.publishedAt,
+        mainEntityOfPage: url,
+        image,
+        publisher: {'@type': 'Organization', name: SITE.name, url: SITE_URL},
+      },
+    },
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
-
-  return criticalData;
+  return loadCriticalData(args);
 }
 
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
 async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
-  const {blogHandle, articleHandle} = params;
+  const blogHandle = normalizeHandle(params.blogHandle);
+  const articleHandle = normalizeHandle(params.articleHandle);
 
+  // Shared store: only Spin's own blogs (allowlist in site.ts).
   if (!articleHandle || !blogHandle || !isOwnBlog(blogHandle)) {
     throw new Response('Not found', {status: 404});
   }
 
-  const [{blog}] = await Promise.all([
-    context.storefront.query(ARTICLE_QUERY, {
-      variables: {blogHandle, articleHandle},
-      cache: context.storefront.CacheLong(),
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
+  const {blog} = await context.storefront.query(ARTICLE_QUERY, {
+    variables: {blogHandle, articleHandle},
+    cache: context.storefront.CacheLong(),
+  });
 
   if (!blog?.articleByHandle) {
-    throw new Response(null, {status: 404});
+    throw new Response('Not found', {status: 404});
   }
 
+  // Handles are compared decoded + NFC, so a Japanese handle in the URL
+  // (percent-encoded) never triggers a redirect to itself.
   redirectIfHandleIsLocalized(
     request,
-    {
-      handle: articleHandle,
-      data: blog.articleByHandle,
-    },
-    {
-      handle: blogHandle,
-      data: blog,
-    },
+    {handle: articleHandle, data: blog.articleByHandle},
+    {handle: blogHandle, data: {handle: normalizeHandle(blog.handle)}},
   );
 
-  const article = blog.articleByHandle;
-
-  return {article};
+  return {
+    article: blog.articleByHandle,
+    blogHandle,
+    blogTitle: blogLabel(blogHandle, blog.title),
+  };
 }
 
+/**
+ * Article body from Shopify (h2–h4, p, ul/ol, table, a). Descendant
+ * selectors because the body is raw HTML; tables scroll sideways on narrow
+ * screens instead of widening the page.
+ */
+const ARTICLE_BODY =
+  'mt-8 text-[15px] leading-relaxed text-chrome-300 ' +
+  '[&_h2]:mb-3 [&_h2]:mt-10 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-chrome-200 ' +
+  '[&_h3]:mb-3 [&_h3]:mt-8 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-chrome-200 ' +
+  '[&_h4]:mb-2 [&_h4]:mt-6 [&_h4]:text-base [&_h4]:font-semibold [&_h4]:text-chrome-200 ' +
+  '[&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 ' +
+  '[&_strong]:font-semibold [&_strong]:text-chrome-200 [&_a]:text-holo-500 [&_a]:underline ' +
+  '[&_table]:mb-6 [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:border-collapse [&_table]:text-sm ' +
+  '[&_th]:border [&_th]:border-vault-700 [&_th]:bg-white [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-chrome-200 ' +
+  '[&_td]:border [&_td]:border-vault-700 [&_td]:bg-white [&_td]:px-3 [&_td]:py-2 [&_td]:align-top ' +
+  '[&_img]:my-6 [&_img]:rounded-[4px]';
+
 export default function Article() {
-  const {article} = useLoaderData<typeof loader>();
-  const {title, image, contentHtml, author} = article;
+  const {article, blogHandle, blogTitle} = useLoaderData<typeof loader>();
+  const {title, image, contentHtml} = article;
 
   const publishedDate = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
-    month: 'long',
+    month: 'short',
     day: 'numeric',
+    timeZone: 'UTC',
   }).format(new Date(article.publishedAt));
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-4">
+    <article className="mx-auto max-w-[820px] px-4 pb-14 pt-[18px] md:px-10">
+      <Breadcrumbs
+        className="mb-5"
+        truncateLast
+        items={[
+          {label: 'Home', href: '/'},
+          {label: blogTitle, href: `/blogs/${encodeURIComponent(blogHandle)}`},
+          {label: title},
+        ]}
+      />
+      <h1 className="m-0 text-[24px] font-bold leading-tight text-chrome-200 md:text-[30px]">
         {title}
       </h1>
-      <div className="flex items-center gap-3 text-chrome-500 text-xs mb-8">
+      <p className="mb-0 mt-3 text-[13px] text-chrome-400">
         <time dateTime={article.publishedAt}>{publishedDate}</time>
-        {author?.name && (
-          <>
-            <span>&middot;</span>
-            <address className="not-italic">{author.name}</address>
-          </>
-        )}
-      </div>
+      </p>
       {image && (
-        <div className="rounded-[4px] overflow-hidden mb-10">
+        <div className="mt-6 overflow-hidden rounded-[4px]">
           <Image data={image} sizes="90vw" loading="eager" className="w-full" />
         </div>
       )}
       <div
+        className={ARTICLE_BODY}
         dangerouslySetInnerHTML={{__html: contentHtml}}
-        className="text-chrome-400 text-sm leading-relaxed [&>p]:mb-4 [&>h2]:font-heading [&>h2]:text-lg [&>h2]:text-chrome-200 [&>h2]: [&>h2]: [&>h2]:mt-8 [&>h2]:mb-4 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-4 [&_a]:text-silver-400 [&_a]:underline [&>img]:rounded-[4px] [&>img]:my-6"
       />
-    </div>
+    </article>
   );
 }
 
@@ -102,14 +150,12 @@ const ARTICLE_QUERY = `#graphql
   ) @inContext(language: $language, country: $country) {
     blog(handle: $blogHandle) {
       handle
+      title
       articleByHandle(handle: $articleHandle) {
         handle
         title
         contentHtml
         publishedAt
-        author: authorV2 {
-          name
-        }
         image {
           id
           altText

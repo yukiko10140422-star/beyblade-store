@@ -3,12 +3,16 @@ import type {Route} from './+types/blogs._index';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import type {BlogsQuery} from 'storefrontapi.generated';
-import {isOwnBlog} from '~/lib/site';
+import {Breadcrumbs} from '~/components/Breadcrumbs';
+import {SITE, blogLabel, isOwnBlog, normalizeHandle} from '~/lib/site';
 
 type BlogNode = BlogsQuery['blogs']['nodes'][0];
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Blogs | Tokyo Spin Vault`}];
+  return [
+    {title: `Articles | ${SITE.name}`},
+    {name: 'description', content: `Articles about Beyblade X from ${SITE.name}.`},
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -37,36 +41,45 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  // Shared store: only Spin's own blogs (allowlist). None is served now.
-  if (!blogs.nodes.some((b) => isOwnBlog(b.handle))) {
+  // Shared store: only Spin's own blogs (allowlist in site.ts).
+  const own = blogs.nodes
+    .filter((b) => isOwnBlog(b.handle))
+    .map((b) => ({
+      ...b,
+      handle: normalizeHandle(b.handle),
+      title: blogLabel(b.handle, b.title),
+    }));
+  if (!own.length) {
     throw new Response('Not found', {status: 404});
   }
-  return {
-    blogs: {
-      ...blogs,
-      nodes: blogs.nodes.filter((b) => isOwnBlog(b.handle)),
-    },
-  };
+  return {blogs: {...blogs, nodes: own}};
 }
 
 export default function Blogs() {
   const {blogs} = useLoaderData<typeof loader>();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
-      <h1 className="font-heading text-2xl md:text-3xl text-silver-metallic mb-8">
-        Blog
+    <div className="mx-auto max-w-[820px] px-4 pb-14 pt-[18px] md:px-10">
+      <Breadcrumbs
+        className="mb-5"
+        items={[{label: 'Home', href: '/'}, {label: 'Articles'}]}
+      />
+      <h1 className="m-0 text-[24px] font-bold text-chrome-200 md:text-[30px]">
+        Articles
       </h1>
-      <div className="grid gap-4">
-        <PaginatedResourceSection<BlogNode> connection={blogs}>
+      <div className="mt-8">
+        <PaginatedResourceSection<BlogNode>
+          connection={blogs}
+          resourcesClassName="grid gap-4"
+        >
           {({node: blog}) => (
             <Link
               key={blog.handle}
               prefetch="intent"
-              to={`/blogs/${blog.handle}`}
-              className="surface-vault rounded-[4px] p-6 hover:border-silver-400/30 hover: transition-all group"
+              to={`/blogs/${encodeURIComponent(blog.handle)}`}
+              className="surface-vault block rounded-[4px] p-5 transition-colors hover:border-chrome-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-holo-500"
             >
-              <h2 className="font-heading text-sm text-chrome-200 group-hover:text-silver-400 transition-colors">
+              <h2 className="m-0 text-base font-bold text-chrome-200">
                 {blog.title}
               </h2>
             </Link>

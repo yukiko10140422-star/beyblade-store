@@ -534,15 +534,12 @@ export type ArticleQueryVariables = StorefrontAPI.Exact<{
 
 export type ArticleQuery = {
   blog?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Blog, 'handle'> & {
+    Pick<StorefrontAPI.Blog, 'handle' | 'title'> & {
       articleByHandle?: StorefrontAPI.Maybe<
         Pick<
           StorefrontAPI.Article,
           'handle' | 'title' | 'contentHtml' | 'publishedAt'
         > & {
-          author?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.ArticleAuthor, 'name'>
-          >;
           image?: StorefrontAPI.Maybe<
             Pick<
               StorefrontAPI.Image,
@@ -574,25 +571,13 @@ export type BlogQueryVariables = StorefrontAPI.Exact<{
 export type BlogQuery = {
   blog?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Blog, 'title' | 'handle'> & {
-      seo?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Seo, 'title' | 'description'>
-      >;
       articles: {
         nodes: Array<
           Pick<
             StorefrontAPI.Article,
-            'contentHtml' | 'handle' | 'id' | 'publishedAt' | 'title'
+            'handle' | 'id' | 'publishedAt' | 'title'
           > & {
-            author?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.ArticleAuthor, 'name'>
-            >;
-            image?: StorefrontAPI.Maybe<
-              Pick<
-                StorefrontAPI.Image,
-                'id' | 'altText' | 'url' | 'width' | 'height'
-              >
-            >;
-            blog: Pick<StorefrontAPI.Blog, 'handle'>;
+            seo?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Seo, 'description'>>;
           }
         >;
         pageInfo: Pick<
@@ -606,14 +591,8 @@ export type BlogQuery = {
 
 export type ArticleItemFragment = Pick<
   StorefrontAPI.Article,
-  'contentHtml' | 'handle' | 'id' | 'publishedAt' | 'title'
-> & {
-  author?: StorefrontAPI.Maybe<Pick<StorefrontAPI.ArticleAuthor, 'name'>>;
-  image?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
-  >;
-  blog: Pick<StorefrontAPI.Blog, 'handle'>;
-};
+  'handle' | 'id' | 'publishedAt' | 'title'
+> & {seo?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Seo, 'description'>>};
 
 export type BlogsQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -1571,6 +1550,23 @@ export type SitemapProductsQuery = {
   };
 };
 
+export type SitemapArticlesQueryVariables = StorefrontAPI.Exact<{
+  blogHandle: StorefrontAPI.Scalars['String']['input'];
+  first: StorefrontAPI.Scalars['Int']['input'];
+  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type SitemapArticlesQuery = {
+  blog?: StorefrontAPI.Maybe<{
+    articles: {
+      nodes: Array<Pick<StorefrontAPI.Article, 'handle' | 'publishedAt'>>;
+      pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
+    };
+  }>;
+};
+
 interface GeneratedQueryTypes {
   '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n    paymentSettings {\n      acceptedCardBrands\n      supportedDigitalWallets\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: HeaderQuery;
@@ -1592,11 +1588,11 @@ interface GeneratedQueryTypes {
     return: BestSellersQuery;
     variables: BestSellersQueryVariables;
   };
-  '#graphql\n  query Article(\n    $articleHandle: String!\n    $blogHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      handle\n      articleByHandle(handle: $articleHandle) {\n        handle\n        title\n        contentHtml\n        publishedAt\n        author: authorV2 {\n          name\n        }\n        image {\n          id\n          altText\n          url\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query Article(\n    $articleHandle: String!\n    $blogHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      handle\n      title\n      articleByHandle(handle: $articleHandle) {\n        handle\n        title\n        contentHtml\n        publishedAt\n        image {\n          id\n          altText\n          url\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: ArticleQuery;
     variables: ArticleQueryVariables;
   };
-  '#graphql\n  query Blog(\n    $language: LanguageCode\n    $blogHandle: String!\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      title\n      handle\n      seo {\n        title\n        description\n      }\n      articles(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor\n      ) {\n        nodes {\n          ...ArticleItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n\n      }\n    }\n  }\n  fragment ArticleItem on Article {\n    author: authorV2 {\n      name\n    }\n    contentHtml\n    handle\n    id\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    publishedAt\n    title\n    blog {\n      handle\n    }\n  }\n': {
+  '#graphql\n  query Blog(\n    $language: LanguageCode\n    $blogHandle: String!\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      title\n      handle\n      articles(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor\n      ) {\n        nodes {\n          ...ArticleItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n  fragment ArticleItem on Article {\n    handle\n    id\n    publishedAt\n    title\n    seo {\n      description\n    }\n  }\n': {
     return: BlogQuery;
     variables: BlogQueryVariables;
   };
@@ -1655,6 +1651,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  query SitemapProducts(\n    $query: String!\n    $first: Int!\n    $after: String\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, after: $after, query: $query, sortKey: ID) {\n      nodes {\n        handle\n        updatedAt\n        tags\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n    }\n  }\n': {
     return: SitemapProductsQuery;
     variables: SitemapProductsQueryVariables;
+  };
+  '#graphql\n  query SitemapArticles(\n    $blogHandle: String!\n    $first: Int!\n    $after: String\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    blog(handle: $blogHandle) {\n      articles(first: $first, after: $after, sortKey: ID) {\n        nodes {\n          handle\n          publishedAt\n        }\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n      }\n    }\n  }\n': {
+    return: SitemapArticlesQuery;
+    variables: SitemapArticlesQueryVariables;
   };
 }
 
