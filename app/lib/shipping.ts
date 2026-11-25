@@ -80,13 +80,13 @@ export function findMethod(
  * (ISO country code → [EMS, airmail]). null = not published as a single
  * number (city-dependent) or not listed.
  *
- * Owner decision 2026-11-25: the shop ships to these 21 countries and
- * territories only (Shopify markets trimmed the same day; AE added later
- * the same day, owner: "UAE足していいですよ"). The rest were
+ * Owner decision 2026-11-25: the shop ships to these 20 countries and
+ * territories only (Shopify markets trimmed the same day; AE added and MD
+ * (Moldova) removed later the same day, owner approvals). The rest were
  * dropped for tax-ID requirements at customs, Japan Post suspensions /
  * requests to refrain, or unverified risk — table: tokyo-card-vault
  * docs/data/duty-taxid-20261125/duty-taxid-by-country.md.
- * NO, IS, LI, AD, MC, SM, MD and MO are not on Japan Post's 南関東 tables
+ * NO, IS, LI, AD, MC, SM and MO are not on Japan Post's 南関東 tables
  * (2026-11-25), so they have no estimate (not copied from a neighbour).
  */
 export const JAPAN_POST_DAYS: Readonly<
@@ -102,7 +102,6 @@ export const JAPAN_POST_DAYS: Readonly<
   AD: {name: 'Andorra', ems: null, air: null},
   MC: {name: 'Monaco', ems: null, air: null},
   SM: {name: 'San Marino', ems: null, air: null},
-  MD: {name: 'Moldova', ems: null, air: null},
   AU: {name: 'Australia', ems: null, air: 14},
   NZ: {name: 'New Zealand', ems: 9, air: 16},
   HK: {name: 'Hong Kong', ems: null, air: 10},
@@ -207,15 +206,13 @@ export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
     fromUsd: 27,
     countries: ['AD', 'LI', 'MC', 'SM'],
   },
-  // DHL markets (owner 2026-11-17: Ship&co quote x 1.2 + US$6). No Japan Post
-  // standard to MD (suspended by Japan Post, 2026-10-23).
+  // DHL market (owner 2026-11-17: Ship&co quote x 1.2 + US$6).
   {region: 'United Arab Emirates', carrier: 'ems', fromUsd: 30, countries: ['AE']},
   {region: 'Iceland', carrier: 'dhl', fromUsd: 55, countries: ['IS']},
-  {region: 'Moldova', carrier: 'dhl', fromUsd: 61, countries: ['MD']},
 ];
 
 /**
- * Every destination the shop ships to (owner decision 2026-11-25: these 21
+ * Every destination the shop ships to (owner decision 2026-11-25: these 20
  * only). Anything else — the EU included — gets no delivery at checkout.
  */
 export const SHIP_TO_COUNTRIES: ReadonlySet<string> = new Set(
@@ -239,14 +236,14 @@ export const EU_COUNTRIES: ReadonlySet<string> = new Set([
 const SHIP_TO_NAMES = [...SHIP_TO_COUNTRIES].map(
   (cc) => JAPAN_POST_DAYS[cc]?.name ?? cc,
 );
-/** "We ship to 21 countries and territories: …" (from SHIP_TO_COUNTRIES). */
+/** "We ship to 20 countries and territories: …" (from SHIP_TO_COUNTRIES). */
 export const WHERE_WE_SHIP_LINE = `We ship to ${SHIP_TO_NAMES.length} countries and territories: ${SHIP_TO_NAMES.slice(0, -1).join(', ')} and ${SHIP_TO_NAMES[SHIP_TO_NAMES.length - 1]}. We do not ship to other countries, including the European Union.`;
 
 /**
  * Japan Post has suspended small packets to these countries (差出可否早見表,
  * 2026-10-23), so checkout offers DHL Express only — no standard method.
  */
-export const NO_STANDARD_COUNTRIES: ReadonlySet<string> = new Set(['MD']);
+export const NO_STANDARD_COUNTRIES: ReadonlySet<string> = new Set<string>([]);
 
 /** Lowest Express price anywhere (for pages that don't know the country). */
 export const EXPRESS_FROM_MIN_USD = Math.min(
@@ -338,7 +335,7 @@ export const SHIPPING_POLICY_PATH = '/policies/shipping-policy';
  * Storefront API carts on 2026-11-18 (tokyo-vaults/scripts/check-country-shipping.mjs,
  * result tokyo-vaults/.out/country-shipping.json). Re-read after any change
  * to the market rates; verify.mjs compares this list with checkout.
- * Re-read 2026-11-25 after trimming to 21 destinations (MO added, MX/ID/VN removed; AE is paid).
+ * Re-read 2026-11-25 after trimming to 20 destinations (MO added, MX/ID/VN/MD removed; AE is paid).
  */
 export const FREE_STANDARD_COUNTRIES: ReadonlySet<string> = new Set([
   'US', 'CA', 'GB', 'CH', 'NO', 'AU', 'NZ', 'SG', 'HK', 'MO', 'TW', 'KR',
