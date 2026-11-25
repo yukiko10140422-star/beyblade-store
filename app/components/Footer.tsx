@@ -38,6 +38,7 @@ export function Footer({header}: FooterProps) {
           <FooterLink to="/shipping">Shipping</FooterLink>
           <FooterLink to="/returns">Returns</FooterLink>
           <FooterLink to="/faq">FAQ</FooterLink>
+          <FooterLink to="/blogs/ニュース">Beyblade Guides</FooterLink>
           <FooterLink to="/contact">Contact</FooterLink>
           <li>
             <a
