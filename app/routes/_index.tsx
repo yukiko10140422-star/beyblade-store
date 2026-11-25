@@ -10,6 +10,7 @@ import {
 import {SITE_URL} from '~/lib/constants';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import {SCOPE_QUERY, SITE, isOwnProduct} from '~/lib/site';
+import {organizationJsonLd} from '~/lib/structured-data';
 
 export const meta: Route.MetaFunction = () => {
   const title = `${SITE.name} | Japanese Beyblade X shipped from Japan`;
@@ -31,13 +32,10 @@ export const meta: Route.MetaFunction = () => {
     {name: 'twitter:description', content: description},
     {name: 'twitter:image', content: `${SITE_URL}/images/og-home.png`},
     {
-      'script:ld+json': {
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        name: SITE.name,
-        url: SITE_URL,
-        logo: `${SITE_URL}/images/logo.png`,
-      },
+      'script:ld+json': organizationJsonLd(
+        SITE_URL,
+        `${SITE_URL}/images/logo.png`,
+      ),
     },
     {
       'script:ld+json': {

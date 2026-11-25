@@ -36,6 +36,7 @@ import {
   StockNote,
 } from '~/components/PurchaseInfo';
 import {getDeliveryEstimate, parseHandlingDays} from '~/lib/delivery-estimate';
+import {offerPolicies, offerSku} from '~/lib/structured-data';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
@@ -127,6 +128,9 @@ export const meta: Route.MetaFunction = ({data}) => {
             image,
             sku,
             barcode: product?.selectedOrFirstAvailableVariant?.barcode,
+            variantId: product?.selectedOrFirstAvailableVariant?.id,
+            handlingDays: parseHandlingDays(product?.handlingDays?.value),
+            serviceValue: product?.shippingService?.value,
             price,
             currency,
             available,
@@ -705,6 +709,7 @@ const PRODUCT_FRAGMENT = `#graphql
     series: metafield(namespace: "beyblade", key: "series") { value }
     modelNumber: metafield(namespace: "beyblade", key: "model_number") { value }
     condition: metafield(namespace: "beyblade", key: "condition") { value }
+    ebayCondition: metafield(namespace: "ebay", key: "condition") { value }
     isLimitedEdition: metafield(namespace: "beyblade", key: "is_limited_edition") { value }
     generation: metafield(namespace: "beyblade", key: "generation") { value }
     handlingDays: metafield(namespace: "shipping", key: "handling_days") { value }
@@ -773,9 +778,9 @@ const RELATED_PRODUCTS_QUERY = `#graphql
 /**
  * Product JSON-LD for rich results.
  *
- * Only facts carried by the product data are emitted: no invented brand,
- * no shipping rates / delivery times / return window (not decided yet —
- * add them here once they are real, see docs/shopify-setup.md).
+ * Only facts carried by the product data are emitted: no invented brand.
+ * Shipping (free-standard destinations) and the return policy come from
+ * lib/structured-data.ts (shipping.ts facts, as shown on the page).
  * itemCondition: factory-sealed = New, everything else = Used.
  */
 function buildProductJsonLd({
@@ -784,6 +789,9 @@ function buildProductJsonLd({
   image,
   sku,
   barcode,
+  variantId,
+  handlingDays,
+  serviceValue,
   price,
   currency,
   available,
@@ -801,6 +809,9 @@ function buildProductJsonLd({
   image: string;
   sku: string | undefined;
   barcode?: string | null;
+  variantId?: string | null;
+  handlingDays: number | null;
+  serviceValue?: string | null;
   price: string;
   currency: string;
   available: boolean;
@@ -821,7 +832,7 @@ function buildProductJsonLd({
     description: product?.description,
     image,
     url: productUrl,
-    sku: sku?.toUpperCase().startsWith('EBAY-') ? undefined : sku,
+    sku: offerSku(sku, variantId),
     ...(barcode && /^(?:\d{8}|\d{12,14})$/.test(barcode) && {
       [`gtin${barcode.length}`]: barcode,
     }),
@@ -841,6 +852,14 @@ function buildProductJsonLd({
         : isPreOrderProduct(product)
           ? 'https://schema.org/PreOrder'
           : 'https://schema.org/InStock',
+      ...offerPolicies({
+        siteUrl,
+        currency,
+        handlingDays,
+        serviceValue,
+        preorder: isPreOrderProduct(product),
+        itemCondition: condition?.schema,
+      }),
       seller: {
         '@type': 'Organization',
         name: SITE.name,

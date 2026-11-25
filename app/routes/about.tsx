@@ -1,8 +1,11 @@
 import type {Route} from './+types/about';
 import {FactTable, InfoPage} from '~/components/InfoPage';
 import {COMPANY, EBAY_RECORD, SISTER_STORES, SITE} from '~/lib/site';
+import {SITE_URL} from '~/lib/constants';
+import {organizationJsonLd} from '~/lib/structured-data';
 
 export const meta: Route.MetaFunction = () => [
+  {'script:ld+json': organizationJsonLd(SITE_URL, `${SITE_URL}/images/logo.png`)},
   {title: `About us | ${SITE.name}`},
   {
     name: 'description',

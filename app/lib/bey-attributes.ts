@@ -13,6 +13,8 @@ export interface BeyMetafields {
   series?: MetaValue;
   modelNumber?: MetaValue;
   condition?: MetaValue;
+  /** ebay.condition — the condition of the eBay listing it was imported from. */
+  ebayCondition?: MetaValue;
   isLimitedEdition?: MetaValue;
   generation?: MetaValue;
 }
@@ -37,9 +39,14 @@ export function getBeyDetailRows(p: BeyMetafields): DetailRow[] {
     row('Blade', p.bladeName),
     row('Ratchet', p.ratchetSpec, true),
     row('Bit', p.bitSpec, true),
-    row('Condition', p.condition),
+    row('Condition', conditionField(p)),
   ];
   return rows.filter((r): r is DetailRow => r !== null);
+}
+
+/** beyblade.condition, else the eBay listing's condition (ebay.condition). */
+function conditionField(p: BeyMetafields): MetaValue {
+  return metaValue(p.condition) ? p.condition : p.ebayCondition;
 }
 
 function row(label: string, m: MetaValue, mono = false): DetailRow | null {
@@ -49,12 +56,13 @@ function row(label: string, m: MetaValue, mono = false): DetailRow | null {
 
 /**
  * schema.org itemCondition / og product:condition — only when the product
- * states it (beyblade.condition). Nothing is assumed otherwise.
+ * states it (beyblade.condition, else ebay.condition; shown in Details).
+ * Nothing is assumed otherwise.
  */
 export function getItemCondition(
   p: BeyMetafields,
 ): {schema: string; og: 'new' | 'used'} | null {
-  const c = (metaValue(p.condition) ?? '').toLowerCase();
+  const c = (metaValue(conditionField(p)) ?? '').toLowerCase();
   if (!c) return null;
   if (/used|pre-?owned|opened/.test(c)) {
     return {schema: 'https://schema.org/UsedCondition', og: 'used'};
