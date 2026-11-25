@@ -8,7 +8,7 @@ import {
   EXPRESS_REGIONS,
   EXPRESS_UPGRADE_LINE,
   JAPAN_POST_DAYS,
-  NO_EU_LINE,
+  WHERE_WE_SHIP_LINE,
   PRICE_AT_CHECKOUT,
   SHIPPING_METHODS,
   expressCarrierLabel,
@@ -26,9 +26,9 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 const SOURCE_EMS =
-  'https://www.post.japanpost.jp/int/deli_days/ems/minamikanto.html';
+  'https://www.post.japanpost.jp/send/oversea/date/ems/minamikanto.html';
 const SOURCE_AIR =
-  'https://www.post.japanpost.jp/int/deli_days/normal/minamikanto.html';
+  'https://www.post.japanpost.jp/send/oversea/date/normal/minamikanto.html';
 
 export default function Shipping() {
   const rows = Object.entries(JAPAN_POST_DAYS);
@@ -50,7 +50,7 @@ export default function Shipping() {
               `${SHIPPING_METHODS.ems.label}; ${DHL_EXPRESS_LABEL} to the few countries Japan Post EMS does not serve (listed below).`,
             ],
             ['Cost', PRICE_AT_CHECKOUT],
-            ['Where we ship', NO_EU_LINE],
+            ['Where we ship', WHERE_WE_SHIP_LINE],
             ['Duties', DUTIES.line],
           ]}
         />

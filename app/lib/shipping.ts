@@ -10,9 +10,10 @@
  * the product's eBay listing). No value → no dispatch line at all.
  *
  * Transit days: Japan Post "お届け日数表" (standard delivery days) for mail
- * posted in 南関東 (Kanagawa, where the shop ships from), read 2026-11-17:
- *   EMS:      https://www.post.japanpost.jp/int/deli_days/ems/minamikanto.html
- *   Airmail:  https://www.post.japanpost.jp/int/deli_days/normal/minamikanto.html
+ * posted in 南関東 (Kanagawa, where the shop ships from), read 2026-11-17,
+ * re-read 2026-11-25 (same numbers for the countries kept):
+ *   EMS:      https://www.post.japanpost.jp/send/oversea/date/ems/minamikanto.html
+ *   Airmail:  https://www.post.japanpost.jp/send/oversea/date/normal/minamikanto.html
  * International ePacket travels as airmail (通常郵便物・航空便), so the
  * airmail column is used for it. Japan Post gives one "standard" number of
  * days per destination; rows marked "詳細" (city-dependent) are left out,
@@ -78,46 +79,38 @@ export function findMethod(
  * Japan Post standard delivery days from 南関東, by destination
  * (ISO country code → [EMS, airmail]). null = not published as a single
  * number (city-dependent) or not listed.
+ *
+ * Owner decision 2026-11-25: the shop ships to these 20 countries and
+ * territories only (Shopify markets trimmed the same day). The rest were
+ * dropped for tax-ID requirements at customs, Japan Post suspensions /
+ * requests to refrain, or unverified risk — table: tokyo-card-vault
+ * docs/data/duty-taxid-20261125/duty-taxid-by-country.md.
+ * NO, IS, LI, AD, MC, SM, MD and MO are not on Japan Post's 南関東 tables
+ * (2026-11-25), so they have no estimate (not copied from a neighbour).
  */
 export const JAPAN_POST_DAYS: Readonly<
   Record<string, {name: string; ems: number | null; air: number | null}>
 > = {
   US: {name: 'the United States', ems: null, air: 18},
   CA: {name: 'Canada', ems: 6, air: 13},
-  MX: {name: 'Mexico', ems: 11, air: 18},
   GB: {name: 'the United Kingdom', ems: 5, air: 12},
-  DE: {name: 'Germany', ems: 5, air: 12},
-  FR: {name: 'France', ems: 6, air: 13},
-  IT: {name: 'Italy', ems: 9, air: 16},
-  ES: {name: 'Spain', ems: 10, air: 17},
-  NL: {name: 'the Netherlands', ems: 8, air: 18},
-  BE: {name: 'Belgium', ems: 8, air: 14},
-  AT: {name: 'Austria', ems: 9, air: 18},
   CH: {name: 'Switzerland', ems: 7, air: 14},
-  SE: {name: 'Sweden', ems: 10, air: 14},
-  DK: {name: 'Denmark', ems: 8, air: 15},
-  FI: {name: 'Finland', ems: 6, air: 13},
-  PL: {name: 'Poland', ems: 10, air: 17},
-  HU: {name: 'Hungary', ems: 12, air: 19},
+  NO: {name: 'Norway', ems: null, air: null},
+  IS: {name: 'Iceland', ems: null, air: null},
+  LI: {name: 'Liechtenstein', ems: null, air: null},
+  AD: {name: 'Andorra', ems: null, air: null},
+  MC: {name: 'Monaco', ems: null, air: null},
+  SM: {name: 'San Marino', ems: null, air: null},
+  MD: {name: 'Moldova', ems: null, air: null},
   AU: {name: 'Australia', ems: null, air: 14},
   NZ: {name: 'New Zealand', ems: 9, air: 16},
+  HK: {name: 'Hong Kong', ems: null, air: 10},
+  MO: {name: 'Macau', ems: null, air: null},
+  KR: {name: 'South Korea', ems: null, air: 10},
+  TW: {name: 'Taiwan', ems: 2, air: 9},
   SG: {name: 'Singapore', ems: 2, air: 9},
   MY: {name: 'Malaysia', ems: 4, air: 11},
   TH: {name: 'Thailand', ems: 3, air: 10},
-  VN: {name: 'Vietnam', ems: 3, air: 10},
-  ID: {name: 'Indonesia', ems: 8, air: 16},
-  PH: {name: 'the Philippines', ems: null, air: 19},
-  TW: {name: 'Taiwan', ems: 2, air: 9},
-  HK: {name: 'Hong Kong', ems: null, air: 10},
-  KR: {name: 'South Korea', ems: null, air: 10},
-  IN: {name: 'India', ems: 8, air: 15},
-  AE: {name: 'the United Arab Emirates', ems: 9, air: 16},
-  SA: {name: 'Saudi Arabia', ems: 12, air: 20},
-  IL: {name: 'Israel', ems: 17, air: 20},
-  TR: {name: 'Turkey', ems: 11, air: 18},
-  BR: {name: 'Brazil', ems: 14, air: 17},
-  AR: {name: 'Argentina', ems: 14, air: 16},
-  PE: {name: 'Peru', ems: 8, air: 17},
 };
 
 /** Standard transit days for a destination and method, or null. */
@@ -180,59 +173,40 @@ export interface ExpressRegion {
  */
 export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
   {region: 'United States', carrier: 'ems', fromUsd: 25, countries: ['US']},
-  {region: 'Canada and Mexico', carrier: 'ems', fromUsd: 25, countries: ['CA', 'MX']},
+  {region: 'Canada', carrier: 'ems', fromUsd: 25, countries: ['CA']},
   {region: 'UK, Switzerland, Norway', carrier: 'ems', fromUsd: 13, countries: ['GB', 'CH', 'NO']},
   {
-    region: 'East and Southeast Asia (9 countries/territories)',
+    region: 'Hong Kong, Macau, South Korea, Taiwan, Singapore, Malaysia, Thailand',
     carrier: 'ems',
     fromUsd: 7,
-    countries: ['HK', 'ID', 'KR', 'MY', 'PH', 'TH', 'SG', 'TW', 'VN'],
+    countries: ['HK', 'MO', 'KR', 'TW', 'SG', 'MY', 'TH'],
   },
   {region: 'Australia and New Zealand', carrier: 'ems', fromUsd: 13, countries: ['AU', 'NZ']},
   {
-    region: 'South Asia, Mongolia, Cambodia, Laos, Brunei',
-    carrier: 'ems',
-    fromUsd: 19,
-    countries: ['IN', 'BN', 'KH', 'LA', 'LK', 'MN', 'MV', 'NP'],
-  },
-  {
-    region: 'Turkey, Andorra, Liechtenstein, Monaco, North Macedonia, San Marino',
+    region: 'Andorra, Liechtenstein, Monaco, San Marino',
     carrier: 'ems',
     fromUsd: 27,
-    countries: ['TR', 'AD', 'LI', 'MC', 'MK', 'SM'],
-  },
-  {region: 'Papua New Guinea', carrier: 'ems', fromUsd: 27, countries: ['PG']},
-  {
-    region: 'Middle East and Africa',
-    carrier: 'ems',
-    fromUsd: 30,
-    countries: ['AE', 'EG', 'KW', 'ZA', 'BH', 'DZ', 'GH', 'IL', 'JO', 'KE', 'MA', 'MU', 'OM', 'QA', 'SA', 'SN', 'TN', 'TZ', 'UG'],
-  },
-  {
-    region: 'Latin America and the Caribbean',
-    carrier: 'ems',
-    fromUsd: 30,
-    countries: ['AR', 'BR', 'CL', 'CO', 'CR', 'PA', 'PE', 'SV', 'UY', 'EC', 'HN', 'JM', 'TT'],
+    countries: ['AD', 'LI', 'MC', 'SM'],
   },
   // DHL markets (owner 2026-11-17: Ship&co quote x 1.2 + US$6). No Japan Post
-  // standard to MD, BO, NA, BW, FJ (suspended by Japan Post, 2026-10-23).
-  {region: 'Fiji', carrier: 'dhl', fromUsd: 34, countries: ['FJ']},
-  {
-    region: 'Albania, Bosnia and Herzegovina, Iceland, Montenegro, Serbia, Vatican City',
-    carrier: 'dhl',
-    fromUsd: 55,
-    countries: ['AL', 'BA', 'ME', 'RS', 'VA', 'IS'],
-  },
-  {region: 'Bolivia, Botswana, Namibia', carrier: 'dhl', fromUsd: 60, countries: ['BO', 'NA', 'BW']},
-  {region: 'New Caledonia', carrier: 'dhl', fromUsd: 60, countries: ['NC']},
-  {
-    region: 'Guatemala, Nicaragua, Paraguay, the Bahamas, Dominican Republic',
-    carrier: 'dhl',
-    fromUsd: 61,
-    countries: ['GT', 'NI', 'BS', 'DO', 'PY'],
-  },
+  // standard to MD (suspended by Japan Post, 2026-10-23).
+  {region: 'Iceland', carrier: 'dhl', fromUsd: 55, countries: ['IS']},
   {region: 'Moldova', carrier: 'dhl', fromUsd: 61, countries: ['MD']},
 ];
+
+/**
+ * Every destination the shop ships to (owner decision 2026-11-25: these 20
+ * only). Anything else — the EU included — gets no delivery at checkout.
+ */
+export const SHIP_TO_COUNTRIES: ReadonlySet<string> = new Set(
+  EXPRESS_REGIONS.flatMap((r) => r.countries),
+);
+
+/** True when the shop ships to the country (unknown country → true). */
+export function shipsTo(country: string | null | undefined): boolean {
+  const cc = (country ?? '').toUpperCase();
+  return !cc || SHIP_TO_COUNTRIES.has(cc);
+}
 
 /**
  * Owner decision 2026-11-17: no shipping to the 27 EU member states (removed
@@ -242,14 +216,17 @@ export const EU_COUNTRIES: ReadonlySet<string> = new Set([
   'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE',
   'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
 ]);
-export const NO_EU_LINE =
-  'We do not ship to European Union countries. We do ship to the UK, Switzerland, Norway and other European countries outside the EU.';
+const SHIP_TO_NAMES = [...SHIP_TO_COUNTRIES].map(
+  (cc) => JAPAN_POST_DAYS[cc]?.name ?? cc,
+);
+/** "We ship to 20 countries and territories: …" (from SHIP_TO_COUNTRIES). */
+export const WHERE_WE_SHIP_LINE = `We ship to ${SHIP_TO_NAMES.length} countries and territories: ${SHIP_TO_NAMES.slice(0, -1).join(', ')} and ${SHIP_TO_NAMES[SHIP_TO_NAMES.length - 1]}. We do not ship to other countries, including the European Union.`;
 
 /**
  * Japan Post has suspended small packets to these countries (差出可否早見表,
  * 2026-10-23), so checkout offers DHL Express only — no standard method.
  */
-export const NO_STANDARD_COUNTRIES: ReadonlySet<string> = new Set(['MD', 'BO', 'NA', 'BW', 'FJ']);
+export const NO_STANDARD_COUNTRIES: ReadonlySet<string> = new Set(['MD']);
 
 /** Lowest Express price anywhere (for pages that don't know the country). */
 export const EXPRESS_FROM_MIN_USD = Math.min(
@@ -341,17 +318,18 @@ export const SHIPPING_POLICY_PATH = '/policies/shipping-policy';
  * Storefront API carts on 2026-11-18 (tokyo-vaults/scripts/check-country-shipping.mjs,
  * result tokyo-vaults/.out/country-shipping.json). Re-read after any change
  * to the market rates; verify.mjs compares this list with checkout.
+ * Re-read 2026-11-25 after trimming to 20 destinations (MO added, MX/ID/VN removed).
  */
 export const FREE_STANDARD_COUNTRIES: ReadonlySet<string> = new Set([
-  'US', 'CA', 'MX', 'GB', 'CH', 'NO', 'AU', 'NZ', 'SG', 'HK', 'TW', 'KR',
-  'TH', 'MY', 'ID', 'VN',
+  'US', 'CA', 'GB', 'CH', 'NO', 'AU', 'NZ', 'SG', 'HK', 'MO', 'TW', 'KR',
+  'TH', 'MY',
 ]);
 
 /** Destination name when standard shipping there is free, else null. */
 export function freeStandardTo(country: string | null | undefined): string | null {
   const cc = (country ?? '').toUpperCase();
   if (!cc || !FREE_STANDARD_COUNTRIES.has(cc)) return null;
-  if (EU_COUNTRIES.has(cc) || NO_STANDARD_COUNTRIES.has(cc)) return null;
+  if (!SHIP_TO_COUNTRIES.has(cc) || NO_STANDARD_COUNTRIES.has(cc)) return null;
   return destinationName(cc);
 }
 
@@ -360,4 +338,4 @@ export const CHECKOUT_DOMAIN_FALLBACK = 'tokyo-spin-vault.myshopify.com';
 
 /** Shown instead of Add to cart for destinations the shop does not ship to. */
 export const NO_SHIP_BUTTON_NOTE =
-  'We do not ship to your selected country (European Union). Change the country at the bottom of the page.';
+  'We do not ship to your selected country. Change the country at the bottom of the page.';

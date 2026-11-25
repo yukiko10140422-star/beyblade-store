@@ -1,11 +1,12 @@
 import {
-  EU_COUNTRIES,
   NO_STANDARD_COUNTRIES,
+  SHIP_TO_COUNTRIES,
   SHIPPING_METHODS,
   destinationName,
   expressCarrierLabel,
   expressRegionFor,
   findMethod,
+  shipsTo,
   handlingLabel,
   transitDays,
   type ShippingMethodId,
@@ -31,7 +32,7 @@ export interface DeliveryEstimate {
   standard: MethodEstimate | null;
   /** EMS transit for the destination (used by paid Express rows). */
   emsTransitDays: number | null;
-  /** false for destinations the shop does not ship to (EU). */
+  /** false for destinations the shop does not ship to (only 20, 2026-11-25). */
   shipsHere: boolean;
   /** "the United Kingdom" when standard shipping there is free (country known). */
   freeStandardTo?: string | null;
@@ -100,7 +101,7 @@ export function getDeliveryEstimate(
   // No standard method where Japan Post has suspended service (DHL only).
   const cc = (country ?? '').toUpperCase();
   const methodId: ShippingMethodId | undefined =
-    NO_STANDARD_COUNTRIES.has(cc) || EU_COUNTRIES.has(cc)
+    NO_STANDARD_COUNTRIES.has(cc) || (cc !== '' && !SHIP_TO_COUNTRIES.has(cc))
     ? undefined
     : // `shipping.service` holds the eBay listing's service (SpeedPAK …),
       // which never names the store's own method. The store ships every
@@ -112,7 +113,7 @@ export function getDeliveryEstimate(
   return {
     destination: destinationName(country),
     countryCode: country ? country.toUpperCase() : null,
-    shipsHere: !EU_COUNTRIES.has((country ?? '').toUpperCase()),
+    shipsHere: shipsTo(country),
     handlingLabel: handlingDays != null ? handlingLabel(handlingDays) : null,
     handlingDays,
     standard: methodId

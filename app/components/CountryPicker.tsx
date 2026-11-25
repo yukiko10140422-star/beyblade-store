@@ -11,8 +11,8 @@ import {useEffect, useRef, useState} from 'react';
  *   3. 'US' フォールバック
  */
 
-// EU member states are not listed: the shop does not ship to the EU
-// (owner decision 2026-11-17).
+// The 20 destinations the shop ships to (owner decision 2026-11-25,
+// SHIP_TO_COUNTRIES in ~/lib/shipping). Others are not listed.
 const COUNTRIES: ReadonlyArray<{code: string; name: string; flag: string}> = [
   {code: 'US', name: 'United States', flag: '🇺🇸'},
   {code: 'CA', name: 'Canada', flag: '🇨🇦'},
@@ -22,20 +22,18 @@ const COUNTRIES: ReadonlyArray<{code: string; name: string; flag: string}> = [
   {code: 'SG', name: 'Singapore', flag: '🇸🇬'},
   {code: 'TW', name: 'Taiwan', flag: '🇹🇼'},
   {code: 'HK', name: 'Hong Kong', flag: '🇭🇰'},
+  {code: 'MO', name: 'Macau', flag: '🇲🇴'},
   {code: 'KR', name: 'South Korea', flag: '🇰🇷'},
-  {code: 'PH', name: 'Philippines', flag: '🇵🇭'},
-  {code: 'CH', name: 'Switzerland', flag: '🇨🇭'},
-  {code: 'NO', name: 'Norway', flag: '🇳🇴'},
-  {code: 'MX', name: 'Mexico', flag: '🇲🇽'},
-  {code: 'BR', name: 'Brazil', flag: '🇧🇷'},
-  {code: 'AE', name: 'UAE', flag: '🇦🇪'},
-  {code: 'IL', name: 'Israel', flag: '🇮🇱'},
-  {code: 'ZA', name: 'South Africa', flag: '🇿🇦'},
-  {code: 'IN', name: 'India', flag: '🇮🇳'},
   {code: 'TH', name: 'Thailand', flag: '🇹🇭'},
   {code: 'MY', name: 'Malaysia', flag: '🇲🇾'},
-  {code: 'ID', name: 'Indonesia', flag: '🇮🇩'},
-  {code: 'VN', name: 'Vietnam', flag: '🇻🇳'},
+  {code: 'CH', name: 'Switzerland', flag: '🇨🇭'},
+  {code: 'NO', name: 'Norway', flag: '🇳🇴'},
+  {code: 'IS', name: 'Iceland', flag: '🇮🇸'},
+  {code: 'LI', name: 'Liechtenstein', flag: '🇱🇮'},
+  {code: 'AD', name: 'Andorra', flag: '🇦🇩'},
+  {code: 'MC', name: 'Monaco', flag: '🇲🇨'},
+  {code: 'SM', name: 'San Marino', flag: '🇸🇲'},
+  {code: 'MD', name: 'Moldova', flag: '🇲🇩'},
 ];
 
 function readCookie(name: string): string | undefined {
