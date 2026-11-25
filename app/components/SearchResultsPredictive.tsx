@@ -96,7 +96,7 @@ function SearchResultsPredictiveArticles({
       <ul className="space-y-1">
         {articles.map((article) => {
           const articleUrl = urlWithTrackingParams({
-            baseUrl: `/blogs/${article.blog.handle}/${article.handle}`,
+            baseUrl: `/blogs/${encodeURIComponent(article.blog.handle)}/${encodeURIComponent(article.handle)}`,
             trackingParams: article.trackingParameters,
             term: term.current ?? '',
           });
