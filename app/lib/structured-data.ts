@@ -143,7 +143,8 @@ export function offerPolicies({
 }
 
 /** "XON株式会社" from COMPANY.displayName "XON (XON株式会社)". */
-const LEGAL_NAME = /\(([^)]+)\)/.exec(COMPANY.displayName)?.[1] ?? COMPANY.displayName;
+const LEGAL_NAME =
+  /\(([^)]+)\)/.exec(COMPANY.displayName)?.[1] ?? COMPANY.displayName;
 
 /**
  * The store as an OnlineStore run by the operating company. Address parts
