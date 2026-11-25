@@ -135,7 +135,7 @@ export function CountryPicker({className = ''}: CountryPickerProps) {
         <ul
           role="listbox"
           aria-label="Select shipping country"
-          className="absolute right-0 bottom-full z-50 mb-2 max-h-80 w-56 overflow-y-auto rounded-[4px] border border-vault-700 bg-white py-1"
+          className="absolute left-0 md:left-auto md:right-0 bottom-full z-50 mb-2 max-h-80 w-56 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-[4px] border border-vault-700 bg-white py-1"
         >
           {COUNTRIES.map((c) => {
             const selected = c.code === current;
