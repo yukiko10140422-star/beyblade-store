@@ -32,7 +32,7 @@ export interface DeliveryEstimate {
   standard: MethodEstimate | null;
   /** EMS transit for the destination (used by paid Express rows). */
   emsTransitDays: number | null;
-  /** false for destinations the shop does not ship to (only 20, 2026-11-25). */
+  /** false for destinations the shop does not ship to (only 21, 2026-11-25). */
   shipsHere: boolean;
   /** "the United Kingdom" when standard shipping there is free (country known). */
   freeStandardTo?: string | null;

@@ -2,6 +2,7 @@ import type {Route} from './+types/faq';
 import {InfoPage} from '~/components/InfoPage';
 import {
   DUTIES,
+  UAE_NOTE,
   DHL_EXPRESS_LABEL,
   EXPRESS_OPTIONS,
   EXPRESS_UPGRADE_LINE,
@@ -21,7 +22,7 @@ const TEXT_ITEMS: ReadonlyArray<readonly [string, string]> = [
     `From Kanagawa, Japan, with tracking: ${SHIPPING_METHODS.epacket.label} (standard; over 2 kg by EMS) or ${SHIPPING_METHODS.ems.label} (express). Where EMS does not reach, Express goes by ${DHL_EXPRESS_LABEL}.`,
   ],
   ['Which countries do you ship to?', WHERE_WE_SHIP_LINE],
-  ['Will I pay duties or import taxes on delivery?', `No. ${DUTIES.line}.`],
+  ['Will I pay duties or import taxes on delivery?', `No, except to the United Arab Emirates. ${DUTIES.line}. ${UAE_NOTE}`],
   [
     'When will my order ship?',
     'Each product page shows when the item ships, when this is set for the item. With Express + priority handling, your order ships within 5 business days.',

@@ -1,6 +1,7 @@
 import {useRouteLoaderData} from 'react-router';
 import {
   DUTIES,
+  dutiesIncludedFor,
   EXPRESS_PROMO_LIVE,
   EXPRESS_UPGRADE,
   freeStandardTo,
@@ -23,7 +24,9 @@ export function AnnouncementBar() {
       {freeTo
         ? `Free tracked shipping to ${freeTo}`
         : 'Ships from Japan with tracking'}
-      {DUTIES.included && ' · Duties included'}
+      {DUTIES.included &&
+        dutiesIncludedFor(root?.buyerCountry) &&
+        ' · Duties included'}
       {EXPRESS_PROMO_LIVE && (
         <span className="hidden md:inline">
           {' '}

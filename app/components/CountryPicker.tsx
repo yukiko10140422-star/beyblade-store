@@ -11,7 +11,7 @@ import {useEffect, useRef, useState} from 'react';
  *   3. 'US' フォールバック
  */
 
-// The 20 destinations the shop ships to (owner decision 2026-11-25,
+// The 21 destinations the shop ships to (owner decision 2026-11-25,
 // SHIP_TO_COUNTRIES in ~/lib/shipping). Others are not listed.
 const COUNTRIES: ReadonlyArray<{code: string; name: string; flag: string}> = [
   {code: 'US', name: 'United States', flag: '🇺🇸'},
@@ -26,6 +26,7 @@ const COUNTRIES: ReadonlyArray<{code: string; name: string; flag: string}> = [
   {code: 'KR', name: 'South Korea', flag: '🇰🇷'},
   {code: 'TH', name: 'Thailand', flag: '🇹🇭'},
   {code: 'MY', name: 'Malaysia', flag: '🇲🇾'},
+  {code: 'AE', name: 'United Arab Emirates', flag: '🇦🇪'},
   {code: 'CH', name: 'Switzerland', flag: '🇨🇭'},
   {code: 'NO', name: 'Norway', flag: '🇳🇴'},
   {code: 'IS', name: 'Iceland', flag: '🇮🇸'},

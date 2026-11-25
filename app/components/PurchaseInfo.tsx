@@ -3,6 +3,8 @@ import {Await, Link} from 'react-router';
 import {arrivalAround, type DeliveryEstimate} from '~/lib/delivery-estimate';
 import {
   DUTIES,
+  UAE_NOTE,
+  dutiesIncludedFor,
   EXPRESS_OPTIONS,
   EXPRESS_PROMO_LIVE,
   EXPRESS_UPGRADE_LINE,
@@ -136,11 +138,16 @@ export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
           )}
         </ul>
       )}
-      {DUTIES.included && (
-        <Row icon={<ReturnIcon />}>
-          <b className="font-semibold text-chrome-200">{DUTIES.line}.</b>
-        </Row>
-      )}
+      {DUTIES.included &&
+        (dutiesIncludedFor(estimate.countryCode) ? (
+          <Row icon={<ReturnIcon />}>
+            <b className="font-semibold text-chrome-200">{DUTIES.line}.</b>
+          </Row>
+        ) : (
+          <Row icon={<ReturnIcon />}>
+            <b className="font-semibold text-chrome-200">{UAE_NOTE}</b>
+          </Row>
+        ))}
       <Row icon={<ReturnIcon />}>
         <span>
           Shipping options and costs for your country are shown at checkout,

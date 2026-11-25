@@ -2,6 +2,7 @@ import type {Route} from './+types/shipping';
 import {FactTable, InfoPage} from '~/components/InfoPage';
 import {
   DUTIES,
+  UAE_NOTE,
   DHL_EXPRESS_LABEL,
   EXPRESS_OPTIONS,
   EXPRESS_PROMO_LIVE,
@@ -21,7 +22,7 @@ export const meta: Route.MetaFunction = () => [
   {
     name: 'description',
     content:
-      'Orders ship from Japan with tracking, by Japan Post ePacket or EMS (DHL Express to a few countries). Duties included — no extra charges on delivery.',
+      'Orders ship from Japan with tracking, by Japan Post ePacket or EMS (DHL Express to a few countries). Duties included — no extra charges on delivery (except the United Arab Emirates).',
   },
 ];
 
@@ -51,7 +52,8 @@ export default function Shipping() {
             ],
             ['Cost', PRICE_AT_CHECKOUT],
             ['Where we ship', WHERE_WE_SHIP_LINE],
-            ['Duties', DUTIES.line],
+            ['Duties', DUTIES.lineAll],
+            ['United Arab Emirates', UAE_NOTE],
           ]}
         />
       </section>
@@ -95,6 +97,7 @@ export default function Shipping() {
           {DUTIES.line}. Import duties for your order are paid by us, so the
           carrier does not collect them from you on delivery.
         </p>
+        <p className="mt-3">{UAE_NOTE}</p>
       </section>
 
       <section>

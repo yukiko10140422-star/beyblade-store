@@ -39,7 +39,7 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
       </div>
       <div className="flex items-center justify-between text-xs">
         <span className="text-chrome-400">Duties</span>
-        <span className="text-chrome-300">{DUTIES.line}</span>
+        <span className="text-chrome-300">{DUTIES.lineAll}</span>
       </div>
 
       <CartDiscounts

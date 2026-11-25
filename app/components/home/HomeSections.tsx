@@ -199,7 +199,7 @@ export function FactsBand() {
     },
     {
       title: 'Ships from Japan',
-      body: 'Japan Post ePacket or EMS, with tracking. Duties included — no extra charges on delivery.',
+      body: 'Japan Post ePacket or EMS, with tracking. Duties included — no extra charges on delivery (except the United Arab Emirates).',
       to: '/shipping',
       link: 'Shipping',
     },

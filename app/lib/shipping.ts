@@ -80,8 +80,9 @@ export function findMethod(
  * (ISO country code → [EMS, airmail]). null = not published as a single
  * number (city-dependent) or not listed.
  *
- * Owner decision 2026-11-25: the shop ships to these 20 countries and
- * territories only (Shopify markets trimmed the same day). The rest were
+ * Owner decision 2026-11-25: the shop ships to these 21 countries and
+ * territories only (Shopify markets trimmed the same day; AE added later
+ * the same day, owner: "UAE足していいですよ"). The rest were
  * dropped for tax-ID requirements at customs, Japan Post suspensions /
  * requests to refrain, or unverified risk — table: tokyo-card-vault
  * docs/data/duty-taxid-20261125/duty-taxid-by-country.md.
@@ -111,6 +112,7 @@ export const JAPAN_POST_DAYS: Readonly<
   SG: {name: 'Singapore', ems: 2, air: 9},
   MY: {name: 'Malaysia', ems: 4, air: 11},
   TH: {name: 'Thailand', ems: 3, air: 10},
+  AE: {name: 'the United Arab Emirates', ems: 9, air: 16},
 };
 
 /** Standard transit days for a destination and method, or null. */
@@ -138,7 +140,24 @@ export function handlingLabel(days: number): string {
 export const DUTIES = {
   included: true,
   line: 'Duties included — no extra charges on delivery',
+  /** For pages that don't know the buyer's country. */
+  lineAll:
+    'Duties included — no extra charges on delivery (except the United Arab Emirates)',
 } as const;
+
+/**
+ * Owner decision 2026-11-25 (UAE added to the destinations): for the UAE,
+ * import duties and VAT are paid by the buyer, and the address needs a UAE
+ * mobile number (tokyo-card-vault docs/data/duty-taxid-20261125/, UAE notes:
+ * import VAT 5% is charged to the importer; Japan Post asks for a mobile
+ * number and e-mail). Nothing else (no delivery promise) is stated.
+ */
+export const BUYER_PAYS_DUTIES: ReadonlySet<string> = new Set(['AE']);
+export const UAE_NOTE =
+  'United Arab Emirates: import duties and VAT are not included and are paid by the buyer. Please add a UAE mobile phone number to your address.';
+export function dutiesIncludedFor(country: string | null | undefined): boolean {
+  return !BUYER_PAYS_DUTIES.has((country ?? '').toUpperCase());
+}
 
 /**
  * Paid faster options. `handling`: 'item' = the item's own dispatch time
@@ -190,12 +209,13 @@ export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
   },
   // DHL markets (owner 2026-11-17: Ship&co quote x 1.2 + US$6). No Japan Post
   // standard to MD (suspended by Japan Post, 2026-10-23).
+  {region: 'United Arab Emirates', carrier: 'ems', fromUsd: 30, countries: ['AE']},
   {region: 'Iceland', carrier: 'dhl', fromUsd: 55, countries: ['IS']},
   {region: 'Moldova', carrier: 'dhl', fromUsd: 61, countries: ['MD']},
 ];
 
 /**
- * Every destination the shop ships to (owner decision 2026-11-25: these 20
+ * Every destination the shop ships to (owner decision 2026-11-25: these 21
  * only). Anything else — the EU included — gets no delivery at checkout.
  */
 export const SHIP_TO_COUNTRIES: ReadonlySet<string> = new Set(
@@ -219,7 +239,7 @@ export const EU_COUNTRIES: ReadonlySet<string> = new Set([
 const SHIP_TO_NAMES = [...SHIP_TO_COUNTRIES].map(
   (cc) => JAPAN_POST_DAYS[cc]?.name ?? cc,
 );
-/** "We ship to 20 countries and territories: …" (from SHIP_TO_COUNTRIES). */
+/** "We ship to 21 countries and territories: …" (from SHIP_TO_COUNTRIES). */
 export const WHERE_WE_SHIP_LINE = `We ship to ${SHIP_TO_NAMES.length} countries and territories: ${SHIP_TO_NAMES.slice(0, -1).join(', ')} and ${SHIP_TO_NAMES[SHIP_TO_NAMES.length - 1]}. We do not ship to other countries, including the European Union.`;
 
 /**
@@ -318,7 +338,7 @@ export const SHIPPING_POLICY_PATH = '/policies/shipping-policy';
  * Storefront API carts on 2026-11-18 (tokyo-vaults/scripts/check-country-shipping.mjs,
  * result tokyo-vaults/.out/country-shipping.json). Re-read after any change
  * to the market rates; verify.mjs compares this list with checkout.
- * Re-read 2026-11-25 after trimming to 20 destinations (MO added, MX/ID/VN removed).
+ * Re-read 2026-11-25 after trimming to 21 destinations (MO added, MX/ID/VN removed; AE is paid).
  */
 export const FREE_STANDARD_COUNTRIES: ReadonlySet<string> = new Set([
   'US', 'CA', 'GB', 'CH', 'NO', 'AU', 'NZ', 'SG', 'HK', 'MO', 'TW', 'KR',
