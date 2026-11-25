@@ -39,6 +39,7 @@ import {getDeliveryEstimate, parseHandlingDays} from '~/lib/delivery-estimate';
 import {offerPolicies, offerSku} from '~/lib/structured-data';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {sisterProductRedirect} from '~/lib/sister-store';
 import {MONEY_FRAGMENT, PRODUCT_ITEM_FRAGMENT} from '~/lib/fragments';
 import {SITE_URL} from '~/lib/constants';
 import {
@@ -275,6 +276,9 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
 
   // Shared Shopify store: products of the sister stores are not served here.
   if (!product?.id || !isOwnProduct(product)) {
+    // A sister site's product (e.g. a ChatGPT product card via myshopify): send it there.
+    const sister = sisterProductRedirect(product, request, 'spin');
+    if (sister) throw sister;
     throw new Response(null, {status: 404});
   }
 
