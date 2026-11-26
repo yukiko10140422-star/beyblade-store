@@ -86,7 +86,7 @@ const TRIGGER_CLASS: Record<Variant, string> = {
   inline:
     'rounded-[2px] text-left text-sm text-chrome-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-holo-500',
   header:
-    'inline-flex h-9 shrink-0 items-center gap-1.5 rounded-[4px] border border-vault-700 bg-white px-2.5 text-sm text-chrome-200 transition-colors hover:border-holo-500 hover:text-holo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-holo-500',
+    'inline-flex h-9 shrink-0 items-center gap-1.5 rounded-[4px] border border-vault-700 bg-white px-2 sm:px-2.5 text-sm text-chrome-200 transition-colors hover:border-holo-500 hover:text-holo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-holo-500',
   footer:
     'inline-flex h-10 items-center gap-1.5 rounded-[4px] px-2 text-sm text-chrome-300 transition-colors hover:bg-vault-800 hover:text-holo-500 focus:outline-none focus:ring-2 focus:ring-holo-500',
 };
@@ -231,7 +231,9 @@ function ButtonLabel({
   return (
     <>
       {meta ? <Flag code={meta.code} /> : <GlobeIcon />}
-      <span className="whitespace-nowrap font-medium">
+      <span
+        className={`whitespace-nowrap font-medium ${variant === "header" ? "hidden sm:inline" : ""}`}
+      >
         {variant === 'header' && meta && (
           <span className="hidden 2xl:inline">Ship to </span>
         )}
@@ -242,7 +244,7 @@ function ButtonLabel({
         width="12"
         height="12"
         viewBox="0 0 12 12"
-        className={`shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
+        className={`shrink-0 transition-transform ${variant === "header" ? "hidden sm:block" : ""} ${open ? 'rotate-180' : ''}`}
       >
         <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" />
       </svg>
