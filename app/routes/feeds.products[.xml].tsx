@@ -1,4 +1,5 @@
 import type {Route} from './+types/feeds.products[.xml]';
+import {htmlToPlainText} from '~/lib/plain-text';
 import {SITE_URL} from '~/lib/constants';
 import {
   GOOGLE_PRODUCT_CATEGORY,
@@ -90,7 +91,8 @@ function toFeedProduct(p: FeedProductNode): FeedProduct {
     id: p.id,
     handle: p.handle,
     title: p.title,
-    description: p.description,
+    // Shopify の description はタグを消しただけで段落の切れ目がつながる → HTML から作る (2026-11-26)
+    description: htmlToPlainText(p.descriptionHtml) || p.description,
     vendor: p.vendor,
     images: p.images.nodes.map((i) => i.url),
     variants: p.variants.nodes,
@@ -108,6 +110,7 @@ interface FeedProductNode {
   handle: string;
   title: string;
   description: string;
+  descriptionHtml?: string | null;
   vendor: string;
   tags: string[];
   images: {nodes: Array<{url: string}>};
@@ -137,6 +140,7 @@ const FEED_PRODUCTS_QUERY = `#graphql
         handle
         title
         description
+        descriptionHtml
         vendor
         tags
         images(first: 11) {
