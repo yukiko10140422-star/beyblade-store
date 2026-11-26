@@ -318,16 +318,18 @@ export const PRIVACY_POLICY_READY = true;
 /**
  * RETURNS are the store's actual refund rules (one Shopify store, one refund
  * policy, applied at checkout to all Vault sites). Owner decision
- * 2026-11-26: 14 days, unopened and sealed only, return shipping paid by
- * the buyer, damage on arrival reported within 48 hours with photos, and
- * items sold in a condition other than New are not returnable. The same
+ * 2026-11-26 (revised the same evening): items sold as New can be returned
+ * within 14 days if unused and in the condition they arrived in, including
+ * items sold without a box; return shipping paid by the buyer; damage on
+ * arrival reported within 48 hours with photos; items sold in a condition
+ * other than New are not returnable. The same
  * wording is in the Shopify refund policy (/policies/refund-policy,
  * rewritten 2026-11-26) and on /returns — change all three together.
  */
 export const RETURNS = {
   windowDays: 14,
   summary:
-    'Returns within 14 days of delivery for items sold as New and still in their original, unopened, sealed condition. Return shipping is paid by the buyer. Items sold in any other condition (for example Used or Pre-owned) cannot be returned.',
+    'Items sold as New can be returned within 14 days of delivery if they are unused and in the condition they arrived in (including items sold without a box). Return shipping is paid by the buyer. Items sold in any other condition (for example Used or Pre-owned) cannot be returned.',
   damaged:
     'Arrived damaged? Contact us within 48 hours of delivery with photos.',
   policyPath: '/policies/refund-policy',

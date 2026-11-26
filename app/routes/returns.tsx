@@ -31,15 +31,16 @@ export default function Returns() {
             Returns are accepted within {RETURNS.windowDays} days of delivery.
           </li>
           <li>
-            Only items sold as New can be returned, and they must be in their
-            original, unopened, sealed condition.
+            Items sold as New can be returned if they are unused and in the
+            condition they arrived in. This includes items sold without a box.
           </li>
           <li>
             Items sold in any other condition (for example Used or Pre-owned,
             as shown on the product page) cannot be returned.
           </li>
           <li>
-            Items opened, used or damaged by the buyer cannot be returned.
+            Items used or damaged by the buyer, or not in the condition they
+            arrived in, cannot be returned.
           </li>
           <li>Return shipping is paid by the buyer.</li>
         </ul>

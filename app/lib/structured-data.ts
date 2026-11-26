@@ -14,7 +14,7 @@
  *     "Ships within N business days" / "around <date>". Left out when
  *     either is unknown, and for pre-orders (they ship on release).
  *   - Returns: the store's refund policy (RETURNS): 14 days, items sold as
- *     New and still unopened and sealed only, return shipping paid by the
+ *     New, unused and as delivered (boxless New items too), return shipping paid by the
  *     buyer. So New offers get that policy, Used offers get "not
  *     returnable", and offers whose condition the product does not state
  *     get no return policy at all (2026-11-26: stating "not returnable" for
@@ -75,8 +75,8 @@ export function merchantReturnPolicy(siteUrl: string) {
 }
 
 /**
- * Used / pre-owned items: the refund policy (RETURNS) only accepts unopened,
- * sealed items, so other conditions are not returnable (owner decision
+ * Used / pre-owned items: the refund policy (RETURNS) only accepts items sold as New,
+ * unused and as delivered, so other conditions are not returnable (owner decision
  * 2026-11-26). Items that arrive damaged are still handled per
  * RETURNS.damaged; schema.org has no field for that, so it is not stated here.
  */
