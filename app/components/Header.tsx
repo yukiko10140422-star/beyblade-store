@@ -1,4 +1,3 @@
-import {useRouteLoaderData} from 'react-router';
 import {Suspense} from 'react';
 import {
   Await,
