@@ -1,7 +1,7 @@
 /**
  * Google Merchant Center product feed (RSS 2.0 + g: namespace).
  *
- * The same file is kept in each Vault store's repo (spin / card / character;
+ * The same file is kept in each Vault store's repo (spin / card / character / game;
  * the stores are separate repos, so nothing is imported across them). The
  * route `app/routes/feeds.products[.xml].tsx` of each store reads its own
  * products (scoped with ~/lib/site) and passes them here in the neutral
@@ -40,7 +40,13 @@ export interface FeedProduct {
   preOrder: boolean;
   /** `custom.expected_ship_date` (YYYY-MM-DD), when set. */
   expectedShipDate?: string | null;
-  condition: 'new' | 'used';
+  /**
+   * From the same helper as the product page's itemCondition. Products
+   * whose condition is not stated are left out of the feed (2026-11-26:
+   * Google reads a missing g:condition as "new", so writing them would
+   * claim New without a source — Merchant Center misrepresentation).
+   */
+  condition?: 'new' | 'used';
   googleProductCategory?: string;
 }
 
@@ -72,9 +78,9 @@ export function buildFeedXml(
   channel: FeedChannel,
   products: readonly FeedProduct[],
 ): string {
-  const items = products.flatMap((p) =>
-    p.variants.map((v) => buildItem(channel, p, v)),
-  );
+  const items = products
+    .filter(isFeedable)
+    .flatMap((p) => p.variants.map((v) => buildItem(channel, p, v)));
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">',
@@ -91,7 +97,20 @@ export function buildFeedXml(
 
 /** Number of <item>s buildFeedXml writes (one per variant). */
 export function countFeedItems(products: readonly FeedProduct[]): number {
-  return products.reduce((n, p) => n + p.variants.length, 0);
+  return products
+    .filter(isFeedable)
+    .reduce((n, p) => n + p.variants.length, 0);
+}
+
+/**
+ * A product goes into the feed only when its condition is stated and, for a
+ * pre-order (tag pre-order), its release date (custom.expected_ship_date)
+ * is set — Merchant Center needs g:availability_date for preorder, and the
+ * date is never guessed (owner decision 2026-11-26, ops journal #1265).
+ */
+function isFeedable(p: FeedProduct): boolean {
+  if (p.condition !== 'new' && p.condition !== 'used') return false;
+  return !p.preOrder || Boolean(isoDate(p.expectedShipDate));
 }
 
 function buildItem(
@@ -143,7 +162,7 @@ function buildItem(
     availabilityDate ? tag('g:availability_date', availabilityDate) : '',
     tag('g:price', price),
     salePrice ? tag('g:sale_price', salePrice) : '',
-    tag('g:condition', p.condition),
+    tag('g:condition', p.condition ?? ''),
     brand ? tag('g:brand', brand) : '',
     gtin ? tag('g:gtin', gtin) : tag('g:identifier_exists', 'no'),
     p.googleProductCategory

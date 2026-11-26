@@ -64,7 +64,8 @@ export function getItemCondition(
 ): {schema: string; og: 'new' | 'used'} | null {
   const c = (metaValue(conditionField(p)) ?? '').toLowerCase();
   if (!c) return null;
-  if (/used|pre-?owned|opened/.test(c)) {
+  // Word boundary before "opened": "Unopened" must not read as used.
+  if (/used|pre-?owned|\bopened/.test(c)) {
     return {schema: 'https://schema.org/UsedCondition', og: 'used'};
   }
   if (/new|sealed|unopened/.test(c)) {

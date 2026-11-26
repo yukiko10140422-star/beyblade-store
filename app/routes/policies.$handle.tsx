@@ -2,6 +2,14 @@ import {LINK_STORE_POLICIES, PRIVACY_POLICY_READY} from '~/lib/shipping';
 import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/policies.$handle';
 import {type Shop} from '@shopify/hydrogen/storefront-api-types';
+import {
+  COMPANY,
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  LEGAL_NOTICE_PATH,
+  REPRESENTATIVES,
+  SITE,
+} from '~/lib/site';
 
 type SelectedPolicies = keyof Pick<
   Shop,
@@ -19,6 +27,11 @@ export async function loader({params, context}: Route.LoaderArgs) {
   }
   if (!params.handle) {
     throw new Response('No handle was passed in', {status: 404});
+  }
+  // The Storefront API has no contact-information policy, so this page is
+  // built from site.ts (the same facts as /contact and /about).
+  if (params.handle === 'contact-information') {
+    return {policy: contactInformationPolicy()};
   }
 
   const policyName = params.handle.replace(
@@ -102,3 +115,42 @@ const POLICY_CONTENT_QUERY = `#graphql
     }
   }
 ` as const;
+
+/** Escapes text for the policy body HTML. */
+function esc(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/** Contact information (2026-11-26, Merchant Center: phone and address). */
+function contactInformationPolicy(): {title: string; body: string} {
+  const rows: Array<[string, string]> = [
+    ['Store', esc(SITE.name)],
+    ['Operated by', esc(COMPANY.displayName)],
+    ['Representative directors', esc(REPRESENTATIVES.join(', '))],
+    ['Address', esc(COMPANY.postalAddress)],
+    [
+      'Email',
+      `<a href="mailto:${esc(CONTACT_EMAIL)}">${esc(CONTACT_EMAIL)}</a>`,
+    ],
+    [
+      'Phone',
+      `<a href="${esc(CONTACT_PHONE.href)}">${esc(CONTACT_PHONE.display)}</a>`,
+    ],
+    [
+      'Corporate number',
+      `<a href="${esc(COMPANY.corporateNumberUrl)}">${esc(COMPANY.corporateNumber)}</a> (Japan National Tax Agency)`,
+    ],
+    [
+      'Legal notice',
+      `<a href="${esc(encodeURI(LEGAL_NOTICE_PATH))}">特定商取引法に基づく表記</a>`,
+    ],
+  ];
+  return {
+    title: 'Contact information',
+    body: rows.map(([k, v]) => `<p><strong>${k}:</strong> ${v}</p>`).join(''),
+  };
+}

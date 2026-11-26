@@ -96,7 +96,9 @@ function toFeedProduct(p: FeedProductNode): FeedProduct {
     variants: p.variants.nodes,
     preOrder: p.tags.some((t) => t.toLowerCase() === 'pre-order'),
     expectedShipDate: p.expectedShipDate?.value ?? null,
-    condition: getItemCondition(p)?.og ?? 'new',
+    // Same source as the product page (beyblade.condition, else
+    // ebay.condition). Not stated → left out of the feed (merchant-feed.ts).
+    condition: getItemCondition(p)?.og,
     googleProductCategory: GOOGLE_PRODUCT_CATEGORY,
   };
 }
@@ -115,6 +117,7 @@ interface FeedProductNode {
   };
   expectedShipDate?: {value: string} | null;
   condition?: {value: string} | null;
+  ebayCondition?: {value: string} | null;
 }
 
 interface FeedProductsResult {
@@ -173,6 +176,9 @@ const FEED_PRODUCTS_QUERY = `#graphql
           value
         }
         condition: metafield(namespace: "beyblade", key: "condition") {
+          value
+        }
+        ebayCondition: metafield(namespace: "ebay", key: "condition") {
           value
         }
       }

@@ -1,6 +1,14 @@
 import type {Route} from './+types/about';
 import {FactTable, InfoPage} from '~/components/InfoPage';
-import {COMPANY, EBAY_RECORD, SISTER_STORES, SITE} from '~/lib/site';
+import {
+  COMPANY,
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  EBAY_RECORD,
+  REPRESENTATIVES,
+  SISTER_STORES,
+  SITE,
+} from '~/lib/site';
 import {SITE_URL} from '~/lib/constants';
 import {organizationJsonLd} from '~/lib/structured-data';
 
@@ -34,7 +42,28 @@ export default function About() {
         <FactTable
           rows={[
             ['Operated by', COMPANY.displayName],
-            ['Address', COMPANY.address],
+            ['Representative directors', REPRESENTATIVES.join(', ')],
+            ['Address', COMPANY.postalAddress],
+            [
+              'Email',
+              <a
+                key="mail"
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="text-holo-500 underline-offset-2 hover:underline"
+              >
+                {CONTACT_EMAIL}
+              </a>,
+            ],
+            [
+              'Phone',
+              <a
+                key="tel"
+                href={CONTACT_PHONE.href}
+                className="text-holo-500 underline-offset-2 hover:underline"
+              >
+                {CONTACT_PHONE.display}
+              </a>,
+            ],
             [
               'Corporate number',
               <a

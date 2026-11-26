@@ -13,16 +13,21 @@
  *     + Japan Post's standard days, the numbers behind the page's
  *     "Ships within N business days" / "around <date>". Left out when
  *     either is unknown, and for pre-orders (they ship on release).
- *   - Returns: the store's refund policy (RETURNS): 14 days, unopened and
- *     sealed only, return shipping paid by the buyer. So new (sealed)
- *     offers get that policy and other conditions get "not returnable".
- *   - Company: COMPANY / CONTACT_EMAIL / EBAY_RECORD in site.ts.
+ *   - Returns: the store's refund policy (RETURNS): 14 days, items sold as
+ *     New and still unopened and sealed only, return shipping paid by the
+ *     buyer. So New offers get that policy, Used offers get "not
+ *     returnable", and offers whose condition the product does not state
+ *     get no return policy at all (2026-11-26: stating "not returnable" for
+ *     an unknown condition was a claim without a source).
+ *   - Company: COMPANY / CONTACT_EMAIL / CONTACT_PHONE / EBAY_RECORD in
+ *     site.ts.
  */
 import {getDeliveryEstimate} from './delivery-estimate';
 import {FREE_STANDARD_COUNTRIES, RETURNS} from './shipping';
-import {COMPANY, CONTACT_EMAIL, EBAY_RECORD, SITE} from './site';
+import {COMPANY, CONTACT_EMAIL, CONTACT_PHONE, EBAY_RECORD, SITE} from './site';
 
 const NEW_CONDITION = 'https://schema.org/NewCondition';
+const USED_CONDITION = 'https://schema.org/UsedCondition';
 
 /** The number at the end of a Shopify GID ("gid://shopify/ProductVariant/123"). */
 function gidNumber(gid: string | null | undefined): string | undefined {
@@ -128,7 +133,10 @@ export function freeShippingDetails({
   });
 }
 
-/** Extra Offer fields: shipping details, and the return policy for new items. */
+/**
+ * Extra Offer fields: shipping details, and the return policy by condition
+ * (New = returnable, Used = not returnable, not stated = none).
+ */
 export function offerPolicies({
   siteUrl,
   currency,
@@ -151,10 +159,12 @@ export function offerPolicies({
       serviceValue,
       preorder,
     }),
-    hasMerchantReturnPolicy:
-      itemCondition === NEW_CONDITION
-        ? merchantReturnPolicy(siteUrl)
-        : noReturnPolicy(siteUrl),
+    ...(itemCondition === NEW_CONDITION && {
+      hasMerchantReturnPolicy: merchantReturnPolicy(siteUrl),
+    }),
+    ...(itemCondition === USED_CONDITION && {
+      hasMerchantReturnPolicy: noReturnPolicy(siteUrl),
+    }),
   };
 }
 
@@ -180,6 +190,7 @@ export function organizationJsonLd(siteUrl: string, logo?: string) {
       value: COMPANY.corporateNumber,
     },
     email: CONTACT_EMAIL,
+    telephone: CONTACT_PHONE.schema,
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Mutsumi Bldg. 3F, 2-10-48 Kitasaiwai, Nishi-ku',
@@ -192,6 +203,7 @@ export function organizationJsonLd(siteUrl: string, logo?: string) {
       '@type': 'ContactPoint',
       contactType: 'customer support',
       email: CONTACT_EMAIL,
+      telephone: CONTACT_PHONE.schema,
     },
     sameAs: [EBAY_RECORD.url],
     hasMerchantReturnPolicy: merchantReturnPolicy(siteUrl),

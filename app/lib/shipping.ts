@@ -8,6 +8,8 @@
  * Dispatch time (owner, 2026-11-17: "same speed as eBay"): per product,
  * from the product metafield `shipping.handling_days` (the handling time of
  * the product's eBay listing). No value → no dispatch line at all.
+ * Owner decision 2026-11-26 (ops journal #1265): at most 10 business days
+ * on the sites (975 products capped to 10; the import tool caps new ones).
  *
  * Transit days: Japan Post "お届け日数表" (standard delivery days) for mail
  * posted in 南関東 (Kanagawa, where the shop ships from), read 2026-11-17,
@@ -315,15 +317,17 @@ export const PRIVACY_POLICY_READY = true;
 
 /**
  * RETURNS are the store's actual refund rules (one Shopify store, one refund
- * policy, applied at checkout to all three Vault sites; read 2026-11-17).
- * The policy PAGE is not linked/served only because its wording names
- * another store and states free shipping / duties (see LINK_STORE_POLICIES);
- * the return conditions themselves apply to this site's orders.
+ * policy, applied at checkout to all Vault sites). Owner decision
+ * 2026-11-26: 14 days, unopened and sealed only, return shipping paid by
+ * the buyer, damage on arrival reported within 48 hours with photos, and
+ * items sold in a condition other than New are not returnable. The same
+ * wording is in the Shopify refund policy (/policies/refund-policy,
+ * rewritten 2026-11-26) and on /returns — change all three together.
  */
 export const RETURNS = {
   windowDays: 14,
   summary:
-    'Returns within 14 days of delivery for items in their original, unopened, sealed condition. Return shipping is paid by the buyer.',
+    'Returns within 14 days of delivery for items sold as New and still in their original, unopened, sealed condition. Return shipping is paid by the buyer. Items sold in any other condition (for example Used or Pre-owned) cannot be returned.',
   damaged:
     'Arrived damaged? Contact us within 48 hours of delivery with photos.',
   policyPath: '/policies/refund-policy',

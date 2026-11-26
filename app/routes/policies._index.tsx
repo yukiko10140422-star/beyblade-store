@@ -18,6 +18,12 @@ export async function loader({context}: Route.LoaderArgs) {
     shopPolicies?.termsOfService,
     shopPolicies?.refundPolicy,
     shopPolicies?.subscriptionPolicy,
+    // Served by policies.$handle from site.ts (not in the Storefront API).
+    {
+      id: 'contact-information',
+      title: 'Contact information',
+      handle: 'contact-information',
+    },
   ].filter((policy): policy is PolicyItemFragment => policy != null);
 
   if (!policies.length) {

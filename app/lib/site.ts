@@ -56,6 +56,12 @@ export const SPIN_PAGE_HANDLES: readonly string[] = [
  * from 2026-11-18 because its list cards collapsed (inline links, QA 11-18).
  * Handles are compared after decodeURIComponent + NFC (see normalizeHandle).
  */
+/**
+ * Legal notice (特定商取引法に基づく表記), a Shopify page (rewritten
+ * 2026-11-26 for Merchant Center: XON株式会社, Yokohama office, phone).
+ * Linked from the footer.
+ */
+export const LEGAL_NOTICE_PATH = '/pages/legal-notice-特定商取引法に基づく表記';
 export const SPIN_BLOG_HANDLES: readonly string[] = ['ニュース'];
 
 /**
@@ -303,3 +309,21 @@ export const SISTER_STORES = [
 
 /** Contact for all three Vault stores (owner decision 2026-11-17). */
 export const CONTACT_EMAIL = 'info@xon-corp.com';
+
+/**
+ * Representative directors as registered (commercial register
+ * 履歴事項全部証明書, 04_XON/会社重要書類). Written in kanji as registered:
+ * the reading of the names is not on record, so they are not romanized.
+ */
+export const REPRESENTATIVES = ['宮﨑 友祈子', '多田 健人'] as const;
+
+/**
+ * Customer contact phone (owner decision 2026-11-26, ops journal #1251:
+ * publish on the sites and in Merchant Center; same number there).
+ * display = shown, href = tel: link, schema = schema.org telephone.
+ */
+export const CONTACT_PHONE = {
+  display: '+81 80-2071-8587',
+  href: 'tel:+818020718587',
+  schema: '+81-80-2071-8587',
+} as const;

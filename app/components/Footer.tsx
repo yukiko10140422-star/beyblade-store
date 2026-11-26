@@ -8,6 +8,8 @@ import {
   SISTER_STORES,
   SITE,
   CONTACT_EMAIL,
+  CONTACT_PHONE,
+  LEGAL_NOTICE_PATH,
 } from '~/lib/site';
 
 interface FooterProps {
@@ -48,10 +50,28 @@ export function Footer({header}: FooterProps) {
               Contact: {CONTACT_EMAIL}
             </a>
           </li>
+          <li>
+            <a
+              href={CONTACT_PHONE.href}
+              className="text-chrome-300 hover:text-holo-500"
+            >
+              Phone: {CONTACT_PHONE.display}
+            </a>
+          </li>
         </FooterColumn>
         <FooterColumn title="Company">
           <FooterLink to="/about">About us</FooterLink>
+          <FooterLink to="/policies/terms-of-service">
+            Terms of service
+          </FooterLink>
+          <FooterLink to="/policies/refund-policy">Refund policy</FooterLink>
+          <FooterLink to="/policies/shipping-policy">
+            Shipping policy
+          </FooterLink>
           <FooterLink to="/policies/privacy-policy">Privacy policy</FooterLink>
+          <FooterLink to={LEGAL_NOTICE_PATH}>
+            Legal notice (特定商取引法に基づく表記)
+          </FooterLink>
           <li>
             <a
               href={EBAY_RECORD.url}

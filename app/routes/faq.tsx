@@ -12,7 +12,7 @@ import {
   SHIPPING_METHODS,
   expressFromText,
 } from '~/lib/shipping';
-import {COMPANY, CONTACT_EMAIL, SITE} from '~/lib/site';
+import {CONTACT_EMAIL, CONTACT_PHONE, SITE} from '~/lib/site';
 import {faqPageJsonLd} from '~/lib/structured-data';
 
 /** Questions with plain-text answers (shown on the page and in FAQPage). */
@@ -32,7 +32,10 @@ const TEXT_ITEMS: ReadonlyArray<readonly [string, string]> = [
     `Express is ${SHIPPING_METHODS.ems.label} (${DHL_EXPRESS_LABEL} to the few countries EMS does not serve), ${expressFromText(EXPRESS_OPTIONS[0])}. Express + priority handling costs US$${EXPRESS_OPTIONS[1].extraUsd} more and ships within ${EXPRESS_OPTIONS[1].handling} business days. ${PRICE_AT_CHECKOUT} ${EXPRESS_UPGRADE_LINE}`,
   ],
   ['Can I return an item?', RETURNS.summary],
-  ['How do I contact you?', `Email ${CONTACT_EMAIL}.`],
+  [
+    'How do I contact you?',
+    `Email ${CONTACT_EMAIL} or call ${CONTACT_PHONE.display}.`,
+  ],
 ];
 
 export const meta: Route.MetaFunction = () => [
@@ -52,13 +55,20 @@ export default function Faq() {
     ),
     [
       'How do I contact you?',
-      <a
-        key="mail"
-        href={`mailto:${CONTACT_EMAIL}`}
-        className="text-holo-500 hover:underline"
-      >
-        {CONTACT_EMAIL}
-      </a>,
+      <span key="contact">
+        Email{' '}
+        <a
+          href={`mailto:${CONTACT_EMAIL}`}
+          className="text-holo-500 hover:underline"
+        >
+          {CONTACT_EMAIL}
+        </a>{' '}
+        or call{' '}
+        <a href={CONTACT_PHONE.href} className="text-holo-500 hover:underline">
+          {CONTACT_PHONE.display}
+        </a>
+        .
+      </span>,
     ],
   ];
   return (
