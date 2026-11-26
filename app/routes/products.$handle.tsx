@@ -54,6 +54,7 @@ import {
   metaValue,
   type BeyMetafields,
 } from '~/lib/bey-attributes';
+import {htmlToPlainText} from '~/lib/plain-text';
 
 export const meta: Route.MetaFunction = ({data}) => {
   const product = data?.product;
@@ -805,6 +806,7 @@ function buildProductJsonLd({
     | (BeyMetafields & {
         title?: string;
         description?: string;
+        descriptionHtml?: string;
         vendor?: string;
         tags?: string[];
       })
@@ -833,7 +835,8 @@ function buildProductJsonLd({
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product?.title,
-    description: product?.description,
+    description:
+      htmlToPlainText(product?.descriptionHtml) || product?.description,
     image,
     url: productUrl,
     sku: offerSku(sku, variantId),
