@@ -355,4 +355,4 @@ export const CHECKOUT_DOMAIN_FALLBACK = 'tokyo-spin-vault.myshopify.com';
 
 /** Shown instead of Add to cart for destinations the shop does not ship to. */
 export const NO_SHIP_BUTTON_NOTE =
-  'We do not ship to your selected country. Change the country at the bottom of the page.';
+  'We do not ship to your selected country. Choose your country with “Ship to” at the top of the page.';

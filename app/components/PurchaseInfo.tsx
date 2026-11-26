@@ -67,6 +67,9 @@ export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
         <Row icon={<TruckIcon />}>
           <b className="font-semibold text-chrome-200">{WHERE_WE_SHIP_LINE}</b>
         </Row>
+        <Row icon={<TruckIcon />}>
+          <ShipToPicker />
+        </Row>
       </div>
     );
   }
