@@ -1,5 +1,6 @@
 import {Suspense} from 'react';
-import {Await, Link} from 'react-router';
+import {Await, Link, useRouteLoaderData} from 'react-router';
+import {CountryPicker} from '~/components/CountryPicker';
 import {arrivalAround, type DeliveryEstimate} from '~/lib/delivery-estimate';
 import {
   DUTIES,
@@ -87,6 +88,9 @@ export function DeliveryBox({estimate}: {estimate: DeliveryEstimate}) {
           (Japan Post ePacket).
         </Row>
       )}
+      <Row icon={<TruckIcon />}>
+        <ShipToPicker />
+      </Row>
       {s && (
         <Row icon={<CalendarIcon />}>
           <span>
@@ -235,5 +239,13 @@ function ReturnIcon() {
       <path d="M4 12a8 8 0 1 0 3-6.2" />
       <path d="M4 4v4h4" />
     </svg>
+  );
+}
+
+/** "Ship to: <flag> Canada (change)" under the shipping lines (owner request 2026-11-26). */
+function ShipToPicker() {
+  const root = useRouteLoaderData<{buyerCountry?: string | null}>('root');
+  return (
+    <CountryPicker variant="inline" initialCountry={root?.buyerCountry ?? null} />
   );
 }

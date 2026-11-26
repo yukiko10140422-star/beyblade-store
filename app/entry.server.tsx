@@ -37,7 +37,7 @@ export default async function handleRequest(
     imgSrc: [
       "'self'",
       'https://cdn.shopify.com',
-      'https://i.ebayimg.com',
+      'https://i.ebayimg.com', 'https://flagcdn.com',
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
       'data:',

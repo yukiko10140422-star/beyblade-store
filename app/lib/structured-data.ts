@@ -14,8 +14,8 @@
  *     "Ships within N business days" / "around <date>". Left out when
  *     either is unknown, and for pre-orders (they ship on release).
  *   - Returns: the store's refund policy (RETURNS): 14 days, unopened and
- *     sealed only, return shipping paid by the buyer. So the policy is
- *     attached only to offers in new (sealed) condition.
+ *     sealed only, return shipping paid by the buyer. So new (sealed)
+ *     offers get that policy and other conditions get "not returnable".
  *   - Company: COMPANY / CONTACT_EMAIL / EBAY_RECORD in site.ts.
  */
 import {getDeliveryEstimate} from './delivery-estimate';
@@ -65,6 +65,21 @@ export function merchantReturnPolicy(siteUrl: string) {
     returnMethod: 'https://schema.org/ReturnByMail',
     returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
     itemCondition: NEW_CONDITION,
+    ...(siteUrl && {merchantReturnLink: `${siteUrl}/returns`}),
+  };
+}
+
+/**
+ * Used / pre-owned items: the refund policy (RETURNS) only accepts unopened,
+ * sealed items, so other conditions are not returnable (owner decision
+ * 2026-11-26). Items that arrive damaged are still handled per
+ * RETURNS.damaged; schema.org has no field for that, so it is not stated here.
+ */
+export function noReturnPolicy(siteUrl: string) {
+  return {
+    '@type': 'MerchantReturnPolicy' as const,
+    applicableCountry: [...FREE_STANDARD_COUNTRIES],
+    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
     ...(siteUrl && {merchantReturnLink: `${siteUrl}/returns`}),
   };
 }
@@ -136,9 +151,10 @@ export function offerPolicies({
       serviceValue,
       preorder,
     }),
-    ...(itemCondition === NEW_CONDITION && {
-      hasMerchantReturnPolicy: merchantReturnPolicy(siteUrl),
-    }),
+    hasMerchantReturnPolicy:
+      itemCondition === NEW_CONDITION
+        ? merchantReturnPolicy(siteUrl)
+        : noReturnPolicy(siteUrl),
   };
 }
 

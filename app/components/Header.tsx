@@ -1,6 +1,13 @@
 import {useRouteLoaderData} from 'react-router';
 import {Suspense} from 'react';
-import {Await, Form, NavLink, useAsyncValue} from 'react-router';
+import {
+  Await,
+  Form,
+  NavLink,
+  useAsyncValue,
+  useRouteLoaderData,
+} from 'react-router';
+import {CountryPicker} from '~/components/CountryPicker';
 import {
   type CartViewPayload,
   useAnalytics,
@@ -165,6 +172,7 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <div className="-mr-2.5 flex items-center gap-1 md:gap-2">
+      <HeaderCountry />
       <SearchToggle />
       <NavLink
         prefetch="intent"
@@ -180,6 +188,14 @@ function HeaderCtas({
       </NavLink>
       <CartToggle cart={cart} />
     </div>
+  );
+}
+
+/** Ship-to country, top right on every page (owner request 2026-11-26). */
+function HeaderCountry() {
+  const root = useRouteLoaderData<{buyerCountry?: string | null}>('root');
+  return (
+    <CountryPicker variant="header" initialCountry={root?.buyerCountry ?? null} />
   );
 }
 
