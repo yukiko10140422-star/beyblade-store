@@ -15,7 +15,7 @@ import {useEffect, useRef, useState} from 'react';
  * (owner request 2026-11-26: make the picker easy to find, with flags).
  */
 
-// The 20 destinations the shop ships to (owner decision 2026-11-25,
+// The 18 destinations the shop ships to (owner decisions 2026-11-25 / 11-26,
 // SHIP_TO_COUNTRIES in ~/lib/shipping). Others are not listed.
 const COUNTRIES: ReadonlyArray<{code: string; name: string}> = [
   {code: 'US', name: 'United States'},
@@ -26,13 +26,11 @@ const COUNTRIES: ReadonlyArray<{code: string; name: string}> = [
   {code: 'SG', name: 'Singapore'},
   {code: 'TW', name: 'Taiwan'},
   {code: 'HK', name: 'Hong Kong'},
-  {code: 'MO', name: 'Macau'},
   {code: 'KR', name: 'South Korea'},
   {code: 'TH', name: 'Thailand'},
   {code: 'MY', name: 'Malaysia'},
   {code: 'AE', name: 'United Arab Emirates'},
   {code: 'CH', name: 'Switzerland'},
-  {code: 'NO', name: 'Norway'},
   {code: 'IS', name: 'Iceland'},
   {code: 'LI', name: 'Liechtenstein'},
   {code: 'AD', name: 'Andorra'},

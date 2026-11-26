@@ -80,6 +80,10 @@ export function findMethod(
  * (ISO country code → [EMS, airmail]). null = not published as a single
  * number (city-dependent) or not listed.
  *
+ * Owner decision 2026-11-26: Norway (NO) and Macau (MO) removed until
+ * delivery, taxpayer-ID and duty handling are confirmed (journal #1179;
+ * markets backup tokyo-card-vault docs/data/markets-before-no-mo-20261126.json),
+ * so the shop ships to 18 countries and territories.
  * Owner decision 2026-11-25: the shop ships to these 20 countries and
  * territories only (Shopify markets trimmed the same day; AE added and MD
  * (Moldova) removed later the same day, owner approvals). The rest were
@@ -192,12 +196,12 @@ export interface ExpressRegion {
 export const EXPRESS_REGIONS: readonly ExpressRegion[] = [
   {region: 'United States', carrier: 'ems', fromUsd: 25, countries: ['US']},
   {region: 'Canada', carrier: 'ems', fromUsd: 25, countries: ['CA']},
-  {region: 'UK, Switzerland, Norway', carrier: 'ems', fromUsd: 13, countries: ['GB', 'CH', 'NO']},
+  {region: 'UK and Switzerland', carrier: 'ems', fromUsd: 13, countries: ['GB', 'CH']},
   {
-    region: 'Hong Kong, Macau, South Korea, Taiwan, Singapore, Malaysia, Thailand',
+    region: 'Hong Kong, South Korea, Taiwan, Singapore, Malaysia, Thailand',
     carrier: 'ems',
     fromUsd: 7,
-    countries: ['HK', 'MO', 'KR', 'TW', 'SG', 'MY', 'TH'],
+    countries: ['HK', 'KR', 'TW', 'SG', 'MY', 'TH'],
   },
   {region: 'Australia and New Zealand', carrier: 'ems', fromUsd: 13, countries: ['AU', 'NZ']},
   {
@@ -236,7 +240,7 @@ export const EU_COUNTRIES: ReadonlySet<string> = new Set([
 const SHIP_TO_NAMES = [...SHIP_TO_COUNTRIES].map(
   (cc) => JAPAN_POST_DAYS[cc]?.name ?? cc,
 );
-/** "We ship to 20 countries and territories: …" (from SHIP_TO_COUNTRIES). */
+/** "We ship to 18 countries and territories: …" (from SHIP_TO_COUNTRIES). */
 export const WHERE_WE_SHIP_LINE = `We ship to ${SHIP_TO_NAMES.length} countries and territories: ${SHIP_TO_NAMES.slice(0, -1).join(', ')} and ${SHIP_TO_NAMES[SHIP_TO_NAMES.length - 1]}. We do not ship to other countries, including the European Union.`;
 
 /**
@@ -338,7 +342,7 @@ export const SHIPPING_POLICY_PATH = '/policies/shipping-policy';
  * Re-read 2026-11-25 after trimming to 20 destinations (MO added, MX/ID/VN/MD removed; AE is paid).
  */
 export const FREE_STANDARD_COUNTRIES: ReadonlySet<string> = new Set([
-  'US', 'CA', 'GB', 'CH', 'NO', 'AU', 'NZ', 'SG', 'HK', 'MO', 'TW', 'KR',
+  'US', 'CA', 'GB', 'CH', 'AU', 'NZ', 'SG', 'HK', 'TW', 'KR',
   'TH', 'MY',
 ]);
 
